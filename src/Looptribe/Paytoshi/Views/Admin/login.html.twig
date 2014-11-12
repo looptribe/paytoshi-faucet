@@ -1,0 +1,22 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block content %}
+    <h1>{{ name|default('Paytoshi Faucet') }} Login</h1>
+    <hr>
+    <p>Login here with the password created during the Paytoshi Faucet setup.</p>
+    {% if flash['login_error'] %}
+    <div class="alert alert-warning" role="alert">
+        <p>{{ flash['login_error'] }}</p>
+        <p>Lost you password? Execute this query to reset it: <code>DELETE FROM `paytoshi_settings` WHERE `name` = 'password'</code>.</p>
+    </div>
+    {% endif %}
+    <form method="POST" class="form" role="form" action="{{ urlFor('login') }}">
+        <div class="form-group">
+            <label for="password" class="control-label">Password:</label>
+            <input type="password" class="form-control" name="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Login">
+        </div>
+    </form>
+{% endblock %}

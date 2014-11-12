@@ -1,0 +1,6 @@
+# Standard Configuration
+database:
+    host: localhost
+    username: root
+    password: root
+    name: paytoshi_faucet

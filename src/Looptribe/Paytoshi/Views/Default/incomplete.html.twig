@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>{{ name|default('Paytoshi Faucet') }}</title>
+        {% block javascripts %}
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            <h1>{{ name|default('Paytoshi Faucet') }}</h1>
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <h4>Disabled!</h4>
+                <p>This faucet is temporarily disabled. If you are the admin, please fix the configuration in the <a href="{{ urlFor('admin') }}">admin section</a>.</p>
+            </div>
+        </div>
+    </body>
+</html>

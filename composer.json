@@ -1,0 +1,14 @@
+{
+    "require": {
+        "slim/slim": "2.*",
+        "symfony/yaml": "2.*",
+        "slim/views": "0.*",
+        "twig/twig": "1.*",
+        "kriswallsmith/buzz": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Looptribe\\": "src/Looptribe"
+        }
+    }
+}

@@ -1,0 +1,282 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+{% endblock %}
+    
+    
+{% block content %}
+    <h1>{{ name|default('Paytoshi Faucet') }} Administration </h1>
+    <h2>Version {{ version }}</h2>
+    <hr>
+    {% if flash['save_error'] %}
+    <div class="alert alert-error" role="alert">
+        <p>{{ flash['save_error'] }}</p>
+    </div>
+    {% endif %}
+    {% if flash['save_success'] %}
+    <div class="alert alert-success" role="alert">
+        <p>{{ flash['save_success'] }}</p>
+    </div>
+    {% endif %}
+    <form method="POST" class="form" role="form" action="{{ urlFor('admin_post') }}">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Settings</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="api_key" class="control-label">Paytoshi Api Key:</label>
+                            <input type="text" class="form-control" name="api_key" placeholder="Api Key" required value="{{ api_key }}">
+                            <p class="help">Copy it from your private area at <a href="https://paytoshi.org">Paytoshi.org</a>.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="control-label">Faucet Name:</label>
+                            <input type="text" class="form-control" name="name" placeholder="Faucet Name" value="{{ name }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="control-label">Headline:</label>
+                            <input type="text" class="form-control" name="description" placeholder="Headline" value="{{ description }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Captcha</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="captcha_provider" class="control-label">Select captcha service provider:</label>
+                            <select name="captcha_provider" class="form-control" required disabled>
+                                <option value="solve_media" {% if captcha_provider == 'solve_media' %}selected{% endif %}>SolveMedia</option>
+                            </select>
+                            <p class="help" id="solve_media-help">Set up a <a href="https://portal.solvemedia.com/portal/public">SolveMedia account</a> and get the needed keys.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="solve_media[challenge_key]" class="control-label">Challenge Key:</label>
+                            <input type="text" class="form-control" name="solve_media[challenge_key]" placeholder="Challenge Key (C-Key)" value="{{ solve_media.challenge_key }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="solve_media[verification_key]" class="control-label">Verification Key:</label>
+                            <input type="text" class="form-control" name="solve_media[verification_key]" placeholder="Verification Key (V-Key)" value="{{ solve_media.verification_key }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="solve_media[authentication_key]" class="control-label">Authentication Key:</label>
+                            <input type="text" class="form-control" name="solve_media[authentication_key]" placeholder="Authentication Key (H-Key)" value="{{ solve_media.authentication_key }}">
+                        </div>
+                            
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Rewards</h3>
+                    </div>
+                    <div class="panel-body">
+                        <label for="rewards" class="control-label">Rewards:</label>
+                        <p>Set here the available rewards. In the amount column set the satoshi quantity, 
+                                in the probability column the chance of getting that reward. At the bottom you will see that average reward that you're setting.</p>
+                        <div class="reward-list">
+                        {% for item in rewards %}
+                            <div class="form-group row reward-item">
+                                <label for="rewards" class="control-label col-md-2">Amount:</label>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="rewards[{{ loop.index0 }}][amount]" data-type="amount" placeholder="e.g. 100" value="{{ item.amount }}" required>
+                                        <div class="input-group-addon">sat</div>
+                                    </div>
+                                </div>
+                                <label for="rewards" class="control-label col-md-2">Probability:</label>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="rewards[{{ loop.index0 }}][probability]" data-type="probability" placeholder="e.g. 30" value="{{ item.probability }}" required>
+                                        <div class="input-group-addon">%</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <a class="btn btn-danger btn-sm btn-outline reward-remove"><i class="fa fa-minus-circle"></i> Remove</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-2">Average Reward:</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input class="form-control" type="number" placeholder="Average Reward" readonly id="reward_calculator">
+                                    <div class="input-group-addon">sat</div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-md-offset-5">
+                                <a class="btn btn-success btn-sm btn-outline reward-add"><i class="fa fa-plus-circle"></i> Add</a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="waiting_interval" class="control-label">Waiting Interval:</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="waiting_interval" placeholder="Waiting Interval" value="{{ waiting_interval }}" required>
+                                <div class="input-group-addon">sec</div>
+                            </div>
+                            <p class="help">The interval between two consecutive payouts of the same user (in seconds).</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="referral_percentage" class="control-label">Referral Percentage:</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="referral_percentage" placeholder="Referral Percentage" value="{{ referral_percentage }}" required>
+                                <div class="input-group-addon">%</div>
+                            </div>
+                            <p class="help">Percent of a reward awarded to the referrer (0 to disable referral).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Template</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="css" class="control-label">Css:</label>
+                            <textarea type="text" rows="8" class="form-control" name="css" placeholder="Css">
+                                {{ css|raw }}
+                            </textarea>
+                            <p class="help">You can add css in here.</p>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="header_box" class="control-label">Header Box:</label>
+                            <textarea type="text" rows="8" class="form-control" name="header_box" placeholder="Header Box">
+                                {{ header_box|raw }}
+                            </textarea>
+                            <p class="help">You can add html and css in here.</p>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="left_box" class="control-label">Left Box:</label>
+                            <textarea type="text" rows="8" class="form-control" name="left_box" placeholder="Left Box">
+                                {{ left_box|raw }}
+                            </textarea>
+                            <p class="help">You can add html and css in here.</p>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="right_box" class="control-label">Right Box:</label>
+                            <textarea type="text" rows="8" class="form-control" name="right_box" placeholder="Right Box">
+                                {{ right_box|raw }}
+                            </textarea>
+                            <p class="help">You can add html and css in here.</p>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="footer_box" class="control-label">Footer Box:</label>
+                            <textarea type="text" rows="8" class="form-control" name="footer_box" placeholder="Footer Box">
+                                {{ footer_box|raw }}
+                            </textarea>
+                            <p class="help">You can add html and css in here.</p>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="center1_box" class="control-label">Center1 Box:</label>
+                            <textarea type="text" rows="8" class="form-control" name="center1_box" placeholder="Center1 Box">
+                                {{ center1_box|raw }}
+                            </textarea>
+                            <p class="help">You can add html and css in here.</p>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="center2_box" class="control-label">Center2 Box:</label>
+                            <textarea type="text" rows="8" class="form-control" name="center2_box" placeholder="Center2 Box">
+                                {{ center2_box|raw }}
+                            </textarea>
+                            <p class="help">You can add html and css in here.</p>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label for="center3_box" class="control-label">Center3 Box:</label>
+                            <textarea type="text" rows="8" class="form-control" name="center3_box" placeholder="Center3 Box">
+                                {{ center3_box|raw }}
+                            </textarea>
+                            <p class="help">You can add html and css in here.</p>
+                        </div>
+                            
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group text-center">
+            <input type="submit" class="btn btn-primary" value="Save">
+        </div>
+    </form>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function(){
+            var rewardListLength = {{ rewards|length }};
+            
+            function calculateAverageProbability() {
+                var totalProbability = 0;
+                var rewards = Array.prototype.map.call($('.reward-item'), function(i) {
+                    var amount = parseInt($(i).find('input[data-type="amount"]').val());
+                    var probability = parseInt($(i).find('input[data-type="probability"]').val());
+                    totalProbability += parseInt(probability);
+                    return amount * probability;
+                });
+                var averageReward = Math.round(rewards.reduce(function(previousValue, currentValue) { return previousValue + currentValue; }) / totalProbability);
+                $('#reward_calculator').val(averageReward);
+            };
+            
+            $(document).on('blur', 'input[name^="reward"]', calculateAverageProbability);
+            
+            $(document).on('click', '.reward-remove', function() {
+                $(this).closest('.reward-item').hide('slow', function() { $(this).remove(); });
+            });
+            
+            $(document).on('click', '.reward-add', function() {
+                var re = new RegExp('%LINE%', 'g');
+                $('.reward-list').append(rewardTemplate.replace(re, rewardListLength++));
+            });
+            
+            calculateAverageProbability();
+            
+            var rewardTemplate = $('#reward-line').html();
+        });
+    </script>
+    
+    <script type="text/template" id="reward-line">
+        <div class="form-group row reward-item">
+            <label for="rewards" class="control-label col-md-2">Amount:</label>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="number" class="form-control" name="rewards[%LINE%][amount]" data-type="amount" placeholder="e.g. 100" required="">
+                    <div class="input-group-addon">sat</div>
+                </div>
+            </div>
+            <label for="rewards" class="control-label col-md-2">Probability:</label>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="number" class="form-control" name="rewards[%LINE%][probability]" data-type="probability" placeholder="e.g. 30" required="">
+                    <div class="input-group-addon">%</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <a class="btn btn-danger btn-sm btn-outline reward-remove"><i class="fa fa-minus-circle"></i> Remove</a>
+            </div>
+        </div>
+    </script>
+{% endblock %}
