@@ -22,7 +22,7 @@ class SolveMediaService implements CaptchaServiceInterface {
     const ADCOPY_SIGNUP = 'http://api.solvemedia.com/public/signup';
     
     protected $app;
-    protected $faucet;
+    protected $settingRepository;
     
     private $publicKey;
     private $privateKey;
@@ -30,13 +30,13 @@ class SolveMediaService implements CaptchaServiceInterface {
     
     private $useSSL;
     
-    public function __construct($app, $faucet) {
+    public function __construct($app, $settingRepository) {
         $this->app = $app;
-        $this->faucet = $faucet;
+        $this->settingRepository = $settingRepository;
         
-        $this->publicKey = $this->faucet->getSolveMediaChallengeKey();
-        $this->privateKey = $this->faucet->getSolveMediaVerificationKey();
-        $this->hashKey = $this->faucet->getSolveMediaAuthenticationKey();
+        $this->publicKey = $this->settingRepository->getSolveMediaChallengeKey();
+        $this->privateKey = $this->settingRepository->getSolveMediaVerificationKey();
+        $this->hashKey = $this->settingRepository->getSolveMediaAuthenticationKey();
         
         $this->useSSL = false;
     }

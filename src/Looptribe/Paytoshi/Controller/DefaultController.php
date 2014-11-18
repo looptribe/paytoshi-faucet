@@ -13,52 +13,54 @@
 namespace Looptribe\Paytoshi\Controller;
 
 use DateInterval;
+use DateTime;
 use Looptribe\Paytoshi\Exception\PaytoshiException;
 use Looptribe\Paytoshi\Model\Payout;
 use Looptribe\Paytoshi\Model\Recipient;
+use Looptribe\Paytoshi\Model\SettingRepository;
+use Looptribe\Paytoshi\Service\Captcha\CaptchaException;
 use Looptribe\Paytoshi\Service\DatabaseService;
-use Looptribe\Paytoshi\Service\FaucetService;
 
 class DefaultController {
 
     protected $app;
     /* @var $database DatabaseService */
     protected $database;
-    /* @var $faucet FaucetService */
-    protected $faucet;
+    /* @var $settingRepository SettingRepository */
+    protected $settingRepository;
     protected $captchaService;
     protected $recipientRepository;
     protected $payoutRepository;
     protected $apiService;
     protected $rewardService;
 
-    public function __construct($app, $database, $faucet, $captchaServiceFactory, $recipientRepository, $payoutRepository, $apiService, $rewardService){
+    public function __construct($app, $options = array()) {
         $this->app = $app;
-        $this->database = $database;
-        $this->faucet = $faucet;
-        $this->captchaService = $captchaServiceFactory->getService($this->faucet->getCaptchaProvider());
-        $this->recipientRepository = $recipientRepository;
-        $this->payoutRepository = $payoutRepository;
-        $this->apiService = $apiService;
-        $this->rewardService = $rewardService;
+        $this->database = $options['databaseService'];
+        $this->settingRepository = $options['settingRepository'];
+        $this->captchaService = $options['captchaServiceFactory']->getService($this->settingRepository->getCaptchaProvider());
+        $this->recipientRepository = $options['recipientRepository'];
+        $this->payoutRepository = $options['payoutRepository'];
+        $this->apiService = $options['apiService'];
+        $this->rewardService = $options['rewardService'];
     }
     
     public function incomplete() {
         return $this->app->render('Default/incomplete.html.twig', array(
-            'name' => $this->faucet->getName()
+            'name' => $this->settingRepository->getName()
         ));
     }
 
     public function home() {
         
         return $this->app->render('Default/home.html.twig', array(
-            'name' => $this->faucet->getName(),
-            'description' => $this->faucet->getDescription(),
+            'name' => $this->settingRepository->getName(),
+            'description' => $this->settingRepository->getDescription(),
             'referral' => $this->app->request->get('r'),
-            'referral_percentage' => $this->faucet->getReferralPercentage(),
+            'referral_percentage' => $this->settingRepository->getReferralPercentage(),
             'rewards' => $this->rewardService->getAsArray(),
             'rewards_average' => $this->rewardService->getAverage(),
-            'waiting_interval' => $this->faucet->getWaitingInterval(),
+            'waiting_interval' => $this->settingRepository->getWaitingInterval(),
             'address' => $this->app->getCookie('address'),
             'base_url' => $this->app->request->getUrl(),
             'captcha' => array(
@@ -67,15 +69,15 @@ class DefaultController {
                 'public_key' => $this->captchaService->getPublicKey()
             ),
             'template' => array(
-                'name' => $this->faucet->getTheme(),
-                'css' => $this->faucet->getCss(),
-                'header_box' => $this->faucet->getHeaderBox(),
-                'left_box' => $this->faucet->getLeftBox(),
-                'right_box' => $this->faucet->getRightBox(),
-                'footer_box' => $this->faucet->getFooterBox(),
-                'center1_box' => $this->faucet->getCenter1Box(),
-                'center2_box' => $this->faucet->getCenter2Box(),
-                'center3_box' => $this->faucet->getCenter3Box()
+                'name' => $this->settingRepository->getTheme(),
+                'css' => $this->settingRepository->getCss(),
+                'header_box' => $this->settingRepository->getHeaderBox(),
+                'left_box' => $this->settingRepository->getLeftBox(),
+                'right_box' => $this->settingRepository->getRightBox(),
+                'footer_box' => $this->settingRepository->getFooterBox(),
+                'center1_box' => $this->settingRepository->getCenter1Box(),
+                'center2_box' => $this->settingRepository->getCenter2Box(),
+                'center3_box' => $this->settingRepository->getCenter3Box()
             )
         ));
     }
@@ -131,7 +133,7 @@ class DefaultController {
         // Timeout check
         $lastPayout = $this->payoutRepository->findLastByRecipientAndIp($recipient, $remoteIp);
         $now = new DateTime;
-        $waitingInterval = $this->faucet->getWaitingInterval();
+        $waitingInterval = $this->settingRepository->getWaitingInterval();
         if ($lastPayout) {
             $nextPayoutTime = $lastPayout->getCreatedAt()->add(new DateInterval('PT' . $waitingInterval . 'S'));
             if ($nextPayoutTime > $now)
@@ -173,7 +175,7 @@ class DefaultController {
         $this->app->setCookie('address', $recipient->getAddress());
         
         $referral = $this->app->request->post('referral');
-        $referralPercentage = $this->faucet->getReferralPercentage();
+        $referralPercentage = $this->settingRepository->getReferralPercentage();
         if ($referral && $referral != $address && $referralPercentage > 0)
         {
             // Referral Payout Creation

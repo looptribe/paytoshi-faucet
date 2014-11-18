@@ -20,15 +20,15 @@ use Looptribe\Paytoshi\Exception\PaytoshiException;
 class ApiService {
     
     protected $app;
-    protected $faucet;
+    protected $settingRepository;
     
-    public function __construct($app, $faucet) {
+    public function __construct($app, $settingRepository) {
         $this->app = $app;
-        $this->faucet = $faucet;
+        $this->settingRepository = $settingRepository;
     }
     
     public function send($address, $amount, $notes = '') {
-        $apiKey = $this->faucet->getApiKey();
+        $apiKey = $this->settingRepository->getApiKey();
         $query = http_build_query(array('apikey' => $apiKey));
         $url = $this->app->config('api_url') . '?' . $query;
         $headers = array(

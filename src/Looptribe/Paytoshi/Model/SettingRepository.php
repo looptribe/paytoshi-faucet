@@ -10,11 +10,11 @@
  * @package: Looptribe\Paytoshi 
  */
 
-namespace Looptribe\Paytoshi\Service;
+namespace Looptribe\Paytoshi\Model;
 
 use DateTime;
 
-class FaucetService {
+class SettingRepository {
     
     const TABLE_NAME = 'paytoshi_settings';
     
