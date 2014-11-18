@@ -20,7 +20,7 @@ INSERT IGNORE INTO paytoshi_settings (name, value) VALUES
     ('solve_media_authentication_key', ''),
     ('recaptcha_private_key', ''),
     ('recaptcha_public_key', ''),
-    ('theme', 'default'),
+    ('theme', :theme),
     ('version', 1),
     ('default_css', 'body {
             background: #333;

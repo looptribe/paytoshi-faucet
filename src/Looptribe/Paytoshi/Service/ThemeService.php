@@ -25,19 +25,28 @@ class ThemeService {
     }
     
     public function getThemes() {
-        return array();
+        $templateDir = $this->config['template_path'];
+        $themes = array();
+        $path = '.'  . DIRECTORY_SEPARATOR . $templateDir  . DIRECTORY_SEPARATOR;
+        foreach(glob($path . '*', GLOB_ONLYDIR) as $dir) {
+            $themes[] = str_replace($path, '', $dir);
+        }
+        return $themes;
     }
     
     public function getTemplate($filename) {
-        $currentTheme = $this->settingRepository->getTheme();
         $templateDir = $this->config['template_path'];
-        $filePath = './' . $templateDir . DIRECTORY_SEPARATOR . $currentTheme . DIRECTORY_SEPARATOR . $filename;
-        if (file_exists($filePath))
-            return $currentTheme . DIRECTORY_SEPARATOR . $filename;
+        //Before setup there is no theme...
+        if ($this->settingRepository) {
+            $currentTheme = $this->settingRepository->getTheme();
+            $filePath = '.' . DIRECTORY_SEPARATOR . $templateDir . DIRECTORY_SEPARATOR . $currentTheme . DIRECTORY_SEPARATOR . $filename;
+            if (is_file($filePath) && is_readable($filePath))
+                return $currentTheme . DIRECTORY_SEPARATOR . $filename;
+        }
         
         $defaultTheme = $this->config['default_theme'];
-        $defaultFilePath = './' . $templateDir . DIRECTORY_SEPARATOR . $defaultTheme . DIRECTORY_SEPARATOR . $filename;
-        if (file_exists($defaultFilePath))
+        $defaultFilePath = '.' . DIRECTORY_SEPARATOR . $templateDir . DIRECTORY_SEPARATOR . $defaultTheme . DIRECTORY_SEPARATOR . $filename;
+        if (is_file($defaultFilePath) && is_readable($defaultFilePath))
             return $defaultTheme . DIRECTORY_SEPARATOR . $filename;
         
         throw new PaytoshiException('Unable to load a theme.');

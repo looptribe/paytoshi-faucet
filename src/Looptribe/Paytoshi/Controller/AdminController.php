@@ -35,7 +35,8 @@ class AdminController {
         $hash = crypt($password);
         $this->setupDatabase(array(
             'password' => $hash,
-            'cookie_secret_key' => $this->generateRandomString(16)
+            'cookie_secret_key' => $this->generateRandomString(16),
+            'theme' => $this->app->config('default_theme')
         ));
         $this->app->render($this->themeService->getTemplate('setup.html.twig'), array(
             'password' => $password,
