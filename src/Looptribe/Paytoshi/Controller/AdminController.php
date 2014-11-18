@@ -20,11 +20,13 @@ class AdminController {
     protected $config;
     protected $database;
     protected $settingRepository;
+    protected $themeService;
     
     public function __construct($app, $options) {
         $this->app = $app;
         $this->database = $options['databaseService'];
         $this->settingRepository = $options['settingRepository'];
+        $this->themeService = $options['themeService'];
         $this->config = $options['config'];
     }
     
@@ -35,7 +37,7 @@ class AdminController {
             'password' => $hash,
             'cookie_secret_key' => $this->generateRandomString(16)
         ));
-        $this->app->render('Admin/setup.html.twig', array(
+        $this->app->render($this->themeService->getTemplate('setup.html.twig'), array(
             'password' => $password,
         ));
     }
@@ -45,7 +47,7 @@ class AdminController {
             $this->app->response->redirect($this->app->urlFor('admin'));
             
         if ($this->app->request->isGet())
-            $this->app->render('Admin/login.html.twig', array(
+            $this->app->render($this->themeService->getTemplate('login.html.twig'), array(
                 'name' => $this->settingRepository->getName()
             ));
         else if ($this->app->request->isPost()) {
@@ -59,7 +61,7 @@ class AdminController {
             }
             else {
                 $this->app->flashNow('login_error', 'Incorrect Password.');
-                $this->app->render('Admin/login.html.twig', array(
+                $this->app->render($this->themeService->getTemplate('login.html.twig'), array(
                     'name' => $this->settingRepository->getName()
                 ), 403);
             }
@@ -75,7 +77,7 @@ class AdminController {
             return $this->app->redirect($this->app->urlFor('login'));
         
         if ($this->app->request->isGet())
-            return $this->app->render('Admin/admin.html.twig', $this->settingRepository->getAdminView());
+            return $this->app->render($this->themeService->getTemplate('admin.html.twig'), $this->settingRepository->getAdminView());
         else if ($this->app->request->isPost()) {
             $data = array();
             parse_str($this->app->request->getBody(), $data);

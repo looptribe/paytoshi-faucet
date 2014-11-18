@@ -46,9 +46,60 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    {% block content %}
+                    <div class="faucet">
+                        {% include "default/alerts.html.twig" %}
+                        <div class="rewards text-center">
+                            <h3>Claim your reward</h3>
 
-                    {% endblock %}
+                            <div class="reward-list">
+                            {% for r in rewards %}
+                            <span class="reward">{{ r.amount }}</span>
+                            {% endfor %}
+                            </div>
+                            <div class="rewards_average">(Average: {{ rewards_average }} satoshi)</div>
+                            <h4 class="text-center">Get a reward every {{ waiting_interval / 60 }} mins!</h4>
+                        </div>
+
+                        <hr>
+
+                        <form action="{{ urlFor('reward') }}" novalidate="novalidate" method="POST" class="form">
+                        <div class="form-group">
+                            <div class="text-center lead">
+                                Enter your Bitcoin address
+                            </div>
+                            <input class="form-control input-lg" type="text" name="address" 
+                                   value="{% if address is defined %}{{ address }}{% endif %}" 
+                                   placeholder="Bitcoin address">
+                        </div>
+                        <center>
+                            <div class="banner-ad">
+                                {{ template.center1_box|raw }}
+                            </div>
+                        </center>
+                        <div class="form-group">
+                            <center>
+                                {% include "default/" ~ captcha.name ~ ".html.twig" with { server: captcha.server, public_key: captcha.public_key } %}
+                            </center>
+                        </div>
+                        <center>
+                            <div class="banner-ad">
+                                {{ template.center2_box|raw }}
+                            </div>
+                        </center>
+                        <button class="form-control input-lg btn-info banner-ad">Get a reward!</button>
+                        <input type="hidden" name="referral" value="{{ referral }}">
+                        <center>
+                            <div class="banner-ad">
+                                {{ template.center3_box|raw }}
+                            </div>
+                        </center>
+
+                        </form>
+
+                        <div class="well well-sm text-center referral-box">Earn {{ referral_percentage }}% referral bonus! 
+                            Share your referral URL:<br>{{ base_url ~ '/?r=' ~ address|default('Bitcoin Address') }}</div>
+
+                    </div>
                 </div>
                 <div class="col-md-3 hidden-xs hidden-sm">
                     <div class="skyscraper-ad">

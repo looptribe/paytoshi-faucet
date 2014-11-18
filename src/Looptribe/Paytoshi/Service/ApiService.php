@@ -19,18 +19,19 @@ use Looptribe\Paytoshi\Exception\PaytoshiException;
 
 class ApiService {
     
-    protected $app;
+    protected $config;
     protected $settingRepository;
     
-    public function __construct($app, $settingRepository) {
-        $this->app = $app;
-        $this->settingRepository = $settingRepository;
+    public function __construct($options) {
+        $this->settingRepository = $options['settingRepository'];
+        $this->config = $options['config'];
+        
     }
     
     public function send($address, $amount, $notes = '') {
         $apiKey = $this->settingRepository->getApiKey();
         $query = http_build_query(array('apikey' => $apiKey));
-        $url = $this->app->config('api_url') . '?' . $query;
+        $url = $this->config['api_url'] . '?' . $query;
         $headers = array(
         );
         $content = http_build_query(array(
@@ -40,7 +41,7 @@ class ApiService {
         ));
         
         $browser = new Browser();
-        /* @var $respoonse Response */
+        /* @var $response Response */
         try {
             $response = $browser->post($url, $headers, $content);
         }
@@ -49,17 +50,18 @@ class ApiService {
         }
         
         if (!$response->isSuccessful())
-            return new ApiResponse(false, 'Failed to send', $response);
+        {
+            $apiResponse = new ApiResponse(false, $response);
+            $apiResponse->setError('Failed to send');
+            return $apiResponse;
+        }
+        
         
         $result = json_decode($response->getContent(), true);
         
-        $view = $this->app->view();
-        $view->setData(array(
-            'amount' => $result['amount'],
-            'to' => $result['recipient'],
-            'balanceUrl' => $this->app->config('balance_url')
-        ));
-        
-        return new ApiResponse(true, $view->render('Default/balance.html.twig'), $response);
+        $apiResponse = new ApiResponse(true, $response);
+        $apiResponse->setAmount($result['amount']);
+        $apiResponse->setRecipient($result['recipient']);
+        return $apiResponse;
     }
 }

@@ -18,6 +18,7 @@ use Looptribe\Paytoshi\Exception\PaytoshiException;
 use Looptribe\Paytoshi\Model\Payout;
 use Looptribe\Paytoshi\Model\Recipient;
 use Looptribe\Paytoshi\Model\SettingRepository;
+use Looptribe\Paytoshi\Service\ApiResponse;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaException;
 use Looptribe\Paytoshi\Service\DatabaseService;
 
@@ -33,6 +34,7 @@ class DefaultController {
     protected $payoutRepository;
     protected $apiService;
     protected $rewardService;
+    protected $themeService;
 
     public function __construct($app, $options = array()) {
         $this->app = $app;
@@ -43,17 +45,19 @@ class DefaultController {
         $this->payoutRepository = $options['payoutRepository'];
         $this->apiService = $options['apiService'];
         $this->rewardService = $options['rewardService'];
+        $this->themeService = $options['themeService'];
+        
     }
     
     public function incomplete() {
-        return $this->app->render('Default/incomplete.html.twig', array(
+        return $this->app->render($this->themeService->getTemplate('incomplete.html.twig'), array(
             'name' => $this->settingRepository->getName()
         ));
     }
 
-    public function home() {
+    public function index() {
         
-        return $this->app->render('Default/home.html.twig', array(
+        return $this->app->render($this->themeService->getTemplate('index.html.twig'), array(
             'name' => $this->settingRepository->getName(),
             'description' => $this->settingRepository->getDescription(),
             'referral' => $this->app->request->get('r'),
@@ -97,7 +101,7 @@ class DefaultController {
         $response = $this->app->request->post($this->captchaService->getResponseName());
         if (empty($address) || empty($challenge) || empty($response)) {
             $this->app->flash('warning', 'Missing address or captcha.');
-            $this->app->redirect($this->app->urlFor('home'));
+            $this->app->redirect($this->app->urlFor('index'));
         }
         
         $remoteIp = $this->app->request->getIp();
@@ -108,12 +112,12 @@ class DefaultController {
         }
         catch (CaptchaException $e) {
             $this->app->flash('error', 'Unable to complete request.');
-            return $this->app->redirect($this->app->urlFor('home'));
+            return $this->app->redirect($this->app->urlFor('index'));
         }
         
         if (!$captchaResponse->getSuccess()) {
             $this->app->flash('error', 'Invalid Captcha');
-            return $this->app->redirect($this->app->urlFor('home'));
+            return $this->app->redirect($this->app->urlFor('index'));
         }
         
         try {
@@ -121,7 +125,7 @@ class DefaultController {
         }
         catch(PaytoshiException $e) {
             $this->app->flash('error', 'Unable to complete request.');
-            $this->app->redirect($this->app->urlFor('home'));
+            $this->app->redirect($this->app->urlFor('index'));
         }
         
         $recipient = $this->recipientRepository->findOneByAddress($address);
@@ -141,7 +145,7 @@ class DefaultController {
                 $this->database->rollBack();
                 $waitingTime = $nextPayoutTime->diff($now);
                 $this->app->flash('warning', sprintf('You can get a reward again in %s.', $this->formatTime($waitingTime)));
-                return $this->app->redirect($this->app->urlFor('home'));
+                return $this->app->redirect($this->app->urlFor('index'));
             }
         }
         
@@ -156,22 +160,30 @@ class DefaultController {
         
         // Payment process
         try {
+            /* @var $apiResponse ApiResponse */
             $apiResponse = $this->apiService->send($payout->getRecipientAddress(), $payout->getEarning());
         }
         catch(PaytoshiException $e) {
             $this->database->rollback();
             $this->app->flash('error', $e->getMessage());
-            return $this->app->redirect($this->app->urlFor('home'));
+            return $this->app->redirect($this->app->urlFor('index'));
         }
         
         if (!$apiResponse->getSuccess()) {
             $this->database->rollback();
-            $this->app->flash('error', $apiResponse->getMessage());
-            return $this->app->redirect($this->app->urlFor('home'));
+            $this->app->flash('error', $apiResponse->getError());
+            return $this->app->redirect($this->app->urlFor('index'));
         }
         
+        $view = $this->app->view();
+        $view->setData(array(
+            'amount' => $apiResponse->getAmount(),
+            'recipient' => $apiResponse->getRecipient(),
+            'balanceUrl' => $this->app->config('balance_url')
+        ));
+        
         $this->recipientRepository->save($recipient);
-        $this->app->flash('success', $apiResponse->getMessage());
+        $this->app->flash('success', $view->render($this->themeService->get('balance.html.twig')));
         $this->app->setCookie('address', $recipient->getAddress());
         
         $referral = $this->app->request->post('referral');
@@ -203,7 +215,7 @@ class DefaultController {
                 $this->recipientRepository->save($referralRecipient);
                 $this->database->commit();
                 $this->app->flash('error', $e->getMessage());
-                return $this->app->redirect($this->app->urlFor('home'));
+                return $this->app->redirect($this->app->urlFor('index'));
             }
 
             if ($apiResponse->getSuccess())
@@ -214,7 +226,7 @@ class DefaultController {
         $this->payoutRepository->save($payout);
         $this->database->commit();
         
-        return $this->app->redirect($this->app->urlFor('home'));
+        return $this->app->redirect($this->app->urlFor('index'));
     }
     
     private function formatTime(DateInterval $interval)

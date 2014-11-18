@@ -18,12 +18,13 @@ use Looptribe\Paytoshi\Controller\DefaultController;
 use Looptribe\Paytoshi\Exception\PaytoshiException;
 use Looptribe\Paytoshi\Model\PayoutRepository;
 use Looptribe\Paytoshi\Model\RecipientRepository;
+use Looptribe\Paytoshi\Model\SettingRepository;
 use Looptribe\Paytoshi\Service\ApiService;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaServiceFactory;
 use Looptribe\Paytoshi\Service\Captcha\SolveMediaService;
 use Looptribe\Paytoshi\Service\DatabaseService;
-use Looptribe\Paytoshi\Model\SettingRepository;
 use Looptribe\Paytoshi\Service\RewardService;
+use Looptribe\Paytoshi\Service\ThemeService;
 use Slim\Middleware\SessionCookie;
 use Slim\Slim;
 use Slim\Views\TwigExtension;
@@ -31,13 +32,14 @@ use Slim\Views\TwigExtension;
 class App extends Slim {
     private $defaultSettings = array(
         'config_file' => 'config/config.yml',
-        'templates.path' => 'src/Looptribe/Paytoshi/Views',
+        'templates.path' => 'themes',
         'setup' => 'data/setup.sql',
         'version' => 1,
         'debug' => true,
         'view' => '\Slim\Views\Twig',
         'api_url' => 'http://localhost:3000/v1/private/send',
-        'balance_url' => 'http://sato.local/app_dev.php/balance'
+        'balance_url' => 'http://sato.local/app_dev.php/balance',
+        'default_theme' => 'default'
     );
     
     public function __construct(array $userSettings = array()) {
@@ -73,7 +75,7 @@ class App extends Slim {
     private function registerErrorHandler() {
         // ERROR HANDLER
         $this->error(function (Exception $e) {
-            return $this->render('Admin/error.html.twig', array('message' => $e->getMessage()));
+            return $this->render($this->themeService->getTemplate('error.html.twig'), array('message' => $e->getMessage()));
         });
     }
     
@@ -104,7 +106,11 @@ class App extends Slim {
         });
         
         $this->container->singleton('ApiService', function () {
-            return new ApiService($this, $this->SettingRepository);
+            return new ApiService(array(
+                'settingRepository'    => $this->SettingRepository, 
+                'config'                => array('api_url' => $this->config('api_url'),
+                )
+            ));
         });
         
         $this->container->singleton('CaptchaServiceFactory', function() {
@@ -130,6 +136,15 @@ class App extends Slim {
         $this->container->singleton('RewardService', function () {
             return new RewardService($this->SettingRepository->getRewards());
         });
+        
+        $this->container->singleton('ThemeService', function () {
+            return new ThemeService(array(
+                'settingRepository'    => $this->SettingRepository, 
+                'config'                => array(
+                    'default_theme' => $this->config('default_theme'), 
+                    'template_path'  => $this->config('templates.path'))
+            ));
+        });
     }
     
     private function registerControllers() {
@@ -137,7 +152,8 @@ class App extends Slim {
         $this->container->singleton('AdminController', function () {
             return new AdminController($this, array(
                 'databaseService'       =>    $this->DatabaseService, 
-                'settingRepository'    =>    $this->SettingRepository, 
+                'settingRepository'     =>    $this->SettingRepository,
+                'themeService'          =>    $this->ThemeService,
                 'config'                =>    array('setup' => $this->config('setup'))
             ));
         });
@@ -145,12 +161,13 @@ class App extends Slim {
         $this->container->singleton('DefaultController', function () {
             return new DefaultController($this, array( 
                 'databaseService'       =>    $this->DatabaseService, 
-                'settingRepository'    =>    $this->SettingRepository, 
+                'settingRepository'     =>    $this->SettingRepository, 
                 'captchaServiceFactory' =>    $this->CaptchaServiceFactory,
                 'recipientRepository'   =>    $this->RecipientRepository,
                 'payoutRepository'      =>    $this->PayoutRepository,
                 'apiService'            =>    $this->ApiService,
-                'rewardService'         =>    $this->RewardService
+                'rewardService'         =>    $this->RewardService,
+                'themeService'          =>    $this->ThemeService
             ));
         });
     }
@@ -189,7 +206,7 @@ class App extends Slim {
             if ($this->SettingRepository->isIncomplete())
                 return $this->DefaultController->incomplete();
                 
-            $this->DefaultController->home();
-        })->name('home');
+            $this->DefaultController->index();
+        })->name('index');
     }
 }
