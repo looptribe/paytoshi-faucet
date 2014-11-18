@@ -22,7 +22,7 @@ use Looptribe\Paytoshi\Service\ApiService;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaServiceFactory;
 use Looptribe\Paytoshi\Service\Captcha\SolveMediaService;
 use Looptribe\Paytoshi\Service\DatabaseService;
-use Looptribe\Paytoshi\Service\FaucetService;
+use Looptribe\Paytoshi\Model\SettingRepository;
 use Looptribe\Paytoshi\Service\RewardService;
 use Slim\Middleware\SessionCookie;
 use Slim\Slim;
@@ -80,7 +80,7 @@ class App extends Slim {
     private function registerHooks() {
         // HOOKS
         $this->hook('slim.before.dispatch', function () {
-            if ((!$this->FaucetService || $this->FaucetService->isNew()) && $this->router()->getCurrentRoute()->getName() != 'setup') {
+            if ((!$this->SettingRepository || $this->SettingRepository->isNew()) && $this->router()->getCurrentRoute()->getName() != 'setup') {
                 $this->redirect($this->urlFor('setup'));
             }
         });
@@ -94,9 +94,9 @@ class App extends Slim {
             ));
         });
 
-        $this->container->singleton('FaucetService', function () {
+        $this->container->singleton('SettingRepository', function () {
             try {
-                return new FaucetService($this->DatabaseService);
+                return new SettingRepository($this->DatabaseService);
             }
             catch(PaytoshiException $e) {
                 return null;
@@ -104,7 +104,7 @@ class App extends Slim {
         });
         
         $this->container->singleton('ApiService', function () {
-            return new ApiService($this, $this->FaucetService);
+            return new ApiService($this, $this->SettingRepository);
         });
         
         $this->container->singleton('CaptchaServiceFactory', function() {
@@ -112,11 +112,11 @@ class App extends Slim {
         });
         
         $this->container->singleton('SolveMediaService', function() {
-            return new SolveMediaService($this, $this->FaucetService);
+            return new SolveMediaService($this, $this->SettingRepository);
         });
         
 //        $this->container->singleton('RecaptchaService', function() {
-//            return new RecaptchaService($this, $this->FaucetService);
+//            return new RecaptchaService($this, $this->SettingRepository);
 //        });
         
         $this->container->singleton('RecipientRepository', function() {
@@ -128,35 +128,37 @@ class App extends Slim {
         });
         
         $this->container->singleton('RewardService', function () {
-            return new RewardService($this->FaucetService->getRewards());
+            return new RewardService($this->SettingRepository->getRewards());
         });
     }
     
     private function registerControllers() {
         // CONTROLLERS
         $this->container->singleton('AdminController', function () {
-            return new AdminController($this, $this->DatabaseService, $this->FaucetService, array(
-                'setup' => $this->config('setup'),
+            return new AdminController($this, array(
+                'databaseService'       =>    $this->DatabaseService, 
+                'settingRepository'    =>    $this->SettingRepository, 
+                'config'                =>    array('setup' => $this->config('setup'))
             ));
         });
         
         $this->container->singleton('DefaultController', function () {
-            return new DefaultController($this, 
-                    $this->DatabaseService, 
-                    $this->FaucetService, 
-                    $this->CaptchaServiceFactory,
-                    $this->RecipientRepository,
-                    $this->PayoutRepository,
-                    $this->ApiService,
-                    $this->RewardService
-            );
+            return new DefaultController($this, array( 
+                'databaseService'       =>    $this->DatabaseService, 
+                'settingRepository'    =>    $this->SettingRepository, 
+                'captchaServiceFactory' =>    $this->CaptchaServiceFactory,
+                'recipientRepository'   =>    $this->RecipientRepository,
+                'payoutRepository'      =>    $this->PayoutRepository,
+                'apiService'            =>    $this->ApiService,
+                'rewardService'         =>    $this->RewardService
+            ));
         });
     }
     
     private function registerRoutes() {
         // ROUTES
         $this->get('/setup', function () {
-            if (!$this->FaucetService || $this->FaucetService->isNew())
+            if (!$this->SettingRepository || $this->SettingRepository->isNew())
                 return $this->AdminController->setup();
             
             $this->response->redirect($this->urlFor('login'));
@@ -184,7 +186,7 @@ class App extends Slim {
         })->name('reward');
 
         $this->get('/', function () {
-            if ($this->FaucetService->isIncomplete())
+            if ($this->SettingRepository->isIncomplete())
                 return $this->DefaultController->incomplete();
                 
             $this->DefaultController->home();
