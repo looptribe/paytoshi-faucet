@@ -22,73 +22,29 @@ INSERT IGNORE INTO paytoshi_settings (name, value) VALUES
     ('recaptcha_public_key', ''),
     ('theme', :theme),
     ('version', 1),
-    ('default_css', 'body {
-            background: #333;
-            color: white;
-        }
+    ('custom_css', '/**
+* Paytoshi Faucet Custom CSS
+* 
+* Add your custom CSS here
+*/
 
-        .title {
-            font-size: 48px;
-        }
+body {
 
-        .headline {
-        }
-
-        .rewards {
-        }
-
-        .reward-list {
-            margin: 16px;
-        }
-
-        .reward {
-            color:white;
-            background-color: #4D90FE;
-            border: 1px solid transparent;
-            border-radius:15px;
-            padding:3px 20px;
-            height:30px;
-            font-weight:bold;
-        }
-
-        .skyscraper-ad {
-            margin: 8px;
-            text-align: center;
-        }
-
-        .leaderboard-ad {
-            margin: 8px;
-            text-align: center;
-        }
-
-        .banner-ad {
-            margin: 8px 0 0 0;
-            height: 60px;
-        }
-
-        .referral-box {
-            margin: 36px 0 0 0;
-            height: 60px;
-            background-color: #5bc0de;
-        }
-
-        .faucet {
-            width: 468px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        #footer {
-          min-height: 80px;
-          margin: 50px 0 0 0;
-        }'),
-    ('default_header_box', 'HEADER'),
-    ('default_left_box', 'LEFT'),
-    ('default_right_box', 'RIGHT'),
-    ('default_footer_box', 'FOOTER'),
-    ('default_center1_box', 'CENTER1'),
-    ('default_center2_box', 'CENTER2'),
-    ('default_center3_box', 'CENTER3')
+}'),
+    ('content_header_box', '<!-- Header Content here -->
+<p>HEADER</p>'),
+    ('content_left_box', '<!-- Left Content here -->
+<p>LEFT</p>'),
+    ('content_right_box', '<!-- Right Content here -->
+<p>RIGHT</p>'),
+    ('content_center1_box', '<!-- Center1 Content here -->
+<p>CENTER1</p>'),
+    ('content_center2_box', '<!-- Center2 Content here -->
+<p>CENTER2</p>'),
+    ('content_center3_box', '<!-- Center3 Content here -->
+<p>CENTER3</p>'),
+    ('content_footer_box', '<!-- Footer Content here -->
+<p>FOOTER</p>')
 ;
 
 UPDATE paytoshi_settings SET `value` = :password WHERE `name` = 'password';

@@ -72,16 +72,18 @@ class DefaultController {
                 'server' => $this->captchaService->getServer(),
                 'public_key' => $this->captchaService->getPublicKey()
             ),
-            'template' => array(
-                'name' => $this->settingRepository->getTheme(),
-                'css' => $this->settingRepository->getCss(),
+            'content' => array(
                 'header_box' => $this->settingRepository->getHeaderBox(),
                 'left_box' => $this->settingRepository->getLeftBox(),
                 'right_box' => $this->settingRepository->getRightBox(),
-                'footer_box' => $this->settingRepository->getFooterBox(),
                 'center1_box' => $this->settingRepository->getCenter1Box(),
                 'center2_box' => $this->settingRepository->getCenter2Box(),
-                'center3_box' => $this->settingRepository->getCenter3Box()
+                'center3_box' => $this->settingRepository->getCenter3Box(),
+                'footer_box' => $this->settingRepository->getFooterBox()
+            ),
+            'theme' => array(
+                'name' => $this->settingRepository->getTheme(),
+                'css' => $this->settingRepository->getCss()
             )
         ));
     }

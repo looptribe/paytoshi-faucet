@@ -1,0 +1,71 @@
+/**
+ * Paytoshi Faucet Base CSS
+ * 
+ * Author: Paytoshi
+ * Website: http://paytoshi.org
+ * Contact: info@paytoshi.org
+ */
+
+body {
+    background: #333;
+    color: white;
+}
+
+.title {
+    font-size: 48px;
+    font-family: 'Anton', sans-serif;
+}
+
+.headline {
+    font-family: 'Anton', sans-serif;
+}
+
+.rewards {
+    font-family: 'Anton', sans-serif;
+}
+
+.reward-list {
+    margin: 16px;
+}
+
+.reward {
+    color:white;
+    background-color: #4D90FE;
+    border: 1px solid transparent;
+    border-radius:15px;
+    padding:3px 20px;
+    height:30px;
+    font-weight:bold;
+}
+
+.skyscraper-ad {
+    margin: 8px;
+    text-align: center;
+}
+
+.leaderboard-ad {
+    margin: 8px;
+    text-align: center;
+}
+
+.banner-ad {
+    margin: 8px 0 0 0;
+    height: 60px;
+}
+
+.referral-box {
+    margin: 36px 0 0 0;
+    height: 60px;
+    background-color: #5bc0de;
+}
+
+.faucet {
+    width: 468px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#footer {
+  min-height: 80px;
+  margin: 50px 0 0 0;
+}

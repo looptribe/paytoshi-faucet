@@ -79,35 +79,35 @@ class SettingRepository {
     }
     
     public function getCss() {
-        return $this->data[$this->getTheme() . '_css'];
+        return $this->data['custom_css'];
     }
     
     public function getHeaderBox() {
-        return $this->data[$this->getTheme() . '_header_box'];
+        return $this->data['content_header_box'];
     }
     
     public function getLeftBox() {
-        return $this->data[$this->getTheme() . '_left_box'];
+        return $this->data['content_left_box'];
     }
     
     public function getRightBox() {
-        return $this->data[$this->getTheme() . '_right_box'];
-    }
-    
-    public function getFooterBox() {
-        return $this->data[$this->getTheme() . '_footer_box'];
+        return $this->data['content_right_box'];
     }
     
     public function getCenter1Box() {
-        return $this->data[$this->getTheme() . '_center1_box'];
+        return $this->data['content_center1_box'];
     }
     
     public function getCenter2Box() {
-        return $this->data[$this->getTheme() . '_center2_box'];
+        return $this->data['content_center2_box'];
     }
     
     public function getCenter3Box() {
-        return $this->data[$this->getTheme() . '_center3_box'];
+        return $this->data['content_center3_box'];
+    }
+
+    public function getFooterBox() {
+        return $this->data['content_footer_box'];
     }
     
     public function getVersion() {
@@ -134,10 +134,10 @@ class SettingRepository {
             'header_box' => $this->getHeaderBox(),
             'left_box' => $this->getLeftBox(),
             'right_box' => $this->getRightBox(),
-            'footer_box' => $this->getFooterBox(),
             'center1_box' => $this->getCenter1Box(),
             'center2_box' => $this->getCenter2Box(),
             'center3_box' => $this->getCenter3Box(),
+            'footer_box' => $this->getFooterBox(),
         );
         
     }
@@ -173,14 +173,14 @@ class SettingRepository {
             'waiting_interval' => ':waiting_interval',
             'rewards' => ':rewards',
             'referral_percentage' => ':referral_percentage',
-            $this->getTheme() . '_css' => ':css',
-            $this->getTheme() . '_header_box' => ':header_box',
-            $this->getTheme() . '_left_box' => ':left_box',
-            $this->getTheme() . '_right_box' => ':right_box',
-            $this->getTheme() . '_footer_box' => ':footer_box',
-            $this->getTheme() . '_center1_box' => ':center1_box',
-            $this->getTheme() . '_center2_box' => ':center2_box',
-            $this->getTheme() . '_center3_box' => ':center3_box',
+            'custom_css' => ':css',
+            'content_header_box' => ':header_box',
+            'content_left_box' => ':left_box',
+            'content_right_box' => ':right_box',
+            'content_footer_box' => ':footer_box',
+            'content_center1_box' => ':center1_box',
+            'content_center2_box' => ':center2_box',
+            'content_center3_box' => ':center3_box',
         );
         
         $params = array(
