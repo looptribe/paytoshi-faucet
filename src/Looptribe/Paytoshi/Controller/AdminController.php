@@ -77,8 +77,10 @@ class AdminController {
         if (!$isAuthenticated)
             return $this->app->redirect($this->app->urlFor('login'));
         
-        if ($this->app->request->isGet())
-            return $this->app->render($this->themeService->getTemplate('admin.html.twig'), $this->settingRepository->getAdminView());
+        if ($this->app->request->isGet()) {
+            $params = array_merge($this->settingRepository->getAdminView(), array('themes' => $this->themeService->getThemes()));
+            return $this->app->render($this->themeService->getTemplate('admin.html.twig'), $params);
+        }
         else if ($this->app->request->isPost()) {
             $data = array();
             parse_str($this->app->request->getBody(), $data);

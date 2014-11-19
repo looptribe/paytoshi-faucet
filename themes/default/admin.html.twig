@@ -149,6 +149,15 @@
                     </div>
                     <div class="panel-body">
                         <div class="form-group">
+                            <label for="css" class="control-label">Theme:</label>
+                            <select name="theme" id="themes" required>
+                                {% for theme in themes %}
+                                    <option value="{{ theme }}" {% if theme == current_theme %}selected{% endif %}>{{ theme|capitalize }}</option>
+                                {% endfor %}
+                            </select>
+                            <p class="help">Select the layout theme.</p>
+                        </div>
+                        <div class="form-group">
                             <label for="css" class="control-label">Css:</label>
                             <textarea data-editor="css" type="text" rows="15" class="form-control" name="css" placeholder="Css">{{ css|raw }}</textarea>
                             <p class="help">You can add css in here.</p>

@@ -120,7 +120,7 @@ class SettingRepository {
             'api_key' => $this->getApiKey(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
-            'theme' => $this->getTheme(),
+            'current_theme' => $this->getTheme(),
             'captcha_provider' => $this->getCaptchaProvider(),
             'solve_media' => array(
                 'challenge_key' => $this->getSolveMediaChallengeKey(),
@@ -181,6 +181,7 @@ class SettingRepository {
             'content_center1_box' => ':center1_box',
             'content_center2_box' => ':center2_box',
             'content_center3_box' => ':center3_box',
+            'theme' => ':theme'
         );
         
         $params = array(
@@ -198,6 +199,7 @@ class SettingRepository {
             ':center1_box' => trim($data['center1_box']),
             ':center2_box' => trim($data['center2_box']),
             ':center3_box' => trim($data['center3_box']),
+            ':theme' => trim($data['theme'])
         );
         
         if ($this->getCaptchaProvider() == 'solve_media')
