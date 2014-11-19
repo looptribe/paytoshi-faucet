@@ -70,6 +70,14 @@ class SettingRepository {
         return $this->data['solve_media_authentication_key'];
     }
     
+    public function getRecaptchaPublicKey() {
+        return $this->data['recaptcha_public_key'];
+    }
+    
+    public function getRecaptchaPrivateKey() {
+        return $this->data['recaptcha_private_key'];
+    }
+    
     public function getApiKey() {
         return $this->data['api_key'];
     }
@@ -127,6 +135,10 @@ class SettingRepository {
                 'verification_key' => $this->getSolveMediaVerificationKey(),
                 'authentication_key' => $this->getSolveMediaAuthenticationKey(),
             ),
+            'recaptcha' => array(
+                'public_key' => $this->getRecaptchaPublicKey(),
+                'private_key' => $this->getRecaptchaPrivateKey()
+            ),
             'waiting_interval' => $this->getWaitingInterval(),
             'rewards' => $this->getRewards(),
             'referral_percentage' => $this->getReferralPercentage(),
@@ -181,7 +193,8 @@ class SettingRepository {
             'content_center1_box' => ':center1_box',
             'content_center2_box' => ':center2_box',
             'content_center3_box' => ':center3_box',
-            'theme' => ':theme'
+            'theme' => ':theme',
+            'captcha_provider' => ':captcha_provider'
         );
         
         $params = array(
@@ -199,10 +212,11 @@ class SettingRepository {
             ':center1_box' => trim($data['center1_box']),
             ':center2_box' => trim($data['center2_box']),
             ':center3_box' => trim($data['center3_box']),
-            ':theme' => trim($data['theme'])
+            ':theme' => trim($data['theme']),
+            ':captcha_provider' => trim($data['captcha_provider'])
         );
         
-        if ($this->getCaptchaProvider() == 'solve_media')
+        if ($this->getCaptchaProvider() == 'solve_media') {
             $fields = array_merge($fields, array(
                 'solve_media_challenge_key' => ':solve_media_challenge_key',
                 'solve_media_verification_key' => ':solve_media_verification_key',
@@ -213,6 +227,17 @@ class SettingRepository {
                 ':solve_media_verification_key' => trim($data['solve_media']['verification_key']),
                 ':solve_media_authentication_key' => trim($data['solve_media']['authentication_key'])
             ));
+        }
+        else if ($this->getCaptchaProvider() == 'recaptcha') {
+            $fields = array_merge($fields, array(
+                'recaptcha_public_key' => ':recaptcha_public_key',
+                'recaptcha_private_key' => ':recaptcha_private_key',
+            ));
+            $params = array_merge($params, array(
+                ':recaptcha_public_key' => trim($data['recaptcha']['public_key']),
+                ':recaptcha_private_key' => trim($data['recaptcha']['private_key']),
+            ));
+        }
                 
         if (!$this->getInstalledAt()) {
             $fields = array_merge($fields, array(

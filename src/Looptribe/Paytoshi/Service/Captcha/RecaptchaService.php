@@ -15,11 +15,9 @@ namespace Looptribe\Paytoshi\Service\Captcha;
 use Buzz\Browser;
 use Exception;
 
-class SolveMediaService implements CaptchaServiceInterface {
-    const ADCOPY_API_SERVER = 'http://api.solvemedia.com';
-    const ADCOPY_API_SECURE_SERVER = 'https://api-secure.solvemedia.com';
-    const ADCOPY_VERIFY_SERVER = 'http://verify.solvemedia.com/papi/verify';
-    const ADCOPY_SIGNUP = 'http://api.solvemedia.com/public/signup';
+class RecaptchaService implements CaptchaServiceInterface {
+    const SERVER = 'http://www.google.com';
+    const VERIFY_SERVER = 'https://www.google.com/recaptcha/api/verify';
     
     protected $app;
     protected $settingRepository;
@@ -34,15 +32,12 @@ class SolveMediaService implements CaptchaServiceInterface {
         $this->app = $app;
         $this->settingRepository = $settingRepository;
         
-        $this->publicKey = $this->settingRepository->getSolveMediaChallengeKey();
-        $this->privateKey = $this->settingRepository->getSolveMediaVerificationKey();
-        $this->hashKey = $this->settingRepository->getSolveMediaAuthenticationKey();
-        
-        $this->useSSL = false;
+        $this->publicKey = $this->settingRepository->getRecaptchaPublicKey();
+        $this->privateKey = $this->settingRepository->getRecaptchaPrivateKey();
     }
     
     public function getServer() {
-        return $this->useSSL ? self::ADCOPY_API_SECURE_SERVER : self::ADCOPY_API_SERVER;
+        return self::SERVER;
     }
     
     public function getPublicKey() {
@@ -50,15 +45,15 @@ class SolveMediaService implements CaptchaServiceInterface {
     }
     
     public function getName() {
-        return 'solve_media';
+        return 'recaptcha';
     }
     
     public function getChallengeName() {
-        return 'adcopy_challenge';
+        return 'recaptcha_challenge_field';
     }
     
     public function getResponseName() {
-        return 'adcopy_response';
+        return 'recaptcha_response_field';
     }
     
     /**
@@ -75,8 +70,6 @@ class SolveMediaService implements CaptchaServiceInterface {
             throw new CaptchaException('RemoteIp missing');
         
         $headers = array(
-            'User-Agent' => 'solvemedia/PHP',
-            'Content-Type' => 'application/x-www-form-urlencoded'
         );
         
         $content = array(
@@ -87,10 +80,13 @@ class SolveMediaService implements CaptchaServiceInterface {
         );
         
         $browser = new Browser();
+        $browser->getClient()->setVerifyPeer(false);
+        
         try {
-            $resp = $browser->post(self::ADCOPY_VERIFY_SERVER, $headers, http_build_query($content));
+            $resp = $browser->post(self::VERIFY_SERVER, $headers, http_build_query($content));
         }
         catch (Exception $e) {
+            throw $e;
             throw new CaptchaException('Failed to send', 500, $e);
         }
         
@@ -107,11 +103,6 @@ class SolveMediaService implements CaptchaServiceInterface {
         $success = filter_var($answers[0], FILTER_VALIDATE_BOOLEAN);
         if (!$success)
             return new CaptchaResponse($success, $answers[1]);
-        
-        $hashMaterial = $answers[0] . $challenge . $this->hashKey;
-        $hash = sha1($hashMaterial);
-        if ($hash != $answers[2])
-            throw new CaptchaException('Hash verification error');
         
         return new CaptchaResponse($success);
     }

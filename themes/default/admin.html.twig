@@ -54,22 +54,33 @@
                     <div class="panel-body">
                         <div class="form-group">
                             <label for="captcha_provider" class="control-label">Select captcha service provider:</label>
-                            <select name="captcha_provider" class="form-control" required disabled>
+                            <select name="captcha_provider" class="form-control" required>
                                 <option value="solve_media" {% if captcha_provider == 'solve_media' %}selected{% endif %}>SolveMedia</option>
+                                <option value="recaptcha" {% if captcha_provider == 'recaptcha' %}selected{% endif %}>ReCaptcha</option>
                             </select>
-                            <p class="help" id="solve_media-help">Set up a <a href="https://portal.solvemedia.com/portal/public">SolveMedia account</a> and get the needed keys.</p>
+                            <p class="help solve_media">Set up a <a href="https://portal.solvemedia.com/portal/public">SolveMedia account</a> and get the needed keys.</p>
+                            <p class="help recaptcha">Get a <a href="https://www.google.com/recaptcha">ReCaptcha account</a> and get the needed keys.</p>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group solve_media">
                             <label for="solve_media[challenge_key]" class="control-label">Challenge Key:</label>
                             <input type="text" class="form-control" name="solve_media[challenge_key]" placeholder="Challenge Key (C-Key)" value="{{ solve_media.challenge_key }}">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group solve_media">
                             <label for="solve_media[verification_key]" class="control-label">Verification Key:</label>
                             <input type="text" class="form-control" name="solve_media[verification_key]" placeholder="Verification Key (V-Key)" value="{{ solve_media.verification_key }}">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group solve_media">
                             <label for="solve_media[authentication_key]" class="control-label">Authentication Key:</label>
                             <input type="text" class="form-control" name="solve_media[authentication_key]" placeholder="Authentication Key (H-Key)" value="{{ solve_media.authentication_key }}">
+                        </div>
+                            
+                        <div class="form-group recaptcha">
+                            <label for="recaptcha[public_key]" class="control-label">Public Key:</label>
+                            <input type="text" class="form-control" name="recaptcha[public_key]" placeholder="Public Key" value="{{ recaptcha.public_key }}">
+                        </div>
+                        <div class="form-group recaptcha">
+                            <label for="recaptcha[private_key]" class="control-label">Private Key:</label>
+                            <input type="text" class="form-control" name="recaptcha[private_key]" placeholder="Private Key" value="{{ recaptcha.private_key }}">
                         </div>
                             
                     </div>
@@ -304,6 +315,26 @@
                 textarea.val(editor.getSession().getValue());
             });
         });
+        
+        function captchaProviderChange(captcha_provider) {
+            
+            if (captcha_provider == 'solve_media') {
+                $('.solve_media').show();
+                $('.recaptcha').hide();
+            }
+            else if (captcha_provider == 'recaptcha') {
+                $('.solve_media').hide();
+                $('.recaptcha').show();
+            }
+        };
+        
+        $('select[name=captcha_provider]').on('change', function(e) {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            captchaProviderChange(valueSelected);
+        });
+        
+        captchaProviderChange('{{ captcha_provider }}');
     });
 </script>
 {% endblock %}

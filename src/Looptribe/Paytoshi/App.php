@@ -21,6 +21,7 @@ use Looptribe\Paytoshi\Model\RecipientRepository;
 use Looptribe\Paytoshi\Model\SettingRepository;
 use Looptribe\Paytoshi\Service\ApiService;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaServiceFactory;
+use Looptribe\Paytoshi\Service\Captcha\RecaptchaService;
 use Looptribe\Paytoshi\Service\Captcha\SolveMediaService;
 use Looptribe\Paytoshi\Service\DatabaseService;
 use Looptribe\Paytoshi\Service\RewardService;
@@ -121,9 +122,9 @@ class App extends Slim {
             return new SolveMediaService($this, $this->SettingRepository);
         });
         
-//        $this->container->singleton('RecaptchaService', function() {
-//            return new RecaptchaService($this, $this->SettingRepository);
-//        });
+        $this->container->singleton('RecaptchaService', function() {
+            return new RecaptchaService($this, $this->SettingRepository);
+        });
         
         $this->container->singleton('RecipientRepository', function() {
             return new RecipientRepository($this->DatabaseService);
