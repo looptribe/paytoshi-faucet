@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS `paytoshi_recipients` (
     UNIQUE KEY `address` (`address`)
 );
 
+ALTER TABLE  `paytoshi_recipients` ADD INDEX (`address`) ;
 
 CREATE TABLE IF NOT EXISTS `paytoshi_payouts` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -73,3 +74,4 @@ CREATE TABLE IF NOT EXISTS `paytoshi_payouts` (
 );
 
 ALTER TABLE  `paytoshi_payouts` ADD INDEX (`recipient_address`) ;
+ALTER TABLE  `paytoshi_payouts` ADD INDEX (`ip`) ;
