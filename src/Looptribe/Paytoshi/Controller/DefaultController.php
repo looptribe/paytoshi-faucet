@@ -185,7 +185,7 @@ class DefaultController {
         ));
         
         $this->recipientRepository->save($recipient);
-        $this->app->flash('success', $view->render($this->themeService->get('balance.html.twig')));
+        $this->app->flash('success', $view->render($this->themeService->getTemplate('balance.html.twig')));
         $this->app->setCookie('address', $recipient->getAddress());
         
         $referral = $this->app->request->post('referral');
