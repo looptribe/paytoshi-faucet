@@ -48,14 +48,6 @@ class App extends Slim {
         $settings = array_unique(array_merge($this->defaultSettings, $userSettings));
         parent::__construct($settings);
         
-        $this->view()->parserOptions = array(
-            'charset' => 'utf-8',
-            'debug' => $this->config('debug'),
-            'strict_variables' => false,
-            'autoescape' => true,
-            'cache' => './cache'
-        );
-        
         $this->view()->parserExtensions = array(
             new TwigExtension(),
         );
