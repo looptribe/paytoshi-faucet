@@ -36,7 +36,7 @@ class App extends Slim {
         'templates.path' => 'themes',
         'setup' => 'data/setup.sql',
         'version' => 1,
-        'debug' => true,
+        'debug' => false,
         'view' => '\Slim\Views\Twig',
         'api_url' => 'http://localhost:3000/v1/private/send',
         'balance_url' => 'http://sato.local/app_dev.php/balance',
