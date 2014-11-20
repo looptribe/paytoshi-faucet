@@ -49,13 +49,22 @@ class ApiService {
             throw new PaytoshiException('Failed to send', 500, $e);
         }
         
-        if (!$response->isSuccessful())
-        {
+        if (!$response->isSuccessful()) {
+            $content = $response->getContent();
             $apiResponse = new ApiResponse(false, $response);
-            $apiResponse->setError('Failed to send');
+            switch ($content['message']) {
+                case 'NOT_ENOUGH_FUNDS':
+                    $apiResponse->setError('Insufficient funds.');
+                    break;
+                case 'INVALID_ADDRESS':
+                    $apiResponse->setError('Invalid address.');
+                    break;
+                default:
+                    $apiResponse->setError('Failed to send');
+                    break;
+            }
             return $apiResponse;
         }
-        
         
         $result = json_decode($response->getContent(), true);
         
