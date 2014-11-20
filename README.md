@@ -1,22 +1,23 @@
 Paytoshi Faucet
 ========================================================
 
-Faucet Script for [Paytoshi](https://paytoshi.org): the micro payment wallet.
+Faucet Script for [Paytoshi](https://paytoshi.org): the micropayment wallet.
 
-Based on [Slim](http://github.com/codeguy/Slim).
+Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fabpot/Twig).
 
 ## Features
 * Ready-to-use script
-* Captcha support (SolveMedia)
+* Captcha support (SolveMedia, ReCaptcha)
 * Private admin area
 * Minimal configuration needed
-* Simple templating (based on Twig)
+* Support to theming (Twig-powered)
 * Clean, lightweight but still Slim-powered
 
 ## Requirements
+* Apache >= 2.2
 * PHP >= 5.3.0
 * MySQL >= 5 (with PDO support)
-* (optional) php5-mcrypt extension
+* php5-mcrypt extension (optional)
 
 ## Installation
 * Download the faucet zip
@@ -30,8 +31,7 @@ database:
     password: root
     name: paytoshi_faucet
 ```
-* Visit your faucet. A wizard should create the database and admin password. You can edit then the basic parameters in your admin area.
+* Visit your faucet. A wizard will create the admin password and populate the database. You will then be able to edit your faucet in your admin area.
 
 ## Development
-* ReCaptcha support is planned shortly.
 * MySQL is the only supported database
