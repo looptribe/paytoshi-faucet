@@ -76,7 +76,7 @@ class App extends Slim {
     private function registerErrorHandler() {
         // ERROR HANDLER
         $this->error(function (Exception $e) {
-            return $this->render($this->themeService->getTemplate('error.html.twig'), array('message' => $e->getMessage()));
+            return $this->render($this->ThemeService->getTemplate('error.html.twig'), array('message' => $e->getMessage()));
         });
     }
     
