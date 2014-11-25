@@ -110,7 +110,7 @@
                                 <label for="rewards" class="control-label col-md-2">Probability:</label>
                                 <div class="col-md-3">
                                     <div class="input-group">
-                                        <input type="number" class="form-control" name="rewards[{{ loop.index0 }}][probability]" data-type="probability" placeholder="e.g. 30" value="{{ item.probability }}" required>
+                                        <input type="number" class="form-control" name="rewards[{{ loop.index0 }}][probability]" data-type="probability" placeholder="e.g. 30" value="{{ item.probability }}"  step="0.01" required>
                                         <div class="input-group-addon">%</div>
                                     </div>
                                 </div>
