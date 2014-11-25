@@ -7,12 +7,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="{% block description %}Paytoshi Faucet{% endblock %}">
         <meta name="keywords" content="{% block keywords %}bitcoin,free bitcoin,faucet,bitcoin faucet,free satoshi,get free bitcoin{% endblock %}">
-        <meta name="author" content="Looptribe">
+        <meta name="author" content="Paytoshi">
         {#<meta name="google-site-verification" content="TODO: WEBMASTER TOOLS" />#}
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-        <title>{% block title %}Paytoshi Faucet{% endblock %}</title>
+        <title>{% block title %}{{ name|default('Paytoshi Faucet') }}{% endblock %}</title>
 
         {% block stylesheets %}
             <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
@@ -35,16 +35,14 @@
             <h1 class="text-center title">{{ name|default('Paytoshi Faucet') }}</h1>
             <h3 class="text-center headline">{{ description|default('...faucet? Paytoshi!') }}</h3>
             <hr />
-            <div class="leaderboard-ad">
+            <div class="custom-content">
                 {{ content.header_box|raw }}
             </div>
             <hr />
 
             <div class="row">
-                <div class="col-md-3 hidden-xs hidden-sm">
-                    <div class="skyscraper-ad">
-                        {{ content.left_box|raw }}
-                    </div>
+                <div class="col-md-3 hidden-xs hidden-sm custom-content">
+                    {{ content.left_box|raw }}
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="faucet">
@@ -72,28 +70,28 @@
                                        value="{% if address is defined %}{{ address }}{% endif %}" 
                                        placeholder="Bitcoin address">
                             </div>
-                            <center>
-                                <div class="banner-ad">
-                                    {{ content.center1_box|raw }}
-                                </div>
-                            </center>
-                            <div class="form-group">
+
+                            <div class="custom-content">
+                                {{ content.center1_box|raw }}
+                            </div>
+
+                            <div class="form-group captcha">
                                 <center>
                                     {% include "default/" ~ captcha.name ~ ".html.twig" with { server: captcha.server, public_key: captcha.public_key } %}
                                 </center>
                             </div>
-                            <center>
-                                <div class="banner-ad">
-                                    {{ content.center2_box|raw }}
-                                </div>
-                            </center>
-                            <button class="form-control input-lg btn-info banner-ad">Get a reward!</button>
+
+                            <div class="custom-content">
+                                {{ content.center2_box|raw }}
+                            </div>
+
+                            <button class="form-control input-lg btn-info get-reward">Get a reward!</button>
                             <input type="hidden" name="referral" value="{{ referral }}">
-                            <center>
-                                <div class="banner-ad">
-                                    {{ content.center3_box|raw }}
-                                </div>
-                            </center>
+
+                            <div class="custom-content">
+                                {{ content.center3_box|raw }}
+                            </div>
+
                         </form>
 
                         <div class="well well-sm text-center referral-box">Earn {{ referral_percentage }}% referral bonus! 
@@ -101,17 +99,18 @@
 
                     </div>
                 </div>
-                <div class="col-md-3 hidden-xs hidden-sm">
-                    <div class="skyscraper-ad">
-                        {{ content.right_box|raw }}
-                    </div>
+                <div class="col-md-3 hidden-xs hidden-sm custom-content">
+                    {{ content.right_box|raw }}
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-md-12 custom-content" >
+                    {{ content.footer_box|raw }}
+                </div>
+            </div>
         </div>
 
         <footer id="footer" class="text-center">
-            {{ content.footer_box|raw }}
             <p>Powered by <a href="https://paytoshi.org">Paytoshi</a> | <a href="{{ urlFor('admin') }}">Admin</a></p>
         </footer>
 

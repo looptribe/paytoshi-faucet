@@ -28,22 +28,21 @@ class ApiService {
         
     }
     
-    public function send($address, $amount, $notes = '') {
+    public function send($address, $amount, $ip, $referral = false) {
         $apiKey = $this->settingRepository->getApiKey();
         $query = http_build_query(array('apikey' => $apiKey));
         $url = $this->config['api_url'] . '?' . $query;
-        $headers = array(
-        );
         $content = http_build_query(array(
             'address' => $address,
             'amount' => $amount,
-            'notes' => $notes
+            'referral' => $referral,
+            'ip' => $ip
         ));
         
         $browser = new Browser();
         /* @var $response Response */
         try {
-            $response = $browser->post($url, $headers, $content);
+            $response = $browser->post($url, array(), $content);
         }
         catch (Exception $e) {
             throw new PaytoshiException('Failed to send', 500, $e);
@@ -61,6 +60,9 @@ class ApiService {
                         break;
                     case 'INVALID_ADDRESS':
                         $apiResponse->setError('Invalid address.');
+                        break;
+                    case 'FAUCET_DISABLED':
+                        $apiResponse->setError('This faucet has been disabled by the owner or the Paytoshi staff.');
                         break;
                     default:
                         $apiResponse->setError('Failed to send');

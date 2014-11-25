@@ -163,7 +163,11 @@ class DefaultController {
         // Payment process
         try {
             /* @var $apiResponse ApiResponse */
-            $apiResponse = $this->apiService->send($payout->getRecipientAddress(), $payout->getEarning());
+            $apiResponse = $this->apiService->send(
+                $payout->getRecipientAddress(), 
+                $payout->getEarning(),
+                $remoteIp
+            );
         }
         catch(PaytoshiException $e) {
             $this->database->rollback();
@@ -209,7 +213,8 @@ class DefaultController {
                 $apiResponse = $this->apiService->send(
                         $referralRecipient->getAddress(), 
                         $referralRecipient->getReferralEarning(),
-                        'Referral Earnings'
+                        $remoteIp,
+                        true
                 );
             }
             catch(PaytoshiException $e) {
