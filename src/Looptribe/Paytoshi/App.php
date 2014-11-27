@@ -38,8 +38,8 @@ class App extends Slim {
         'version' => 1,
         'debug' => false,
         'view' => '\Slim\Views\Twig',
-        'api_url' => 'http://localhost:3001/v1/faucet/send',
-        'balance_url' => 'http://sato.local/app_dev.php/balance',
+        'api_url' => 'https://pipe.paytoshi.org:3001/v1/faucet/send',
+        'balance_url' => 'https://paytoshi.org/balance',
         'default_theme' => 'default'
     );
     
