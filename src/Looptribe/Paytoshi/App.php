@@ -39,7 +39,7 @@ class App extends Slim {
         'debug' => true,
         'view' => '\Slim\Views\Twig',
         'api_url' => 'http://localhost:3001/v1/faucet/send',
-        'balance_url' => 'http://sato.local/app_dev.php/balance',
+        'balance_url' => 'http://sato.local/app_dev.php/_ADDRESS_/balance',
         'default_theme' => 'default'
     );
     

@@ -185,7 +185,7 @@ class DefaultController {
         $view->setData(array(
             'amount' => $apiResponse->getAmount(),
             'recipient' => $apiResponse->getRecipient(),
-            'balanceUrl' => $this->app->config('balance_url')
+            'balanceUrl' => str_replace('_ADDRESS_', $address, $this->app->config('balance_url'))
         ));
         
         $this->recipientRepository->save($recipient);
