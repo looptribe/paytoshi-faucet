@@ -39,7 +39,7 @@ class App extends Slim {
         'debug' => false,
         'view' => '\Slim\Views\Twig',
         'api_url' => 'https://pipe.paytoshi.org:3001/v1/faucet/send',
-        'balance_url' => 'https://paytoshi.org/balance',
+        'balance_url' => 'https://paytoshi.org/_ADDRESS_/balance',
         'default_theme' => 'default'
     );
     
