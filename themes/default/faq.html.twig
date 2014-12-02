@@ -1,0 +1,49 @@
+{% extends "default/layout.html.twig" %}
+
+{% block title %}F.A.Q. - {{ name|default('Paytoshi faucet') }}{% endblock %}
+
+{% block content %}
+    <section id="faq" class="container text-center">
+        <h1>Frequently Asked Questions</h1>
+
+        <div class="row">
+            <div class="col-md-3 hidden-xs hidden-sm">
+                <div class="skyscraper-ad">
+                    {{ content.left_box|raw }}
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+                <h3>What is Bitcoin?</h3>
+                <p>
+                    Bitcoin is a open source, peer-to-peer payment system introduced in 2009. It is a type of digital currency in which encryption techniques are used to regulate the generation of units of currency and verify the transfer of funds, operating independently of a central bank.
+                    <br/>
+                    <a href="http://en.wikipedia.org/wiki/Bitcoin">Read more</a>
+                </p>
+
+                <h3>What is a faucet?</h3>
+                <p>
+                    A faucet is a site where you can earn free bitcoins in exchange for advertising exposure or for completing small tasks. Faucets are a way for newcomers to get the feeling of earning, moving and spending bitcoins for free, even if in small amounts, so that they can try the system and, hopefully, get more involved with it.<br/>
+                    Remember 1 Satoshi = 0.00000001 Bitcoin.
+                </p>
+                <h3>What is Paytoshi?</h3>
+                <p>
+                    <a href="https://paytoshi.org">Paytoshi</a> is a reliable Bitcoin micropayment wallet system. It allows users to cache Bitcoin micropayments and to receive them with very low transaction fees once balance reach a given threshold.
+                </p>
+            </div>
+
+            <div class="col-md-3 hidden-xs hidden-sm">
+                <div class="skyscraper-ad">
+                    {{ content.right_box|raw }}
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock %}
+
+{% block footer %}
+    <footer id="footer" class="text-center">
+        <p>Powered by <a href="https://paytoshi.org">Paytoshi</a> | <a href="{{ urlFor('index') }}">Faucet</a></p>
+    </footer>
+{% endblock %}

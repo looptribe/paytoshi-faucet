@@ -56,14 +56,22 @@ class DefaultController {
     }
 
     public function index() {
-        
-        return $this->app->render($this->themeService->getTemplate('index.html.twig'), array(
+        return $this->app->render($this->themeService->getTemplate('index.html.twig'), $this->getTemplateData());
+    }
+    
+    public function faq() {
+        return $this->app->render($this->themeService->getTemplate('faq.html.twig'), $this->getTemplateData());
+    }
+
+    private function getTemplateData() {
+        return array(
             'name' => $this->settingRepository->getName(),
             'description' => $this->settingRepository->getDescription(),
             'referral' => $this->app->request->get('r'),
             'referral_percentage' => $this->settingRepository->getReferralPercentage(),
             'rewards' => $this->rewardService->getAsArray(),
             'rewards_average' => $this->rewardService->getAverage(),
+            'rewards_max' => $this->rewardService->getMax(),
             'waiting_interval' => $this->settingRepository->getWaitingInterval(),
             'address' => $this->app->getCookie('address'),
             'base_url' => $this->app->request->getUrl(),
@@ -85,7 +93,7 @@ class DefaultController {
                 'name' => $this->settingRepository->getTheme(),
                 'css' => $this->settingRepository->getCss()
             )
-        ));
+        );
     }
 
     /**
