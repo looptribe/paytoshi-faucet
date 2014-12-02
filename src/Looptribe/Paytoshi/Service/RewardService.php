@@ -50,6 +50,14 @@ class RewardService {
         return round($average / $totalProbability, 2);
     }
     
+    public function getMax() {
+        $max = 0;
+        foreach ($this->rewards as $reward)
+            if ($reward['probability'])
+                $max = max($max, $reward['amount']);
+        return $max;
+    }
+    
     public function getTotalProbability() {
         $totalProbability = 0;
         foreach ($this->rewards as $reward)

@@ -202,6 +202,10 @@ class App extends Slim {
         $this->post('/reward', function () {
             $this->DefaultController->reward();
         })->name('reward');
+        
+        $this->get('/faq', function () {
+            $this->DefaultController->faq();
+        })->name('faq');
 
         $this->get('/', function () {
             if ($this->SettingRepository->isIncomplete())
