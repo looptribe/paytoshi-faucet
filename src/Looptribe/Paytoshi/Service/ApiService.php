@@ -32,7 +32,7 @@ class ApiService {
         $apiKey = $this->settingRepository->getApiKey();
         $query = http_build_query(array('apikey' => $apiKey));
         $url = $this->config['api_url'] . '?' . $query;
-        $content = http_build_query(array(
+        $data = http_build_query(array(
             'address' => $address,
             'amount' => $amount,
             'referral' => $referral,
@@ -40,9 +40,10 @@ class ApiService {
         ));
         
         $browser = new Browser();
+        $browser->getClient()->setVerifyPeer(false);
         /* @var $response Response */
         try {
-            $response = $browser->post($url, array(), $content);
+            $response = $browser->post($url, array(), $data);
         }
         catch (Exception $e) {
             throw new PaytoshiException('Failed to send', 500, $e);
