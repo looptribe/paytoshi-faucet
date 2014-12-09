@@ -1,7 +1,9 @@
 Paytoshi Faucet
 ========================================================
 
-Faucet Script for [Paytoshi](https://paytoshi.org): the micropayment wallet.
+Faucet Script for [Paytoshi](https://paytoshi.org): the Bitcoin micropayment wallet. 
+Create a Paytoshi account, get an apikey and start using your Bitcoin faucet website.
+
 
 Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fabpot/Twig).
 
@@ -11,7 +13,7 @@ Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fa
 * Private admin area
 * Minimal configuration needed
 * Support to theming (Twig-powered)
-* Clean, lightweight but still Slim-powered
+* Clean and lightweight
 
 ## Requirements
 * Apache >= 2.2
@@ -32,6 +34,3 @@ database:
     name: paytoshi_faucet
 ```
 * Visit your faucet. A wizard will create the admin password and populate the database. You will then be able to edit your faucet in your admin area.
-
-## Development
-* MySQL is the only supported database
