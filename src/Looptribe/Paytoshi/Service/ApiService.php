@@ -54,8 +54,8 @@ class ApiService {
         
         if (!$response->isSuccessful()) {
             
-            if (isset($content['message']))
-                switch ($content['message']) {
+            if (isset($content['code']))
+                switch ($content['code']) {
                     case 'NOT_ENOUGH_FUNDS':
                         $apiResponse->setError('Insufficient funds.');
                         break;
