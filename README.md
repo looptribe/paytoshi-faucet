@@ -33,4 +33,5 @@ database:
     password: root
     name: paytoshi_faucet
 ```
-* Visit your faucet. A wizard will create the admin password and populate the database. You will then be able to edit your faucet in your admin area.
+* Visit your faucet. A wizard will create the admin password and populate the database. 
+* Customize your faucet in your admin area.
