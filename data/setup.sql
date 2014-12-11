@@ -44,7 +44,7 @@ body {
     ('content_center3_box', '<!-- Center3 Content here -->
 <p>CENTER3</p>'),
     ('content_footer_box', '<!-- Footer Content here -->
-<p>FOOTER</p>')
+<div>Want more free bitcoins? Check out <a href="https://paytoshi.org/faucets?utm_source=faucet&utm_medium=referral&utm_campaign=deploy">Paytoshi faucet list</a></div>')
 ;
 
 UPDATE paytoshi_settings SET `value` = :password WHERE `name` = 'password';
