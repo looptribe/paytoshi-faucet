@@ -64,4 +64,21 @@ class RewardService {
             $totalProbability += $reward['probability'];
         return $totalProbability;
     }
+    
+    public function getNormalized() {
+        $total = $this->getTotalProbability();
+        if ($total <= 0)
+            return;
+        
+        $rewards = array();
+        
+        foreach ($this->rewards as $reward) {
+            $rewards[] = array(
+                'amount' => $reward['amount'],
+                'probability' => round(100 * $reward['probability'] / $total, 2)
+            );
+        }
+        
+        return $rewards;
+    }
 }

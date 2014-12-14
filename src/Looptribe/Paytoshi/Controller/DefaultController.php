@@ -69,7 +69,7 @@ class DefaultController {
             'description' => $this->settingRepository->getDescription(),
             'referral' => $this->app->request->get('r'),
             'referral_percentage' => $this->settingRepository->getReferralPercentage(),
-            'rewards' => $this->rewardService->getAsArray(),
+            'rewards' => $this->rewardService->getNormalized(),
             'rewards_average' => $this->rewardService->getAverage(),
             'rewards_max' => $this->rewardService->getMax(),
             'waiting_interval' => $this->settingRepository->getWaitingInterval(),
