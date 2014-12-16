@@ -17,28 +17,21 @@
             <div class="col-md-6 col-sm-12">
                 <div class="faucet">
                     {% include "default/alerts.html.twig" %}
-                    <div class="rewards text-center">
-                        <h3>Claim your reward</h3>
+                    <h3 class="text-center">Rewards:</h3>
 
-                        <div class="reward-list">
-                            {% for r in rewards %}
-                                <span class="reward">{{ r.amount }}</span>
-                            {% endfor %}
-                        </div>
-                        <div class="rewards_average">(Average: {{ rewards_average }} satoshi)</div>
-                        <h4 class="text-center">Get a reward every {{ waiting_interval / 60 }} mins!</h4>
-                    </div>
-
+                    <ul class="reward-list text-center">
+                        {% for reward in rewards %}
+                            <li class="reward">{{ reward.amount }} satoshi ({{ reward.probability }}%)</li>
+                        {% endfor %}
+                    </ul>
+                    <h4 class="text-center">Get a reward every {{ waiting_interval / 60 }} mins!</h4>
                     <hr>
 
                     <form action="{{ urlFor('reward') }}" novalidate="novalidate" method="POST" class="form">
                         <div class="form-group">
-                            <div class="text-center lead">
-                                Enter your Bitcoin address
-                            </div>
                             <input class="form-control input-lg" type="text" name="address" 
                                    value="{% if address is defined %}{{ address }}{% endif %}" 
-                                   placeholder="Bitcoin address">
+                                   placeholder="Enter your Bitcoin address">
                         </div>
 
                         <div class="custom-content">
@@ -55,14 +48,6 @@
                             {{ content.center2_box|raw }}
                         </div>
 
-                        <div class="text-center">
-                            <h3>What is a Bitcoin Faucet?</h3>
-                            <p>
-                                A faucet is a FREE Bitcoin site paying out up to {{ rewards_max }} satoshi every hour. Each time you visit this page and complete the captcha you will receive a payout amount randomly selected from the available amounts shown above. You will receive your payment directly to your <a href="https://paytoshi.org">Paytoshi wallet.</a><br/>
-                                <a href="{{ urlFor('faq') }}">Read more</a>
-                            </p>
-                        </div>
-
                         <button class="form-control input-lg btn-info get-reward">Get a reward!</button>
                         <input type="hidden" name="referral" value="{{ referral }}">
 
@@ -76,9 +61,19 @@
                         Share your referral URL:<br>{{ base_url ~ '/?r=' ~ address|default('Bitcoin Address') }}</div>
 
                 </div>
+                        
+                <div class="text-center">
+                    <h3>What is a Bitcoin Faucet?</h3>
+                    <p>
+                        A faucet is a FREE Bitcoin site paying out up to {{ rewards_max }} satoshi every hour. Each time you visit this page and complete the captcha you will receive a payout amount randomly selected from the available amounts shown above. You will receive your payment directly to your <a href="https://paytoshi.org">Paytoshi wallet.</a><br/>
+                        <a href="{{ urlFor('faq') }}">Read more</a>
+                    </p>
+                </div>
             </div>
-            <div class="col-md-3 hidden-xs hidden-sm custom-content">
-                {{ content.right_box|raw }}
+            <div class="col-md-3 hidden-xs hidden-sm ">                
+                <div class="custom-content">
+                    {{ content.right_box|raw }}
+                </div> 
             </div>
         </div>
         <div class="row">
