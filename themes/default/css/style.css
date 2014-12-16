@@ -16,18 +16,7 @@ body {
 }
 
 .reward-list {
-    margin: 16px;
-}
-
-.reward {
-    color:white;
-    background-color: #4D90FE;
-    border: 1px solid transparent;
-    border-radius:15px;
-    padding:3px 20px;
-    height:30px;
-    font-weight:bold;
-    margin-bottom: 10px;
+    list-style: none;
 }
 
 .captcha {
@@ -54,6 +43,13 @@ body {
     width: 468px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.faucets {
+    list-style-type: none;
+    padding: 10px;
+    margin: 10px 0;
+    border:1px solid #5bc0de;
 }
 
 #footer {

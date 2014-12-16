@@ -36,7 +36,12 @@ body {
     ('content_left_box', '<!-- Left Content here -->
 <p>LEFT</p>'),
     ('content_right_box', '<!-- Right Content here -->
-<p>RIGHT</p>'),
+<h3>Paytoshi Faucets</h3>
+<ul class="faucets"> 
+    <li><a href="http://mariofaucet.com/">Mario Faucet</a></li>
+    <li><a href="http://pulpfaucet.com/">Pulp Faucet</a></li>
+    <li><a href="http://shinobifaucet.com/">Shinobi Faucet</a></li>
+</ul>'),
     ('content_center1_box', '<!-- Center1 Content here -->
 <p>CENTER1</p>'),
     ('content_center2_box', '<!-- Center2 Content here -->
