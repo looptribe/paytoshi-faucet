@@ -16,7 +16,7 @@ Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fa
 * Clean and lightweight
 
 ## Requirements
-* Apache >= 2.2
+* Apache >= 2.2 (with rewrite)
 * PHP >= 5.3.0
 * MySQL >= 5 (with PDO support)
 * php5-mcrypt extension (optional)
