@@ -74,7 +74,7 @@ class DefaultController {
             'rewards_max' => $this->rewardService->getMax(),
             'waiting_interval' => $this->settingRepository->getWaitingInterval(),
             'address' => $this->app->getCookie('address'),
-            'base_url' => $this->app->request->getUrl(),
+            'base_url' => $this->app->request->getUrl() . $this->app->request->getPath(),
             'captcha' => array(
                 'name' => $this->captchaService->getName(),
                 'server' => $this->captchaService->getServer(),
