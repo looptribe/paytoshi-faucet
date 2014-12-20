@@ -16,8 +16,8 @@ Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fa
 * Clean and lightweight
 
 ## Requirements
-* Apache >= 2.2 (with rewrite)
-* PHP >= 5.3.0
+* Apache >= 2.2 (with mod_rewrite)
+* PHP >= 5.3
 * MySQL >= 5 (with PDO support)
 * php5-mcrypt extension (optional)
 
@@ -35,3 +35,6 @@ database:
 ```
 * Visit your faucet. A wizard will create the admin password and populate the database. 
 * Customize your faucet in your admin area.
+
+## Work in progress
+* Detection system for systems that does not support TLS connections (needed by CloudFlare).
