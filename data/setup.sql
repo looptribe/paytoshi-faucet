@@ -10,7 +10,6 @@ INSERT IGNORE INTO paytoshi_settings (name, value) VALUES
     ('api_key', ''),
     ('password', ''),
     ('installed_at', ''),
-    ('cookie_secret_key', :cookie_secret_key),
     ('rewards', '100*75.25,200*15,300'),
     ('waiting_interval', '3600'),
     ('referral_percentage', '30'),

@@ -26,7 +26,6 @@ use Looptribe\Paytoshi\Service\Captcha\SolveMediaService;
 use Looptribe\Paytoshi\Service\DatabaseService;
 use Looptribe\Paytoshi\Service\RewardService;
 use Looptribe\Paytoshi\Service\ThemeService;
-use Slim\Middleware\SessionCookie;
 use Slim\Slim;
 use Slim\Views\TwigExtension;
 
@@ -44,19 +43,12 @@ class App extends Slim {
     );
     
     public function __construct(array $userSettings = array()) {
-        $this->defaultSettings['cookies.encrypt'] = extension_loaded('mcrypt');
         $settings = array_unique(array_merge($this->defaultSettings, $userSettings));
         parent::__construct($settings);
         
         $this->view()->parserExtensions = array(
             new TwigExtension(),
         );
-        
-        $this->add(new SessionCookie(array(
-            'name' => 'paytoshi_session',
-            'cipher' => MCRYPT_RIJNDAEL_256,
-            'cipher_mode' => MCRYPT_MODE_CBC
-        )));
         
         $this->registerErrorHandler();
         $this->registerHooks();
@@ -186,6 +178,10 @@ class App extends Slim {
 
         $this->post('/login', function() use($self) {
             $self->AdminController->login();
+        });
+        
+        $this->get('/logout', function() use($self) {
+            $self->AdminController->logout();
         });
 
         $this->get('/admin', function() use($self) {
