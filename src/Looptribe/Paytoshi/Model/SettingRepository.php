@@ -54,10 +54,6 @@ class SettingRepository {
         return isset($this->data['password']) ? $this->data['password'] : '';
     }
     
-    public function getCookieSecretKey() {
-        return isset($this->data['cookie_secret_key']) ? $this->data['cookie_secret_key'] : '';
-    }
-    
     public function getSolveMediaChallengeKey() {
         return $this->data['solve_media_challenge_key'];
     }

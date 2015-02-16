@@ -73,7 +73,7 @@ class DefaultController {
             'rewards_average' => $this->rewardService->getAverage(),
             'rewards_max' => $this->rewardService->getMax(),
             'waiting_interval' => $this->settingRepository->getWaitingInterval(),
-            'address' => $this->app->getCookie('address'),
+            'address' => isset($_SESSION['address']) ? $_SESSION['address'] : null,
             'base_url' => $this->app->request->getUrl() . $this->app->request->getPath(),
             'captcha' => array(
                 'name' => $this->captchaService->getName(),
@@ -198,7 +198,7 @@ class DefaultController {
         
         $this->recipientRepository->save($recipient);
         $this->app->flash('success', $view->render($this->themeService->getTemplate('balance.html.twig')));
-        $this->app->setCookie('address', $recipient->getAddress());
+        $_SESSION['address'] = $recipient->getAddress();
         
         $referral = $this->app->request->post('referral');
         $referralPercentage = $this->settingRepository->getReferralPercentage();

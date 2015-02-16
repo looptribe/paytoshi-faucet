@@ -12,7 +12,6 @@
 
 namespace Looptribe\Paytoshi\Controller;
 
-use Exception;
 use Looptribe\Paytoshi\Exception\PaytoshiException;
 
 class AdminController {
@@ -35,7 +34,6 @@ class AdminController {
         $hash = crypt($password);
         $this->setupDatabase(array(
             'password' => $hash,
-            'cookie_secret_key' => $this->generateRandomString(16),
             'theme' => $this->app->config('default_theme')
         ));
         $this->app->render($this->themeService->getTemplate('setup.html.twig'), array(
@@ -44,7 +42,7 @@ class AdminController {
     }
     
     public function login() {
-        if ($this->app->getCookie('authenticated'))
+        if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'])
             $this->app->response->redirect($this->app->urlFor('admin'));
             
         if ($this->app->request->isGet())
@@ -54,10 +52,7 @@ class AdminController {
         else if ($this->app->request->isPost()) {
             $password = $this->app->request->post('password');
             if (crypt($password, $this->settingRepository->getPassword()) === $this->settingRepository->getPassword()) {
-                if ($this->app->config('cookie.encrypt'))
-                    $this->app->config('cookie.secret_key', $this->settingRepository->getCookieSecretKey());
-                
-                $this->app->setCookie('authenticated', true);
+                $_SESSION['authenticated'] = true;
                 $this->app->response->redirect($this->app->urlFor('admin'));
             }
             else {
@@ -70,11 +65,7 @@ class AdminController {
     }
     
     public function admin() {
-        if ($this->app->config('cookie.encrypt'))
-            $this->app->config('cookie.secret_key', $this->settingRepository->getCookieSecretKey());
-            
-        $isAuthenticated = $this->app->getCookie('authenticated');
-        if (!$isAuthenticated)
+        if (!isset($_SESSION['authenticated']) || !$_SESSION['authenticated'])
             return $this->app->redirect($this->app->urlFor('login'));
         
         if ($this->app->request->isGet()) {
