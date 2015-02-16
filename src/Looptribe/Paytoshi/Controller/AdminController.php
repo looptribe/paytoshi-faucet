@@ -64,6 +64,11 @@ class AdminController {
         }
     }
     
+    public function logout() {
+        unset($_SESSION['authenticated']);
+        return $this->app->redirect($this->app->urlFor('login'));
+    }
+    
     public function admin() {
         if (!isset($_SESSION['authenticated']) || !$_SESSION['authenticated'])
             return $this->app->redirect($this->app->urlFor('login'));

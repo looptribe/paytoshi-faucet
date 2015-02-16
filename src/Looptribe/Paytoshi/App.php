@@ -187,6 +187,10 @@ class App extends Slim {
         $this->post('/login', function() use($self) {
             $self->AdminController->login();
         });
+        
+        $this->get('/logout', function() use($self) {
+            $self->AdminController->logout();
+        });
 
         $this->get('/admin', function() use($self) {
             $self->AdminController->admin();
