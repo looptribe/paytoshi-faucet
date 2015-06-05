@@ -31,7 +31,8 @@ class AdminController {
     
     public function setup() {
         $password = $this->generateRandomString(16);
-        $hash = crypt($password);
+        $salt = '$2a$13$'. substr(strtr(base64_encode(mcrypt_create_iv(22)), '+', '.'), 0, 22);
+        $hash = crypt($password, $salt);
         $this->setupDatabase(array(
             'password' => $hash,
             'theme' => $this->app->config('default_theme')
