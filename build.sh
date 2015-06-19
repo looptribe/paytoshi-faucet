@@ -7,7 +7,7 @@ read version
 
 filename=paytoshi-faucet-v$version.zip
 
-zip -r $filename . -x ".git*" cache\* nbproject\* "composer.*" build.sh "paytoshi-faucet-v*"
+zip -r $filename . -x ".git*" cache\* nbproject\* ".idea*" "composer.*" build.sh "paytoshi-faucet-v*"
 
 if [ -f $FILE ];
 then
