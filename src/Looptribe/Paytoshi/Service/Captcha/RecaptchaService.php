@@ -16,8 +16,8 @@ use Buzz\Browser;
 use Exception;
 
 class RecaptchaService implements CaptchaServiceInterface {
-    const SERVER = 'http://www.google.com';
-    const VERIFY_SERVER = 'https://www.google.com/recaptcha/api/verify';
+    const SERVER = 'https://www.google.com';
+    const VERIFY_SERVER = 'https://www.google.com/recaptcha/api/siteverify';
     
     protected $app;
     protected $settingRepository;
@@ -49,11 +49,11 @@ class RecaptchaService implements CaptchaServiceInterface {
     }
     
     public function getChallengeName() {
-        return 'recaptcha_challenge_field';
+        return '';
     }
     
     public function getResponseName() {
-        return 'recaptcha_response_field';
+        return 'g-recaptcha-response';
     }
     
     /**
@@ -73,11 +73,11 @@ class RecaptchaService implements CaptchaServiceInterface {
         );
         
         $content = array(
-            'privatekey' => $this->privateKey,
+            'secret' => $this->privateKey,
             'remoteip'   => $remoteIp,
-            'challenge'  => $challenge,
             'response'   => $response
         );
+
         
         $browser = new Browser();
         $browser->getClient()->setVerifyPeer(false);
@@ -93,16 +93,13 @@ class RecaptchaService implements CaptchaServiceInterface {
         if (!$resp->isSuccessful())
             throw new CaptchaException('Error: ' . $resp->getStatusCode());
         
-        /**
-         * 0: true|false
-         * 1: errorMessage (optional)
-         * 2: hash
-         */
-        $answers = explode("\n", $resp->getContent());
-        
-        $success = filter_var($answers[0], FILTER_VALIDATE_BOOLEAN);
+        $answer = json_decode($resp->getContent());
+        if (!$answer)
+            throw new CaptchaException('Error: Invalid captcha response');
+
+        $success = isset($answer->success) && filter_var($answer->success, FILTER_VALIDATE_BOOLEAN);
         if (!$success)
-            return new CaptchaResponse($success, $answers[1]);
+            return new CaptchaResponse($success, 'Invalid captcha');
         
         return new CaptchaResponse($success);
     }

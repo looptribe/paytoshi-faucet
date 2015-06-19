@@ -13,7 +13,7 @@ INSERT IGNORE INTO paytoshi_settings (name, value) VALUES
     ('rewards', '100*75.25,200*15,300'),
     ('waiting_interval', '3600'),
     ('referral_percentage', '30'),
-    ('captcha_provider', 'solve_media'),
+    ('captcha_provider', 'recaptcha'),
     ('solve_media_challenge_key', ''),
     ('solve_media_verification_key', ''),
     ('solve_media_authentication_key', ''),
