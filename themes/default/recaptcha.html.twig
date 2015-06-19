@@ -1,6 +1,2 @@
-<script type="text/javascript" src="{{ server }}/recaptcha/api/challenge?k={{ public_key }}"></script>
-<noscript>
-    <iframe src="{{ server }}/recaptcha/api/noscript?k={{ public_key }}" height="300" width="500" frameborder="0"></iframe><br>
-    <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-    <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
-</noscript>
+<script type="text/javascript" src="{{ server }}/recaptcha/api.js?"></script>
+<div class="g-recaptcha" data-sitekey="{{ public_key }}"></div>
