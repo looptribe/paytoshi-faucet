@@ -190,7 +190,12 @@ class SettingRepository {
             'content_center2_box' => ':center2_box',
             'content_center3_box' => ':center3_box',
             'theme' => ':theme',
-            'captcha_provider' => ':captcha_provider'
+            'captcha_provider' => ':captcha_provider',
+            'solve_media_challenge_key' => ':solve_media_challenge_key',
+            'solve_media_verification_key' => ':solve_media_verification_key',
+            'solve_media_authentication_key' => ':solve_media_authentication_key',
+            'recaptcha_public_key' => ':recaptcha_public_key',
+            'recaptcha_private_key' => ':recaptcha_private_key'
         );
         
         $params = array(
@@ -209,32 +214,14 @@ class SettingRepository {
             ':center2_box' => trim($data['center2_box']),
             ':center3_box' => trim($data['center3_box']),
             ':theme' => trim($data['theme']),
-            ':captcha_provider' => trim($data['captcha_provider'])
+            ':captcha_provider' => trim($data['captcha_provider']),
+            ':solve_media_challenge_key' => trim($data['solve_media']['challenge_key']),
+            ':solve_media_verification_key' => trim($data['solve_media']['verification_key']),
+            ':solve_media_authentication_key' => trim($data['solve_media']['authentication_key']),
+            ':recaptcha_public_key' => trim($data['recaptcha']['public_key']),
+            ':recaptcha_private_key' => trim($data['recaptcha']['private_key'])
         );
-        
-        if ($this->getCaptchaProvider() == 'solve_media') {
-            $fields = array_merge($fields, array(
-                'solve_media_challenge_key' => ':solve_media_challenge_key',
-                'solve_media_verification_key' => ':solve_media_verification_key',
-                'solve_media_authentication_key' => ':solve_media_authentication_key'
-            ));
-            $params = array_merge($params, array(
-                ':solve_media_challenge_key' => trim($data['solve_media']['challenge_key']),
-                ':solve_media_verification_key' => trim($data['solve_media']['verification_key']),
-                ':solve_media_authentication_key' => trim($data['solve_media']['authentication_key'])
-            ));
-        }
-        else if ($this->getCaptchaProvider() == 'recaptcha') {
-            $fields = array_merge($fields, array(
-                'recaptcha_public_key' => ':recaptcha_public_key',
-                'recaptcha_private_key' => ':recaptcha_private_key',
-            ));
-            $params = array_merge($params, array(
-                ':recaptcha_public_key' => trim($data['recaptcha']['public_key']),
-                ':recaptcha_private_key' => trim($data['recaptcha']['private_key']),
-            ));
-        }
-                
+
         if (!$this->getInstalledAt()) {
             $fields = array_merge($fields, array(
                 'installed_at' => ':installed_at'
