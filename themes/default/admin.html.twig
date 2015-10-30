@@ -33,7 +33,7 @@
  <div class="col-md-12">
 
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+    <li role="presentation" class="active"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
     <li role="presentation"><a href="#captcha" aria-controls="captcha" role="tab" data-toggle="tab">Captcha</a></li>
     <li role="presentation"><a href="#rewards" aria-controls="rewards" role="tab" data-toggle="tab">Rewards</a></li>
     <li role="presentation"><a href="#template" aria-controls="template" role="tab" data-toggle="tab">Template</a></li>
@@ -42,7 +42,7 @@
   <div class="tab-content">
 
 
-    <div role="tabpanel" class="tab-pane" id="settings">
+    <div role="tabpanel" class="tab-pane fade in active" id="settings">
       <div class="form-group">
           <label for="api_key" class="control-label">Paytoshi Api Key:</label>
           <input type="text" class="form-control" name="api_key" placeholder="Api Key" required value="{{ api_key }}">
@@ -59,7 +59,7 @@
     </div>
 
 
-    <div role="tabpanel" class="tab-pane" id="captcha">
+    <div role="tabpanel" class="tab-pane fade" id="captcha">
       <div class="form-group">
           <label for="captcha_provider" class="control-label">Select captcha service provider:</label>
           <select name="captcha_provider" class="form-control" required>
@@ -93,7 +93,7 @@
     </div>
 
 
-    <div role="tabpanel" class="tab-pane active" id="rewards">
+    <div role="tabpanel" class="tab-pane fade" id="rewards">
       <label for="rewards" class="control-label">Rewards:</label>
       <p>Set here the available rewards. In the amount column set the satoshi quantity, 
               in the probability column the chance of getting that reward. At the bottom you will see that average reward that you're setting.</p>
@@ -151,7 +151,7 @@
     </div>
 
 
-    <div role="tabpanel" class="tab-pane active" id="template">
+    <div role="tabpanel" class="tab-pane fade" id="template">
       <div class="form-group">
           <label for="css" class="control-label">Theme:</label>
           <select name="theme" id="themes" required>
@@ -227,7 +227,6 @@
     {{ parent() }}
     <script>
         $(function(){
-            $('.nav-tabs a:last').tab('show');
             var rewardListLength = {{ rewards|length }};
             
             function calculateAverageProbability() {
@@ -284,32 +283,34 @@
     <script>
     // Hook up ACE editor to all textareas with data-editor attribute
     $(function () {
-        $('textarea[data-editor]').each(function () {
-            var textarea = $(this);
- 
-            var mode = textarea.data('editor');
- 
-            var editDiv = $('<div>', {
-                position: 'absolute',
-                width: textarea.width(),
-                height: textarea.height(),
-                'class': textarea.attr('class')
-            }).insertBefore(textarea);
+        $('a[href="#template"]').on('shown.bs.tab', function (e) {
+            $('textarea[data-editor]').each(function () {
+                var textarea = $(this);
 
-            textarea.css('position', 'absolute');
-            textarea.css('visibility', 'hidden');
- 
-            var editor = ace.edit(editDiv[0]);
-            editor.renderer.setShowGutter(false);
-            editor.setPrintMarginColumn(false);
-            editor.setFontSize(14);
-            editor.getSession().setValue(textarea.val());
-            editor.getSession().setMode("ace/mode/" + mode);
-            // editor.setTheme("ace/theme/idle_fingers");
-            
-            // copy back to textarea on form submit
-            textarea.closest('form').submit(function () {
-                textarea.val(editor.getSession().getValue());
+                var mode = textarea.data('editor');
+
+                var editDiv = $('<div>', {
+                    position: 'absolute',
+                    width: textarea.width(),
+                    height: textarea.height(),
+                    'class': textarea.attr('class')
+                }).insertBefore(textarea);
+
+                textarea.css('position', 'absolute');
+                textarea.css('visibility', 'hidden');
+
+                var editor = ace.edit(editDiv[0]);
+                editor.renderer.setShowGutter(false);
+                editor.setPrintMarginColumn(false);
+                editor.setFontSize(14);
+                editor.getSession().setValue(textarea.val());
+                editor.getSession().setMode("ace/mode/" + mode);
+                // editor.setTheme("ace/theme/idle_fingers");
+
+                // copy back to textarea on form submit
+                textarea.closest('form').submit(function () {
+                    textarea.val(editor.getSession().getValue());
+                });
             });
         });
         
