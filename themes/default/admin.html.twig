@@ -3,6 +3,13 @@
 {% block stylesheets %}
     {{ parent() }}
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<style>
+.tab-content {
+    border: 1px solid #ddd;
+    border-top: 0px;
+    padding: 20px;
+}
+</style>
 {% endblock %}
     
     
@@ -20,205 +27,195 @@
     </div>
     {% endif %}
     <form method="POST" class="form" role="form" action="{{ urlFor('admin_post') }}">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Settings</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label for="api_key" class="control-label">Paytoshi Api Key:</label>
-                            <input type="text" class="form-control" name="api_key" placeholder="Api Key" required value="{{ api_key }}">
-                            <p class="help">Copy it from your private area at <a href="https://paytoshi.org">Paytoshi.org</a>.</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="name" class="control-label">Faucet Name:</label>
-                            <input type="text" class="form-control" name="name" placeholder="Faucet Name" value="{{ name }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="description" class="control-label">Headline:</label>
-                            <input type="text" class="form-control" name="description" placeholder="Headline" value="{{ description }}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Captcha</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label for="captcha_provider" class="control-label">Select captcha service provider:</label>
-                            <select name="captcha_provider" class="form-control" required>
-                                <option value="solve_media" {% if captcha_provider == 'solve_media' %}selected{% endif %}>SolveMedia</option>
-                                <option value="recaptcha" {% if captcha_provider == 'recaptcha' %}selected{% endif %}>ReCaptcha</option>
-                            </select>
-                            <p class="help solve_media">Set up a <a href="https://portal.solvemedia.com/portal/public">SolveMedia account</a> and get the needed keys.</p>
-                            <p class="help recaptcha">Get a <a href="https://www.google.com/recaptcha">ReCaptcha account</a> and get the needed keys.</p>
-                        </div>
-                        <div class="form-group solve_media">
-                            <label for="solve_media[challenge_key]" class="control-label">Challenge Key:</label>
-                            <input type="text" class="form-control" name="solve_media[challenge_key]" placeholder="Challenge Key (C-Key)" value="{{ solve_media.challenge_key }}">
-                        </div>
-                        <div class="form-group solve_media">
-                            <label for="solve_media[verification_key]" class="control-label">Verification Key:</label>
-                            <input type="text" class="form-control" name="solve_media[verification_key]" placeholder="Verification Key (V-Key)" value="{{ solve_media.verification_key }}">
-                        </div>
-                        <div class="form-group solve_media">
-                            <label for="solve_media[authentication_key]" class="control-label">Authentication Key:</label>
-                            <input type="text" class="form-control" name="solve_media[authentication_key]" placeholder="Authentication Key (H-Key)" value="{{ solve_media.authentication_key }}">
-                        </div>
-                            
-                        <div class="form-group recaptcha">
-                            <label for="recaptcha[public_key]" class="control-label">Public Key:</label>
-                            <input type="text" class="form-control" name="recaptcha[public_key]" placeholder="Public Key" value="{{ recaptcha.public_key }}">
-                        </div>
-                        <div class="form-group recaptcha">
-                            <label for="recaptcha[private_key]" class="control-label">Private Key:</label>
-                            <input type="text" class="form-control" name="recaptcha[private_key]" placeholder="Private Key" value="{{ recaptcha.private_key }}">
-                        </div>
-                            
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Rewards</h3>
-                    </div>
-                    <div class="panel-body">
-                        <label for="rewards" class="control-label">Rewards:</label>
-                        <p>Set here the available rewards. In the amount column set the satoshi quantity, 
-                                in the probability column the chance of getting that reward. At the bottom you will see that average reward that you're setting.</p>
-                        <div class="reward-list">
-                        {% for item in rewards %}
-                            <div class="form-group row reward-item">
-                                <label for="rewards" class="control-label col-md-2">Amount:</label>
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" name="rewards[{{ loop.index0 }}][amount]" data-type="amount" placeholder="e.g. 100" value="{{ item.amount }}" required>
-                                        <div class="input-group-addon">sat</div>
-                                    </div>
-                                </div>
-                                <label for="rewards" class="control-label col-md-2">Probability:</label>
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" name="rewards[{{ loop.index0 }}][probability]" data-type="probability" placeholder="e.g. 30" value="{{ item.probability }}"  step="0.01" required>
-                                        <div class="input-group-addon">%</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <a class="btn btn-danger btn-sm btn-outline reward-remove"><i class="fa fa-minus-circle"></i> Remove</a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-md-2">Average Reward:</label>
-                            <div class="col-md-3">
-                                <div class="input-group">
-                                    <input class="form-control" type="number" placeholder="Average Reward" readonly id="reward_calculator">
-                                    <div class="input-group-addon">sat</div>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-md-offset-5">
-                                <a class="btn btn-success btn-sm btn-outline reward-add"><i class="fa fa-plus-circle"></i> Add</a>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="waiting_interval" class="control-label">Waiting Interval:</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" name="waiting_interval" placeholder="Waiting Interval" value="{{ waiting_interval }}" required>
-                                <div class="input-group-addon">sec</div>
-                            </div>
-                            <p class="help">The interval between two consecutive payouts of the same user (in seconds).</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="referral_percentage" class="control-label">Referral Percentage:</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" name="referral_percentage" placeholder="Referral Percentage" value="{{ referral_percentage }}" required>
-                                <div class="input-group-addon">%</div>
-                            </div>
-                            <p class="help">Percent of a reward awarded to the referrer (0 to disable referral).</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Template</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label for="css" class="control-label">Theme:</label>
-                            <select name="theme" id="themes" required>
-                                {% for theme in themes %}
-                                    <option value="{{ theme }}" {% if theme == current_theme %}selected{% endif %}>{{ theme|capitalize }}</option>
-                                {% endfor %}
-                            </select>
-                            <p class="help">Select the layout theme.</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="css" class="control-label">Css:</label>
-                            <textarea data-editor="css" type="text" rows="15" class="form-control" name="css" placeholder="Css">{{ css|raw }}</textarea>
-                            <p class="help">You can add css in here.</p>
-                        </div>
-                            
-                        <div class="form-group">
-                            <label for="header_box" class="control-label">Header Box:</label>
-                            <textarea data-editor="html" type="text" rows="15" class="form-control" name="header_box" placeholder="Header Box">{{ header_box|raw }}</textarea>
-                            <p class="help">You can add html and css in here.</p>
-                        </div>
-                            
-                        <div class="form-group">
-                            <label for="left_box" class="control-label">Left Box:</label>
-                            <textarea data-editor="html" type="text" rows="15" class="form-control" name="left_box" placeholder="Left Box">{{ left_box|raw }}</textarea>
-                            <p class="help">You can add html and css in here.</p>
-                        </div>
-                            
-                        <div class="form-group">
-                            <label for="right_box" class="control-label">Right Box:</label>
-                            <textarea data-editor="html" type="text" rows="15" class="form-control" name="right_box" placeholder="Right Box">{{ right_box|raw }}</textarea>
-                            <p class="help">You can add html and css in here.</p>
-                        </div>
-                            
-                        <div class="form-group">
-                            <label for="center1_box" class="control-label">Center1 Box:</label>
-                            <textarea data-editor="html" type="text" rows="15" class="form-control" name="center1_box" placeholder="Center1 Box">{{ center1_box|raw }}</textarea>
-                            <p class="help">You can add html and css in here.</p>
-                        </div>
-                            
-                        <div class="form-group">
-                            <label for="center2_box" class="control-label">Center2 Box:</label>
-                            <textarea data-editor="html" type="text" rows="15" class="form-control" name="center2_box" placeholder="Center2 Box">{{ center2_box|raw }}</textarea>
-                            <p class="help">You can add html and css in here.</p>
-                        </div>
-                            
-                        <div class="form-group">
-                            <label for="center3_box" class="control-label">Center3 Box:</label>
-                            <textarea data-editor="html" type="text" rows="15" class="form-control" name="center3_box" placeholder="Center3 Box">{{ center3_box|raw }}</textarea>
-                            <p class="help">You can add html and css in here.</p>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="footer_box" class="control-label">Footer Box:</label>
-                            <textarea data-editor="html" type="text" rows="15" class="form-control" name="footer_box" placeholder="Footer Box">{{ footer_box|raw }}</textarea>
-                            <p class="help">You can add html and css in here.</p>
-                        </div>
-                            
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- tab -->
+<div class="row">
+ <div class="col-md-12">
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+    <li role="presentation"><a href="#captcha" aria-controls="captcha" role="tab" data-toggle="tab">Captcha</a></li>
+    <li role="presentation"><a href="#rewards" aria-controls="rewards" role="tab" data-toggle="tab">Rewards</a></li>
+    <li role="presentation"><a href="#template" aria-controls="template" role="tab" data-toggle="tab">Template</a></li>
+  </ul>
+
+  <div class="tab-content">
+
+
+    <div role="tabpanel" class="tab-pane" id="settings">
+      <div class="form-group">
+          <label for="api_key" class="control-label">Paytoshi Api Key:</label>
+          <input type="text" class="form-control" name="api_key" placeholder="Api Key" required value="{{ api_key }}">
+          <p class="help">Copy it from your private area at <a href="https://paytoshi.org">Paytoshi.org</a>.</p>
+      </div>
+      <div class="form-group">
+          <label for="name" class="control-label">Faucet Name:</label>
+          <input type="text" class="form-control" name="name" placeholder="Faucet Name" value="{{ name }}">
+      </div>
+      <div class="form-group">
+          <label for="description" class="control-label">Headline:</label>
+          <input type="text" class="form-control" name="description" placeholder="Headline" value="{{ description }}">
+      </div>
+    </div>
+
+
+    <div role="tabpanel" class="tab-pane" id="captcha">
+      <div class="form-group">
+          <label for="captcha_provider" class="control-label">Select captcha service provider:</label>
+          <select name="captcha_provider" class="form-control" required>
+              <option value="solve_media" {% if captcha_provider == 'solve_media' %}selected{% endif %}>SolveMedia</option>
+              <option value="recaptcha" {% if captcha_provider == 'recaptcha' %}selected{% endif %}>ReCaptcha</option>
+          </select>
+          <p class="help solve_media">Set up a <a href="https://portal.solvemedia.com/portal/public">SolveMedia account</a> and get the needed keys.</p>
+          <p class="help recaptcha">Get a <a href="https://www.google.com/recaptcha">ReCaptcha account</a> and get the needed keys.</p>
+      </div>
+      <div class="form-group solve_media">
+          <label for="solve_media[challenge_key]" class="control-label">Challenge Key:</label>
+          <input type="text" class="form-control" name="solve_media[challenge_key]" placeholder="Challenge Key (C-Key)" value="{{ solve_media.challenge_key }}">
+      </div>
+      <div class="form-group solve_media">
+          <label for="solve_media[verification_key]" class="control-label">Verification Key:</label>
+          <input type="text" class="form-control" name="solve_media[verification_key]" placeholder="Verification Key (V-Key)" value="{{ solve_media.verification_key }}">
+      </div>
+      <div class="form-group solve_media">
+          <label for="solve_media[authentication_key]" class="control-label">Authentication Key:</label>
+          <input type="text" class="form-control" name="solve_media[authentication_key]" placeholder="Authentication Key (H-Key)" value="{{ solve_media.authentication_key }}">
+      </div>
+          
+      <div class="form-group recaptcha">
+          <label for="recaptcha[public_key]" class="control-label">Public Key:</label>
+          <input type="text" class="form-control" name="recaptcha[public_key]" placeholder="Public Key" value="{{ recaptcha.public_key }}">
+      </div>
+      <div class="form-group recaptcha">
+          <label for="recaptcha[private_key]" class="control-label">Private Key:</label>
+          <input type="text" class="form-control" name="recaptcha[private_key]" placeholder="Private Key" value="{{ recaptcha.private_key }}">
+      </div>
+    </div>
+
+
+    <div role="tabpanel" class="tab-pane active" id="rewards">
+      <label for="rewards" class="control-label">Rewards:</label>
+      <p>Set here the available rewards. In the amount column set the satoshi quantity, 
+              in the probability column the chance of getting that reward. At the bottom you will see that average reward that you're setting.</p>
+      <div class="reward-list">
+      {% for item in rewards %}
+          <div class="form-group row reward-item">
+              <label for="rewards" class="control-label col-md-2">Amount:</label>
+              <div class="col-md-3">
+                  <div class="input-group">
+                      <input type="number" class="form-control" name="rewards[{{ loop.index0 }}][amount]" data-type="amount" placeholder="e.g. 100" value="{{ item.amount }}" required>
+                      <div class="input-group-addon">sat</div>
+                  </div>
+              </div>
+              <label for="rewards" class="control-label col-md-2">Probability:</label>
+              <div class="col-md-3">
+                  <div class="input-group">
+                      <input type="number" class="form-control" name="rewards[{{ loop.index0 }}][probability]" data-type="probability" placeholder="e.g. 30" value="{{ item.probability }}"  step="0.01" required>
+                      <div class="input-group-addon">%</div>
+                  </div>
+              </div>
+              <div class="col-md-2">
+                  <a class="btn btn-danger btn-sm btn-outline reward-remove"><i class="fa fa-minus-circle"></i> Remove</a>
+              </div>
+          </div>
+      {% endfor %}
+      </div>
+      <div class="form-group row">
+          <label class="control-label col-md-2">Average Reward:</label>
+          <div class="col-md-3">
+              <div class="input-group">
+                  <input class="form-control" type="number" placeholder="Average Reward" readonly id="reward_calculator">
+                  <div class="input-group-addon">sat</div>
+              </div>
+          </div>
+          <div class="col-md-2 col-md-offset-5">
+              <a class="btn btn-success btn-sm btn-outline reward-add"><i class="fa fa-plus-circle"></i> Add</a>
+          </div>
+      </div>
+      <div class="form-group">
+          <label for="waiting_interval" class="control-label">Waiting Interval:</label>
+          <div class="input-group">
+              <input type="number" class="form-control" name="waiting_interval" placeholder="Waiting Interval" value="{{ waiting_interval }}" required>
+              <div class="input-group-addon">sec</div>
+          </div>
+          <p class="help">The interval between two consecutive payouts of the same user (in seconds).</p>
+      </div>
+      <div class="form-group">
+          <label for="referral_percentage" class="control-label">Referral Percentage:</label>
+          <div class="input-group">
+              <input type="number" class="form-control" name="referral_percentage" placeholder="Referral Percentage" value="{{ referral_percentage }}" required>
+              <div class="input-group-addon">%</div>
+          </div>
+          <p class="help">Percent of a reward awarded to the referrer (0 to disable referral).</p>
+      </div>
+    </div>
+
+
+    <div role="tabpanel" class="tab-pane active" id="template">
+      <div class="form-group">
+          <label for="css" class="control-label">Theme:</label>
+          <select name="theme" id="themes" required>
+              {% for theme in themes %}
+                  <option value="{{ theme }}" {% if theme == current_theme %}selected{% endif %}>{{ theme|capitalize }}</option>
+              {% endfor %}
+          </select>
+          <p class="help">Select the layout theme.</p>
+      </div>
+      <div class="form-group">
+          <label for="css" class="control-label">Css:</label>
+          <textarea data-editor="css" type="text" rows="15" class="form-control" name="css" placeholder="Css">{{ css|raw }}</textarea>
+          <p class="help">You can add css in here.</p>
+      </div>
+          
+      <div class="form-group">
+          <label for="header_box" class="control-label">Header Box:</label>
+          <textarea data-editor="html" type="text" rows="15" class="form-control" name="header_box" placeholder="Header Box">{{ header_box|raw }}</textarea>
+          <p class="help">You can add html and css in here.</p>
+      </div>
+          
+      <div class="form-group">
+          <label for="left_box" class="control-label">Left Box:</label>
+          <textarea data-editor="html" type="text" rows="15" class="form-control" name="left_box" placeholder="Left Box">{{ left_box|raw }}</textarea>
+          <p class="help">You can add html and css in here.</p>
+      </div>
+          
+      <div class="form-group">
+          <label for="right_box" class="control-label">Right Box:</label>
+          <textarea data-editor="html" type="text" rows="15" class="form-control" name="right_box" placeholder="Right Box">{{ right_box|raw }}</textarea>
+          <p class="help">You can add html and css in here.</p>
+      </div>
+          
+      <div class="form-group">
+          <label for="center1_box" class="control-label">Center1 Box:</label>
+          <textarea data-editor="html" type="text" rows="15" class="form-control" name="center1_box" placeholder="Center1 Box">{{ center1_box|raw }}</textarea>
+          <p class="help">You can add html and css in here.</p>
+      </div>
+          
+      <div class="form-group">
+          <label for="center2_box" class="control-label">Center2 Box:</label>
+          <textarea data-editor="html" type="text" rows="15" class="form-control" name="center2_box" placeholder="Center2 Box">{{ center2_box|raw }}</textarea>
+          <p class="help">You can add html and css in here.</p>
+      </div>
+          
+      <div class="form-group">
+          <label for="center3_box" class="control-label">Center3 Box:</label>
+          <textarea data-editor="html" type="text" rows="15" class="form-control" name="center3_box" placeholder="Center3 Box">{{ center3_box|raw }}</textarea>
+          <p class="help">You can add html and css in here.</p>
+      </div>
+
+      <div class="form-group">
+          <label for="footer_box" class="control-label">Footer Box:</label>
+          <textarea data-editor="html" type="text" rows="15" class="form-control" name="footer_box" placeholder="Footer Box">{{ footer_box|raw }}</textarea>
+          <p class="help">You can add html and css in here.</p>
+      </div>
+    </div>
+
+
+  </div>
+ </div>
+</div>
+<!-- /tab -->
+      
         <div class="form-group text-center">
             <input type="submit" class="btn btn-primary" value="Save">
         </div>
@@ -230,6 +227,7 @@
     {{ parent() }}
     <script>
         $(function(){
+            $('.nav-tabs a:last').tab('show');
             var rewardListLength = {{ rewards|length }};
             
             function calculateAverageProbability() {
