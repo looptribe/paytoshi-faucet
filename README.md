@@ -9,7 +9,7 @@ Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fa
 
 ## Features
 * Ready-to-use script
-* Captcha support (SolveMedia, ReCaptcha)
+* Captcha support (ReCaptcha v2, SolveMedia)
 * Private admin area
 * Minimal configuration needed
 * Support to theming (Twig-powered)
@@ -19,7 +19,7 @@ Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fa
 * Apache >= 2.2 (with mod_rewrite)
 * PHP >= 5.3
 * MySQL >= 5 (with PDO support)
-* php5-mcrypt extension (optional)
+* php5-mcrypt extension
 
 ## Installation
 * Download the faucet zip
@@ -37,4 +37,5 @@ database:
 * Customize your faucet in your admin area.
 
 ## Work in progress
+* Diagnostics script
 * Detection system for systems that does not support TLS connections (needed by CloudFlare).
