@@ -2,58 +2,68 @@
 
 /**
  * Paytoshi Faucet Script
- * 
+ *
  * Contact: info@paytoshi.org
- * 
+ *
  * @author: Looptribe
  * @link: https://paytoshi.org
- * @package: Looptribe\Paytoshi 
+ * @package: Looptribe\Paytoshi
  */
 
 namespace Looptribe\Paytoshi\Service;
 
-class ApiResponse {
+class ApiResponse
+{
     private $success;
     private $error;
     private $response;
-    
+
     private $amount;
     private $recipient;
-            
-    public function __construct($success, $response = null) {
+
+    public function __construct($success, $response = null)
+    {
         $this->success = $success;
         $this->response = $response;
     }
-    
-    public function setAmount($amount) {
+
+    public function setAmount($amount)
+    {
         $this->amount = $amount;
     }
-    
-    public function getAmount() {
+
+    public function getAmount()
+    {
         return $this->amount;
     }
-    
-    public function setRecipient($recipient) {
+
+    public function setRecipient($recipient)
+    {
         $this->recipient = $recipient;
     }
-    
-    public function getRecipient() {
+
+    public function getRecipient()
+    {
         return $this->recipient;
     }
 
-    public function getSuccess() {
+    public function getSuccess()
+    {
         return $this->success;
     }
-    
-    public function getError() {
+
+    public function getError()
+    {
         return $this->error;
     }
-    
-    public function setError($error) {
+
+    public function setError($error)
+    {
         $this->error = $error;
     }
-    
-    public function getResponse() {
+
+    public function getResponse()
+    {
         return $this->response;
     }
 }

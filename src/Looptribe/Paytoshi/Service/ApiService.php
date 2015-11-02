@@ -2,12 +2,12 @@
 
 /**
  * Paytoshi Faucet Script
- * 
+ *
  * Contact: info@paytoshi.org
- * 
+ *
  * @author: Looptribe
  * @link: https://paytoshi.org
- * @package: Looptribe\Paytoshi 
+ * @package: Looptribe\Paytoshi
  */
 
 namespace Looptribe\Paytoshi\Service;
@@ -17,18 +17,21 @@ use Buzz\Message\Response;
 use Exception;
 use Looptribe\Paytoshi\Exception\PaytoshiException;
 
-class ApiService {
-    
+class ApiService
+{
+
     protected $config;
     protected $settingRepository;
-    
-    public function __construct($options) {
+
+    public function __construct($options)
+    {
         $this->settingRepository = $options['settingRepository'];
         $this->config = $options['config'];
-        
+
     }
-    
-    public function send($address, $amount, $ip, $referral = false) {
+
+    public function send($address, $amount, $ip, $referral = false)
+    {
         $apiKey = $this->settingRepository->getApiKey();
         $query = http_build_query(array('apikey' => $apiKey));
         $url = $this->config['api_url'] . '?' . $query;
@@ -38,22 +41,21 @@ class ApiService {
             'referral' => $referral,
             'ip' => $ip
         ));
-        
+
         $browser = new Browser();
         $browser->getClient()->setVerifyPeer(false);
         /* @var $response Response */
         try {
             $response = $browser->post($url, array(), $data);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw new PaytoshiException('Failed to send', 500, $e);
         }
-        
+
         $content = json_decode($response->getContent(), true);
         $apiResponse = new ApiResponse($response->isSuccessful(), $response);
-        
+
         if (!$response->isSuccessful()) {
-            
+
             if (isset($content['code']))
                 switch ($content['code']) {
                     case 'NOT_ENOUGH_FUNDS':
@@ -69,11 +71,12 @@ class ApiService {
                         $apiResponse->setError('Failed to send');
                         break;
                 }
-            else
+            else {
                 $apiResponse->setError('Failed to send');
+            }
             return $apiResponse;
         }
-        
+
         $apiResponse->setAmount($content['amount']);
         $apiResponse->setRecipient($content['recipient']);
         return $apiResponse;

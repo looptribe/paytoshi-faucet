@@ -2,26 +2,28 @@
 
 /**
  * Paytoshi Faucet Script
- * 
+ *
  * Contact: info@paytoshi.org
- * 
+ *
  * @author: Looptribe
  * @link: https://paytoshi.org
- * @package: Looptribe\Paytoshi 
+ * @package: Looptribe\Paytoshi
  */
 
 namespace Looptribe\Paytoshi\Model;
 
 use DateTime;
 
-class SettingRepository {
-    
+class SettingRepository
+{
+
     const TABLE_NAME = 'paytoshi_settings';
-    
+
     protected $database;
     protected $data = array();
 
-    public function __construct($database) {
+    public function __construct($database)
+    {
         $this->database = $database;
         $sql = sprintf("SELECT * FROM %s", self::TABLE_NAME);
         $results = $this->database->run($sql);
@@ -29,96 +31,119 @@ class SettingRepository {
             $this->data[$row['name']] = $row['value'];
         }
     }
-    
-    public function isNew() {
+
+    public function isNew()
+    {
         return !isset($this->data['password']) || !$this->data['password'];
     }
-    
-    public function isIncomplete() {
+
+    public function isIncomplete()
+    {
         return !$this->data['installed_at'] || !$this->data['api_key'];
     }
-    
-    public function getName() {
+
+    public function getName()
+    {
         return $this->data['name'];
     }
-    
-    public function getDescription() {
+
+    public function getDescription()
+    {
         return $this->data['description'];
     }
-    
-    public function getReferralPercentage() {
+
+    public function getReferralPercentage()
+    {
         return intval($this->data['referral_percentage']);
     }
-    
-    public function getPassword() {
+
+    public function getPassword()
+    {
         return isset($this->data['password']) ? $this->data['password'] : '';
     }
-    
-    public function getSolveMediaChallengeKey() {
+
+    public function getSolveMediaChallengeKey()
+    {
         return $this->data['solve_media_challenge_key'];
     }
-    
-    public function getSolveMediaVerificationKey() {
+
+    public function getSolveMediaVerificationKey()
+    {
         return $this->data['solve_media_verification_key'];
     }
-    
-    public function getSolveMediaAuthenticationKey() {
+
+    public function getSolveMediaAuthenticationKey()
+    {
         return $this->data['solve_media_authentication_key'];
     }
-    
-    public function getRecaptchaPublicKey() {
+
+    public function getRecaptchaPublicKey()
+    {
         return $this->data['recaptcha_public_key'];
     }
-    
-    public function getRecaptchaPrivateKey() {
+
+    public function getRecaptchaPrivateKey()
+    {
         return $this->data['recaptcha_private_key'];
     }
-    
-    public function getApiKey() {
+
+    public function getApiKey()
+    {
         return $this->data['api_key'];
     }
-    
-    public function getTheme() {
+
+    public function getTheme()
+    {
         return strtolower($this->data['theme']);
     }
-    
-    public function getCss() {
+
+    public function getCss()
+    {
         return $this->data['custom_css'];
     }
-    
-    public function getHeaderBox() {
+
+    public function getHeaderBox()
+    {
         return $this->data['content_header_box'];
     }
-    
-    public function getLeftBox() {
+
+    public function getLeftBox()
+    {
         return $this->data['content_left_box'];
     }
-    
-    public function getRightBox() {
+
+    public function getRightBox()
+    {
         return $this->data['content_right_box'];
     }
-    
-    public function getCenter1Box() {
+
+    public function getCenter1Box()
+    {
         return $this->data['content_center1_box'];
     }
-    
-    public function getCenter2Box() {
+
+    public function getCenter2Box()
+    {
         return $this->data['content_center2_box'];
     }
-    
-    public function getCenter3Box() {
+
+    public function getCenter3Box()
+    {
         return $this->data['content_center3_box'];
     }
 
-    public function getFooterBox() {
+    public function getFooterBox()
+    {
         return $this->data['content_footer_box'];
     }
-    
-    public function getVersion() {
+
+    public function getVersion()
+    {
         return $this->data['version'];
     }
-    
-    public function getAdminView() {
+
+    public function getAdminView()
+    {
         return array(
             'version' => $this->getVersion(),
             'api_key' => $this->getApiKey(),
@@ -147,32 +172,38 @@ class SettingRepository {
             'center3_box' => $this->getCenter3Box(),
             'footer_box' => $this->getFooterBox(),
         );
-        
+
     }
-    
-    public function getCaptchaProvider() {
+
+    public function getCaptchaProvider()
+    {
         return $this->data['captcha_provider'];
     }
-    
-    public function getRewards() {
+
+    public function getRewards()
+    {
         return $this->rewardsCleanup($this->data['rewards']);
     }
-    
-    public function getWaitingInterval() {
+
+    public function getWaitingInterval()
+    {
         return intval($this->data['waiting_interval']);
     }
-    
-    public function getInstalledAt() {
+
+    public function getInstalledAt()
+    {
         return $this->data['installed_at'];
     }
-    
-    public function save($data) {
-        $rewards = implode(',',array_map(function($i) { 
-            if (!isset($i['amount']) || !isset($i['probability']))
+
+    public function save($data)
+    {
+        $rewards = implode(',', array_map(function ($i) {
+            if (!isset($i['amount']) || !isset($i['probability'])) {
                 return '';
-            return sprintf("%s*%s", $i['amount'], $i['probability']); 
+            }
+            return sprintf("%s*%s", $i['amount'], $i['probability']);
         }, $data['rewards']));
-        
+
         // TODO: theme/captcha support
         $fields = array(
             'api_key' => ':api_key',
@@ -197,7 +228,7 @@ class SettingRepository {
             'recaptcha_public_key' => ':recaptcha_public_key',
             'recaptcha_private_key' => ':recaptcha_private_key'
         );
-        
+
         $params = array(
             ':api_key' => trim($data['api_key']),
             ':name' => trim($data['name']),
@@ -231,18 +262,22 @@ class SettingRepository {
                 ':installed_at' => $now->format('Y-m-d H:i:s')
             ));
         }
-        
+
         $sql = sprintf("UPDATE %s SET `value` = CASE `name` ", self::TABLE_NAME);
-        foreach ($fields as $k => $v)
-            $sql .= sprintf ("WHEN '%s' THEN %s ", $k, $v);
+        foreach ($fields as $k => $v) {
+            $sql .= sprintf("WHEN '%s' THEN %s ", $k, $v);
+        }
         $sql .= 'END WHERE `name` IN (';
-        $sql .= implode(', ', array_map(function($i) { return "'$i'"; }, array_keys($fields)));
+        $sql .= implode(', ', array_map(function ($i) {
+            return "'$i'";
+        }, array_keys($fields)));
         $sql .= ')';
 
         $this->database->run($sql, $params);
     }
-    
-    private function rewardsCleanup($rewards) {
+
+    private function rewardsCleanup($rewards)
+    {
         $rewards = explode(',', $rewards);
         $sortedRewards = array();
         foreach ($rewards as $reward) {
@@ -257,5 +292,5 @@ class SettingRepository {
         }
         return $sortedRewards;
     }
-    
+
 }

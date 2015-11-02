@@ -2,19 +2,20 @@
 
 /**
  * Paytoshi Faucet Script
- * 
+ *
  * Contact: info@paytoshi.org
- * 
+ *
  * @author: Looptribe
  * @link: https://paytoshi.org
- * @package: Looptribe\Paytoshi 
+ * @package: Looptribe\Paytoshi
  */
 
 namespace Looptribe\Paytoshi\Model;
 
 use DateTime;
 
-class Payout {
+class Payout
+{
     private $id;
     private $earning;
     private $referralEarning;
@@ -22,41 +23,44 @@ class Payout {
     private $recipientAddress;
     private $referralRecipientAddress;
     private $createdAt;
-    
+
     public function __construct()
     {
         $this->earning = 0;
         $this->referralEarning = 0;
         $this->createdAt = new DateTime();
     }
-    
+
     /**
      * Set id
      *
      * @param string $id
      * @return Payout
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
         return $this;
     }
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
-    
+
     /**
      * Set ip
      *
      * @param string $ip
      * @return Payout
      */
-    public function setIp($ip) {
+    public function setIp($ip)
+    {
         $this->ip = $ip;
         return $this;
     }
@@ -64,9 +68,10 @@ class Payout {
     /**
      * Get ip
      *
-     * @return Recipient 
+     * @return Recipient
      */
-    public function getIp() {
+    public function getIp()
+    {
         return $this->ip;
     }
 
@@ -76,7 +81,8 @@ class Payout {
      * @param Recipient $recipientAddress
      * @return Payout
      */
-    public function setRecipientAddress($recipientAddress) {
+    public function setRecipientAddress($recipientAddress)
+    {
         $this->recipientAddress = $recipientAddress;
         return $this;
     }
@@ -84,9 +90,10 @@ class Payout {
     /**
      * Get recipientAddress
      *
-     * @return Recipient 
+     * @return Recipient
      */
-    public function getRecipientAddress() {
+    public function getRecipientAddress()
+    {
         return $this->recipientAddress;
     }
 
@@ -96,7 +103,8 @@ class Payout {
      * @param Recipient $referralRecipientAddress
      * @return Recipient
      */
-    public function setReferralRecipientAddress($referralRecipientAddress) {
+    public function setReferralRecipientAddress($referralRecipientAddress)
+    {
         $this->referralRecipientAddress = $referralRecipientAddress;
         return $this;
     }
@@ -104,19 +112,21 @@ class Payout {
     /**
      * Get referralRecipientAddress
      *
-     * @return Recipient 
+     * @return Recipient
      */
-    public function getReferralRecipientAddress() {
+    public function getReferralRecipientAddress()
+    {
         return $this->referralRecipientAddress;
     }
-    
+
     /**
      * Set earning
      *
      * @param integer $earning
      * @return Payout
      */
-    public function setEarning($earning) {
+    public function setEarning($earning)
+    {
         $this->earning = $earning;
         return $this;
     }
@@ -124,9 +134,10 @@ class Payout {
     /**
      * Get earning
      *
-     * @return integer 
+     * @return integer
      */
-    public function getEarning() {
+    public function getEarning()
+    {
         return $this->earning;
     }
 
@@ -136,7 +147,8 @@ class Payout {
      * @param integer $referralEarning
      * @return Payout
      */
-    public function setReferralEarning($referralEarning) {
+    public function setReferralEarning($referralEarning)
+    {
         $this->referralEarning = $referralEarning;
         return $this;
     }
@@ -144,19 +156,21 @@ class Payout {
     /**
      * Get referralEarning
      *
-     * @return integer 
+     * @return integer
      */
-    public function getReferralEarning() {
+    public function getReferralEarning()
+    {
         return $this->referralEarning;
     }
-    
+
     /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
      * @return Payout
      */
-    public function setCreatedAt($createdAt) {
+    public function setCreatedAt($createdAt)
+    {
         $this->createdAt = $createdAt;
         return $this;
     }
@@ -164,11 +178,11 @@ class Payout {
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->createdAt;
     }
-            
-}
 
+}

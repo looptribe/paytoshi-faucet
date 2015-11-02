@@ -2,26 +2,27 @@
 
 /**
  * Paytoshi Faucet Script
- * 
+ *
  * Contact: info@paytoshi.org
- * 
+ *
  * @author: Looptribe
  * @link: https://paytoshi.org
- * @package: Looptribe\Paytoshi 
+ * @package: Looptribe\Paytoshi
  */
 
 namespace Looptribe\Paytoshi\Model;
 
 use DateTime;
 
-class Recipient {
+class Recipient
+{
     private $id;
     private $address;
     private $earning;
     private $referralEarning;
     private $updatedAt;
     private $createdAt;
-    
+
     public function __construct()
     {
         $this->earning = 0;
@@ -29,24 +30,26 @@ class Recipient {
         $this->createdAt = new DateTime();
         $this->updatedAt = new DateTime();
     }
-    
+
     /**
      * Set id
      *
      * @param string $id
      * @return Recipient
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
         return $this;
     }
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -56,7 +59,8 @@ class Recipient {
      * @param string $address
      * @return Recipient
      */
-    public function setAddress($address) {
+    public function setAddress($address)
+    {
         $this->address = $address;
         return $this;
     }
@@ -64,19 +68,21 @@ class Recipient {
     /**
      * Get address
      *
-     * @return string 
+     * @return string
      */
-    public function getAddress() {
+    public function getAddress()
+    {
         return $this->address;
     }
-    
+
     /**
      * Set earning
      *
      * @param integer $earning
      * @return Recipient
      */
-    public function setEarning($earning) {
+    public function setEarning($earning)
+    {
         $this->earning = $earning;
         return $this;
     }
@@ -84,9 +90,10 @@ class Recipient {
     /**
      * Get earning
      *
-     * @return integer 
+     * @return integer
      */
-    public function getEarning() {
+    public function getEarning()
+    {
         return $this->earning;
     }
 
@@ -96,7 +103,8 @@ class Recipient {
      * @param integer $referralEarning
      * @return Recipient
      */
-    public function setReferralEarning($referralEarning) {
+    public function setReferralEarning($referralEarning)
+    {
         $this->referralEarning = $referralEarning;
         return $this;
     }
@@ -104,19 +112,21 @@ class Recipient {
     /**
      * Get referralEarning
      *
-     * @return integer 
+     * @return integer
      */
-    public function getReferralEarning() {
+    public function getReferralEarning()
+    {
         return $this->referralEarning;
     }
-    
+
     /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
      * @return Recipient
      */
-    public function setCreatedAt($createdAt) {
+    public function setCreatedAt($createdAt)
+    {
         $this->createdAt = $createdAt;
         return $this;
     }
@@ -124,31 +134,33 @@ class Recipient {
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->createdAt;
     }
-    
+
     /**
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
      * @return Recipient
      */
-    public function setUpdatedAt($updatedAt) {
+    public function setUpdatedAt($updatedAt)
+    {
         $this->updatedAt = $updatedAt;
         return $this;
     }
-    
-     /**
+
+    /**
      * Get updatedAt
      *
-     * @return datatime 
+     * @return datatime
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updatedAt;
     }
-            
-}
 
+}

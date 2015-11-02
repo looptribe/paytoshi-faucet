@@ -2,30 +2,34 @@
 
 /**
  * Paytoshi Faucet Script
- * 
+ *
  * Contact: info@paytoshi.org
- * 
+ *
  * @author: Looptribe
  * @link: https://paytoshi.org
- * @package: Looptribe\Paytoshi 
+ * @package: Looptribe\Paytoshi
  */
 
 namespace Looptribe\Paytoshi\Service\Captcha;
 
-class CaptchaResponse {
+class CaptchaResponse
+{
     private $success;
     private $message;
-            
-    public function __construct($success, $message = null) {
+
+    public function __construct($success, $message = null)
+    {
         $this->success = $success;
         $this->message = $message;
     }
-    
-    public function getSuccess() {
+
+    public function getSuccess()
+    {
         return $this->success;
     }
-    
-    public function getMessage() {
+
+    public function getMessage()
+    {
         return $this->message;
     }
 }
