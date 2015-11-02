@@ -39,3 +39,6 @@ database:
 ## Work in progress
 * Diagnostics script
 * Detection system for systems that does not support TLS connections (needed by CloudFlare).
+
+## License
+Paytoshi Faucet is [BSD licensed](./LICENSE).
