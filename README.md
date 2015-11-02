@@ -40,5 +40,12 @@ database:
 * Diagnostics script
 * Detection system for systems that does not support TLS connections (needed by CloudFlare).
 
+## Contributing
+When contributing code to Paytoshi Faucet, you must follow its coding standards.
+
+Paytoshi Faucet follows the standards defined in the [PSR-0](http://www.php-fig.org/psr/psr-0/),
+[PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http://www.php-fig.org/psr/psr-2/) and
+[PSR-4](http://www.php-fig.org/psr/psr-4/) documents.
+
 ## License
 Paytoshi Faucet is [BSD licensed](./LICENSE).
