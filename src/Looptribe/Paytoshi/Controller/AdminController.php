@@ -109,7 +109,7 @@ class AdminController
         $sql = file_get_contents($this->config['setup']);
         if (!$sql) {
             throw new PaytoshiException(sprintf('Unable to find database sql script. Please check that %s exists.',
-                $this->config['setup']), null, $e);
+                $this->config['setup']), null);
         }
         $this->database->run($sql, $params);
     }
