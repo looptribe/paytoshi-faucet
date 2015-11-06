@@ -67,6 +67,9 @@ class ApiService
                     case 'FAUCET_DISABLED':
                         $apiResponse->setError('This faucet has been disabled by the owner or the Paytoshi staff.');
                         break;
+                    case 'ACCESS_DENIED':
+                        $apiResponse->setError('Access denied, please check your apikey.');
+                        break;
                     default:
                         $apiResponse->setError(sprintf("Generic error: %s.", $content['code']));
                         break;
