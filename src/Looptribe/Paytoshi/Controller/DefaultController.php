@@ -14,30 +14,43 @@ namespace Looptribe\Paytoshi\Controller;
 
 use DateInterval;
 use DateTime;
+use Looptribe\Paytoshi\App;
 use Looptribe\Paytoshi\Exception\PaytoshiException;
 use Looptribe\Paytoshi\Model\Payout;
+use Looptribe\Paytoshi\Model\PayoutRepository;
 use Looptribe\Paytoshi\Model\Recipient;
+use Looptribe\Paytoshi\Model\RecipientRepository;
 use Looptribe\Paytoshi\Model\SettingRepository;
 use Looptribe\Paytoshi\Service\ApiResponse;
+use Looptribe\Paytoshi\Service\ApiService;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaException;
+use Looptribe\Paytoshi\Service\Captcha\CaptchaServiceInterface;
 use Looptribe\Paytoshi\Service\DatabaseService;
+use Looptribe\Paytoshi\Service\RewardService;
+use Looptribe\Paytoshi\Service\ThemeService;
 
 class DefaultController
 {
-
+    /** @var App */
     protected $app;
-    /* @var $database DatabaseService */
+    /** @var DatabaseService */
     protected $database;
-    /* @var $settingRepository SettingRepository */
+    /** @var SettingRepository */
     protected $settingRepository;
+    /** @var  CaptchaServiceInterface */
     protected $captchaService;
+    /** @var  RecipientRepository */
     protected $recipientRepository;
+    /** @var  PayoutRepository */
     protected $payoutRepository;
+    /** @var  ApiService */
     protected $apiService;
+    /** @var  RewardService */
     protected $rewardService;
+    /** @var  ThemeService */
     protected $themeService;
 
-    public function __construct($app, $options = array())
+    public function __construct(App $app, $options = array())
     {
         $this->app = $app;
         $this->database = $options['databaseService'];
@@ -53,19 +66,19 @@ class DefaultController
 
     public function incomplete()
     {
-        return $this->app->render($this->themeService->getTemplate('incomplete.html.twig'), array(
+        $this->app->render($this->themeService->getTemplate('incomplete.html.twig'), array(
             'name' => $this->settingRepository->getName()
         ));
     }
 
     public function index()
     {
-        return $this->app->render($this->themeService->getTemplate('index.html.twig'), $this->getTemplateData());
+        $this->app->render($this->themeService->getTemplate('index.html.twig'), $this->getTemplateData());
     }
 
     public function faq()
     {
-        return $this->app->render($this->themeService->getTemplate('faq.html.twig'), $this->getTemplateData());
+        $this->app->render($this->themeService->getTemplate('faq.html.twig'), $this->getTemplateData());
     }
 
     private function getTemplateData()
@@ -128,12 +141,14 @@ class DefaultController
             $captchaResponse = $this->captchaService->checkAnswer($remoteIp, $challenge, $response);
         } catch (CaptchaException $e) {
             $this->app->flash('error', 'Unable to complete request.');
-            return $this->app->redirect($this->app->urlFor('index'));
+            $this->app->redirect($this->app->urlFor('index'));
+            return;
         }
 
         if (!$captchaResponse->getSuccess()) {
             $this->app->flash('error', 'Invalid Captcha');
-            return $this->app->redirect($this->app->urlFor('index'));
+            $this->app->redirect($this->app->urlFor('index'));
+            return;
         }
 
         try {
@@ -162,7 +177,8 @@ class DefaultController
                 $waitingTime = $nextPayoutTime->diff($now);
                 $this->app->flash('warning',
                     sprintf('You can get a reward again in %s.', $this->formatTime($waitingTime)));
-                return $this->app->redirect($this->app->urlFor('index'));
+                $this->app->redirect($this->app->urlFor('index'));
+                return;
             }
         }
 
@@ -186,13 +202,15 @@ class DefaultController
         } catch (PaytoshiException $e) {
             $this->database->rollback();
             $this->app->flash('error', $e->getMessage());
-            return $this->app->redirect($this->app->urlFor('index'));
+            $this->app->redirect($this->app->urlFor('index'));
+            return;
         }
 
         if (!$apiResponse->getSuccess()) {
             $this->database->rollback();
             $this->app->flash('error', $apiResponse->getError());
-            return $this->app->redirect($this->app->urlFor('index'));
+            $this->app->redirect($this->app->urlFor('index'));
+            return;
         }
 
         $view = $this->app->view();
@@ -234,7 +252,8 @@ class DefaultController
                 $this->recipientRepository->save($referralRecipient);
                 $this->database->commit();
                 $this->app->flash('error', $e->getMessage());
-                return $this->app->redirect($this->app->urlFor('index'));
+                $this->app->redirect($this->app->urlFor('index'));
+                return;
             }
 
             if ($apiResponse->getSuccess()) {
@@ -246,7 +265,7 @@ class DefaultController
         $this->payoutRepository->save($payout);
         $this->database->commit();
 
-        return $this->app->redirect($this->app->urlFor('index'));
+        $this->app->redirect($this->app->urlFor('index'));
     }
 
     private function formatTime(DateInterval $interval)
