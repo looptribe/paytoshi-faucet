@@ -12,17 +12,25 @@
 
 namespace Looptribe\Paytoshi\Controller;
 
+use Looptribe\Paytoshi\App;
 use Looptribe\Paytoshi\Exception\PaytoshiException;
+use Looptribe\Paytoshi\Model\SettingRepository;
+use Looptribe\Paytoshi\Service\DatabaseService;
+use Looptribe\Paytoshi\Service\ThemeService;
 
 class AdminController
 {
+    /** @var App */
     protected $app;
     protected $config;
+    /** @var  DatabaseService */
     protected $database;
+    /** @var  SettingRepository */
     protected $settingRepository;
+    /** @var ThemeService */
     protected $themeService;
 
-    public function __construct($app, $options)
+    public function __construct(App $app, $options)
     {
         $this->app = $app;
         $this->database = $options['databaseService'];
@@ -76,19 +84,21 @@ class AdminController
     public function logout()
     {
         unset($_SESSION['authenticated']);
-        return $this->app->redirect($this->app->urlFor('login'));
+        $this->app->redirect($this->app->urlFor('login'));
     }
 
     public function admin()
     {
         if (!isset($_SESSION['authenticated']) || !$_SESSION['authenticated']) {
-            return $this->app->redirect($this->app->urlFor('login'));
+            $this->app->redirect($this->app->urlFor('login'));
+            return;
         }
 
         if ($this->app->request->isGet()) {
             $params = array_merge($this->settingRepository->getAdminView(),
                 array('themes' => $this->themeService->getThemes()));
-            return $this->app->render($this->themeService->getTemplate('admin.html.twig'), $params);
+            $this->app->render($this->themeService->getTemplate('admin.html.twig'), $params);
+            return;
         } else {
             if ($this->app->request->isPost()) {
                 $data = array();
@@ -99,7 +109,8 @@ class AdminController
                 } catch (PaytoshiException $e) {
                     $this->app->flash('save_error', 'Cannot save settings.');
                 }
-                return $this->app->response->redirect($this->app->urlFor('admin'));
+                $this->app->response->redirect($this->app->urlFor('admin'));
+                return;
             }
         }
     }
