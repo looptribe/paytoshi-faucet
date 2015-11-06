@@ -86,9 +86,16 @@ class SettingRepository
     {
         return $this->data['recaptcha_private_key'];
     }
+    
+    public function getFuncaptchaPublicKey() {
+        return $this->data['funcaptcha_public_key'];
+    }
 
-    public function getApiKey()
-    {
+    public function getFuncaptchaPrivateKey() {
+        return $this->data['funcaptcha_private_key'];
+    }
+
+    public function getApiKey() {
         return $this->data['api_key'];
     }
 
@@ -160,6 +167,10 @@ class SettingRepository
                 'public_key' => $this->getRecaptchaPublicKey(),
                 'private_key' => $this->getRecaptchaPrivateKey()
             ),
+            'funcaptcha' => array(
+                'public_key' => $this->getFuncaptchaPublicKey(),
+                'private_key' => $this->getFuncaptchaPrivateKey()
+            ),
             'waiting_interval' => $this->getWaitingInterval(),
             'rewards' => $this->getRewards(),
             'referral_percentage' => $this->getReferralPercentage(),
@@ -226,7 +237,9 @@ class SettingRepository
             'solve_media_verification_key' => ':solve_media_verification_key',
             'solve_media_authentication_key' => ':solve_media_authentication_key',
             'recaptcha_public_key' => ':recaptcha_public_key',
-            'recaptcha_private_key' => ':recaptcha_private_key'
+            'recaptcha_private_key' => ':recaptcha_private_key',
+            'funcaptcha_public_key' => ':funcaptcha_public_key',
+            'funcaptcha_private_key' => ':funcaptcha_private_key'
         );
 
         $params = array(
@@ -250,7 +263,9 @@ class SettingRepository
             ':solve_media_verification_key' => trim($data['solve_media']['verification_key']),
             ':solve_media_authentication_key' => trim($data['solve_media']['authentication_key']),
             ':recaptcha_public_key' => trim($data['recaptcha']['public_key']),
-            ':recaptcha_private_key' => trim($data['recaptcha']['private_key'])
+            ':recaptcha_private_key' => trim($data['recaptcha']['private_key']),
+            ':funcaptcha_public_key' => trim($data['funcaptcha']['public_key']),
+            ':funcaptcha_private_key' => trim($data['funcaptcha']['private_key'])
         );
 
         if (!$this->getInstalledAt()) {

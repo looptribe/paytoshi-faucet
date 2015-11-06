@@ -79,12 +79,17 @@
                                 <option value="recaptcha" {% if captcha_provider == 'recaptcha' %}selected{% endif %}>
                                     ReCaptcha
                                 </option>
+                                <option value="funcaptcha" {% if captcha_provider == 'funcaptcha' %}selected{% endif %}>
+                                    FunCaptcha
+                                </option>
                             </select>
 
                             <p class="help solve_media">Set up a <a href="https://portal.solvemedia.com/portal/public">SolveMedia
                                     account</a> and get the needed keys.</p>
 
                             <p class="help recaptcha">Get a <a href="https://www.google.com/recaptcha">ReCaptcha
+                                    account</a> and get the needed keys.</p>
+                            <p class="help funcaptcha">Get a <a href="https://www.funcaptcha.com/dashboard/">FunCaptcha
                                     account</a> and get the needed keys.</p>
                         </div>
                         <div class="form-group solve_media">
@@ -114,6 +119,17 @@
                             <label for="recaptcha[private_key]" class="control-label">Private Key:</label>
                             <input type="text" class="form-control" name="recaptcha[private_key]"
                                    placeholder="Private Key" value="{{ recaptcha.private_key }}">
+                        </div>
+
+                        <div class="form-group funcaptcha">
+                            <label for="funcaptcha[public_key]" class="control-label">Public Key:</label>
+                            <input type="text" class="form-control" name="funcaptcha[public_key]"
+                                   placeholder="Public Key" value="{{ funcaptcha.public_key }}">
+                        </div>
+                        <div class="form-group funcaptcha">
+                            <label for="funcaptcha[private_key]" class="control-label">Private Key:</label>
+                            <input type="text" class="form-control" name="funcaptcha[private_key]"
+                                   placeholder="Private Key" value="{{ funcaptcha.private_key }}">
                         </div>
                     </div>
 
@@ -396,10 +412,17 @@
                 if (captcha_provider == 'solve_media') {
                     $('.solve_media').show();
                     $('.recaptcha').hide();
+                    $('.funcaptcha').hide();
                 }
                 else if (captcha_provider == 'recaptcha') {
                     $('.solve_media').hide();
                     $('.recaptcha').show();
+                    $('.funcaptcha').hide();
+                }
+                else if (captcha_provider == 'funcaptcha') {
+                    $('.solve_media').hide();
+                    $('.recaptcha').hide();
+                    $('.funcaptcha').show();
                 }
             };
 

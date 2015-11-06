@@ -23,14 +23,16 @@ class CaptchaServiceFactory
 
     public function getService($name)
     {
-        if ($name === 'solve_media') {
-            return $this->app->SolveMediaService;
-        } else {
-            if ($name === 'recaptcha') {
+        switch($name)
+        {
+            case 'solve_media':
+                return $this->app->SolveMediaService;
+            case 'recaptcha':
                 return $this->app->RecaptchaService;
-            }
+            case 'funcaptcha':
+                return $this->app->FuncaptchaService;
+            default:
+                throw RuntimeException();
         }
-
-        throw RuntimeException();
     }
 }
