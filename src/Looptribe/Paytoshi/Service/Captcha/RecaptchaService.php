@@ -94,7 +94,7 @@ class RecaptchaService implements CaptchaServiceInterface
             $resp = $browser->post(self::VERIFY_SERVER, $headers, http_build_query($content));
         } catch (Exception $e) {
             throw $e;
-            throw new CaptchaException('Failed to send', 500, $e);
+            throw new CaptchaException('Failed to check captcha', 500, $e);
         }
 
         if (!$resp->isSuccessful()) {

@@ -68,11 +68,11 @@ class ApiService
                         $apiResponse->setError('This faucet has been disabled by the owner or the Paytoshi staff.');
                         break;
                     default:
-                        $apiResponse->setError('Failed to send');
+                        $apiResponse->setError(sprintf("Generic error: %s.", $content['code']));
                         break;
                 }
             else {
-                $apiResponse->setError('Failed to send');
+                $apiResponse->setError('Generic error.');
             }
             return $apiResponse;
         }

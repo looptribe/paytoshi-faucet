@@ -99,7 +99,7 @@ class SolveMediaService implements CaptchaServiceInterface
         try {
             $resp = $browser->post(self::ADCOPY_VERIFY_SERVER, $headers, http_build_query($content));
         } catch (Exception $e) {
-            throw new CaptchaException('Failed to send', 500, $e);
+            throw new CaptchaException('Failed to check captcha', 500, $e);
         }
 
         if (!$resp->isSuccessful()) {
