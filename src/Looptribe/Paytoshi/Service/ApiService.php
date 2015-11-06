@@ -16,18 +16,18 @@ use Buzz\Browser;
 use Buzz\Message\Response;
 use Exception;
 use Looptribe\Paytoshi\Exception\PaytoshiException;
+use Looptribe\Paytoshi\Model\SettingRepository;
 
 class ApiService
 {
-
     protected $config;
+    /** @var  SettingRepository */
     protected $settingRepository;
 
     public function __construct($options)
     {
         $this->settingRepository = $options['settingRepository'];
         $this->config = $options['config'];
-
     }
 
     public function send($address, $amount, $ip, $referral = false)
@@ -44,11 +44,11 @@ class ApiService
 
         $browser = new Browser();
         $browser->getClient()->setVerifyPeer(false);
-        /* @var $response Response */
+        /** @var Response */
         try {
             $response = $browser->post($url, array(), $data);
         } catch (Exception $e) {
-            throw new PaytoshiException('Failed to send', 500, $e);
+            throw new PaytoshiException('Error while posting request', 500, $e);
         }
 
         $content = json_decode($response->getContent(), true);
@@ -56,7 +56,7 @@ class ApiService
 
         if (!$response->isSuccessful()) {
 
-            if (isset($content['code']))
+            if (isset($content['code'])) {
                 switch ($content['code']) {
                     case 'NOT_ENOUGH_FUNDS':
                         $apiResponse->setError('Insufficient funds.');
@@ -74,6 +74,7 @@ class ApiService
                         $apiResponse->setError(sprintf("Generic error: %s.", $content['code']));
                         break;
                 }
+            }
             else {
                 $apiResponse->setError('Generic error.');
             }
