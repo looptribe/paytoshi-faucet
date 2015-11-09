@@ -13,16 +13,18 @@
 namespace Looptribe\Paytoshi\Model;
 
 use DateTime;
+use Looptribe\Paytoshi\Service\DatabaseService;
 
 class SettingRepository
 {
-
     const TABLE_NAME = 'paytoshi_settings';
 
+    /** @var DatabaseService */
     protected $database;
+
     protected $data = array();
 
-    public function __construct($database)
+    public function __construct(DatabaseService $database)
     {
         $this->database = $database;
         $sql = sprintf("SELECT * FROM %s", self::TABLE_NAME);
@@ -44,47 +46,47 @@ class SettingRepository
 
     public function getName()
     {
-        return $this->data['name'];
+        return $this->get('name');
     }
 
     public function getDescription()
     {
-        return $this->data['description'];
+        return $this->get('description');
     }
 
     public function getReferralPercentage()
     {
-        return intval($this->data['referral_percentage']);
+        return intval($this->get('referral_percentage', 0));
     }
 
     public function getPassword()
     {
-        return isset($this->data['password']) ? $this->data['password'] : '';
+        return $this->get('password');
     }
 
     public function getSolveMediaChallengeKey()
     {
-        return $this->data['solve_media_challenge_key'];
+        return $this->get('solve_media_challenge_key');
     }
 
     public function getSolveMediaVerificationKey()
     {
-        return $this->data['solve_media_verification_key'];
+        return $this->get('solve_media_verification_key');
     }
 
     public function getSolveMediaAuthenticationKey()
     {
-        return $this->data['solve_media_authentication_key'];
+        return $this->get('solve_media_authentication_key');
     }
 
     public function getRecaptchaPublicKey()
     {
-        return $this->data['recaptcha_public_key'];
+        return $this->get('recaptcha_public_key');
     }
 
     public function getRecaptchaPrivateKey()
     {
-        return $this->data['recaptcha_private_key'];
+        return $this->get('recaptcha_private_key');
     }
     
     public function getFuncaptchaPublicKey() {
@@ -95,115 +97,79 @@ class SettingRepository
         return $this->data['funcaptcha_private_key'];
     }
 
-    public function getApiKey() {
-        return $this->data['api_key'];
+    public function getApiKey()
+    {
+        return $this->get('api_key');
     }
 
     public function getTheme()
     {
-        return strtolower($this->data['theme']);
+        return strtolower($this->get('theme', 'default'));
     }
 
     public function getCss()
     {
-        return $this->data['custom_css'];
+        return $this->get('custom_css');
     }
 
     public function getHeaderBox()
     {
-        return $this->data['content_header_box'];
+        return $this->get('content_header_box');
     }
 
     public function getLeftBox()
     {
-        return $this->data['content_left_box'];
+        return $this->get('content_left_box');
     }
 
     public function getRightBox()
     {
-        return $this->data['content_right_box'];
+        return $this->get('content_right_box');
     }
 
     public function getCenter1Box()
     {
-        return $this->data['content_center1_box'];
+        return $this->get('content_center1_box');
     }
 
     public function getCenter2Box()
     {
-        return $this->data['content_center2_box'];
+        return $this->get('content_center2_box');
     }
 
     public function getCenter3Box()
     {
-        return $this->data['content_center3_box'];
+        return $this->get('content_center3_box');
     }
 
     public function getFooterBox()
     {
-        return $this->data['content_footer_box'];
+        return $this->get('content_footer_box');
     }
 
     public function getVersion()
     {
-        return $this->data['version'];
-    }
-
-    public function getAdminView()
-    {
-        return array(
-            'version' => $this->getVersion(),
-            'api_key' => $this->getApiKey(),
-            'name' => $this->getName(),
-            'description' => $this->getDescription(),
-            'current_theme' => $this->getTheme(),
-            'captcha_provider' => $this->getCaptchaProvider(),
-            'solve_media' => array(
-                'challenge_key' => $this->getSolveMediaChallengeKey(),
-                'verification_key' => $this->getSolveMediaVerificationKey(),
-                'authentication_key' => $this->getSolveMediaAuthenticationKey(),
-            ),
-            'recaptcha' => array(
-                'public_key' => $this->getRecaptchaPublicKey(),
-                'private_key' => $this->getRecaptchaPrivateKey()
-            ),
-            'funcaptcha' => array(
-                'public_key' => $this->getFuncaptchaPublicKey(),
-                'private_key' => $this->getFuncaptchaPrivateKey()
-            ),
-            'waiting_interval' => $this->getWaitingInterval(),
-            'rewards' => $this->getRewards(),
-            'referral_percentage' => $this->getReferralPercentage(),
-            'css' => $this->getCss(),
-            'header_box' => $this->getHeaderBox(),
-            'left_box' => $this->getLeftBox(),
-            'right_box' => $this->getRightBox(),
-            'center1_box' => $this->getCenter1Box(),
-            'center2_box' => $this->getCenter2Box(),
-            'center3_box' => $this->getCenter3Box(),
-            'footer_box' => $this->getFooterBox(),
-        );
-
+        return $this->get('version');
     }
 
     public function getCaptchaProvider()
     {
-        return $this->data['captcha_provider'];
+        return $this->get('captcha_provider');
     }
 
     public function getRewards()
     {
-        return $this->rewardsCleanup($this->data['rewards']);
+        return $this->rewardsCleanup($this->get('rewards'));
     }
 
     public function getWaitingInterval()
     {
-        return intval($this->data['waiting_interval']);
+        return intval($this->get('waiting_interval'));
     }
 
     public function getInstalledAt()
     {
-        return $this->data['installed_at'];
+        return $this->get('installed_at');
     }
 
     public function save($data)
@@ -241,6 +207,8 @@ class SettingRepository
             'funcaptcha_public_key' => ':funcaptcha_public_key',
             'funcaptcha_private_key' => ':funcaptcha_private_key'
         );
+
+        $this->insertMissingFields($fields);
 
         $params = array(
             ':api_key' => trim($data['api_key']),
@@ -308,4 +276,22 @@ class SettingRepository
         return $sortedRewards;
     }
 
+    private function get($key, $default = null)
+    {
+        return isset($this->data[$key]) ? $this->data[$key] : $default;
+    }
+
+    private function insertMissingFields($fields)
+    {
+        $existing = array_keys($this->data);
+        $required = array_keys($fields);
+        $newFields = array_diff($required, $existing);
+        if (count($newFields) > 0) {
+            $sql = sprintf("INSERT INTO `%s` (`name`, `value`) VALUES ", self::TABLE_NAME);
+            $sql .= implode(', ', array_map(function ($i) {
+                return "('$i', '')";
+            }, $newFields));
+            $this->database->run($sql);
+        }
+    }
 }

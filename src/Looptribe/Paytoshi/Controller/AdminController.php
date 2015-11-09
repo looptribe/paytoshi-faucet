@@ -12,17 +12,25 @@
 
 namespace Looptribe\Paytoshi\Controller;
 
+use Looptribe\Paytoshi\App;
 use Looptribe\Paytoshi\Exception\PaytoshiException;
+use Looptribe\Paytoshi\Model\SettingRepository;
+use Looptribe\Paytoshi\Service\DatabaseService;
+use Looptribe\Paytoshi\Service\ThemeService;
 
 class AdminController
 {
+    /** @var App */
     protected $app;
     protected $config;
+    /** @var  DatabaseService */
     protected $database;
+    /** @var  SettingRepository */
     protected $settingRepository;
+    /** @var ThemeService */
     protected $themeService;
 
-    public function __construct($app, $options)
+    public function __construct(App $app, $options)
     {
         $this->app = $app;
         $this->database = $options['databaseService'];
@@ -76,19 +84,21 @@ class AdminController
     public function logout()
     {
         unset($_SESSION['authenticated']);
-        return $this->app->redirect($this->app->urlFor('login'));
+        $this->app->redirect($this->app->urlFor('login'));
     }
 
     public function admin()
     {
         if (!isset($_SESSION['authenticated']) || !$_SESSION['authenticated']) {
-            return $this->app->redirect($this->app->urlFor('login'));
+            $this->app->redirect($this->app->urlFor('login'));
+            return;
         }
 
         if ($this->app->request->isGet()) {
-            $params = array_merge($this->settingRepository->getAdminView(),
+            $params = array_merge($this->getView(),
                 array('themes' => $this->themeService->getThemes()));
-            return $this->app->render($this->themeService->getTemplate('admin.html.twig'), $params);
+            $this->app->render($this->themeService->getTemplate('admin.html.twig'), $params);
+            return;
         } else {
             if ($this->app->request->isPost()) {
                 $data = array();
@@ -99,7 +109,8 @@ class AdminController
                 } catch (PaytoshiException $e) {
                     $this->app->flash('save_error', 'Cannot save settings.');
                 }
-                return $this->app->response->redirect($this->app->urlFor('admin'));
+                $this->app->response->redirect($this->app->urlFor('admin'));
+                return;
             }
         }
     }
@@ -109,7 +120,7 @@ class AdminController
         $sql = file_get_contents($this->config['setup']);
         if (!$sql) {
             throw new PaytoshiException(sprintf('Unable to find database sql script. Please check that %s exists.',
-                $this->config['setup']), null, $e);
+                $this->config['setup']), null);
         }
         $this->database->run($sql, $params);
     }
@@ -124,4 +135,35 @@ class AdminController
         return $randomString;
     }
 
+    private function getView()
+    {
+        return array(
+            'version' => $this->settingRepository->getVersion(),
+            'api_key' => $this->settingRepository->getApiKey(),
+            'name' => $this->settingRepository->getName(),
+            'description' => $this->settingRepository->getDescription(),
+            'current_theme' => $this->settingRepository->getTheme(),
+            'captcha_provider' => $this->settingRepository->getCaptchaProvider(),
+            'solve_media' => array(
+                'challenge_key' => $this->settingRepository->getSolveMediaChallengeKey(),
+                'verification_key' => $this->settingRepository->getSolveMediaVerificationKey(),
+                'authentication_key' => $this->settingRepository->getSolveMediaAuthenticationKey(),
+            ),
+            'recaptcha' => array(
+                'public_key' => $this->settingRepository->getRecaptchaPublicKey(),
+                'private_key' => $this->settingRepository->getRecaptchaPrivateKey()
+            ),
+            'waiting_interval' => $this->settingRepository->getWaitingInterval(),
+            'rewards' => $this->settingRepository->getRewards(),
+            'referral_percentage' => $this->settingRepository->getReferralPercentage(),
+            'css' => $this->settingRepository->getCss(),
+            'header_box' => $this->settingRepository->getHeaderBox(),
+            'left_box' => $this->settingRepository->getLeftBox(),
+            'right_box' => $this->settingRepository->getRightBox(),
+            'center1_box' => $this->settingRepository->getCenter1Box(),
+            'center2_box' => $this->settingRepository->getCenter2Box(),
+            'center3_box' => $this->settingRepository->getCenter3Box(),
+            'footer_box' => $this->settingRepository->getFooterBox(),
+        );
+    }
 }
