@@ -1,4 +1,8 @@
 {
+    "name": "looptribe/paytoshi-faucet",
+    "description": "Paytoshi Faucet Script",
+    "license": "BSD-3-Clause",
+    "homepage": "https://paytoshi.org/",
     "require": {
         "slim/slim": "2.*",
         "symfony/yaml": "2.*",
