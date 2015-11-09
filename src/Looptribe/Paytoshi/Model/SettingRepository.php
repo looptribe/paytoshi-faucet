@@ -164,39 +164,6 @@ class SettingRepository
         return $this->get('installed_at');
     }
 
-    public function getAdminView()
-    {
-        return array(
-            'version' => $this->getVersion(),
-            'api_key' => $this->getApiKey(),
-            'name' => $this->getName(),
-            'description' => $this->getDescription(),
-            'current_theme' => $this->getTheme(),
-            'captcha_provider' => $this->getCaptchaProvider(),
-            'solve_media' => array(
-                'challenge_key' => $this->getSolveMediaChallengeKey(),
-                'verification_key' => $this->getSolveMediaVerificationKey(),
-                'authentication_key' => $this->getSolveMediaAuthenticationKey(),
-            ),
-            'recaptcha' => array(
-                'public_key' => $this->getRecaptchaPublicKey(),
-                'private_key' => $this->getRecaptchaPrivateKey()
-            ),
-            'waiting_interval' => $this->getWaitingInterval(),
-            'rewards' => $this->getRewards(),
-            'referral_percentage' => $this->getReferralPercentage(),
-            'css' => $this->getCss(),
-            'header_box' => $this->getHeaderBox(),
-            'left_box' => $this->getLeftBox(),
-            'right_box' => $this->getRightBox(),
-            'center1_box' => $this->getCenter1Box(),
-            'center2_box' => $this->getCenter2Box(),
-            'center3_box' => $this->getCenter3Box(),
-            'footer_box' => $this->getFooterBox(),
-        );
-
-    }
-
     public function save($data)
     {
         $rewards = implode(',', array_map(function ($i) {

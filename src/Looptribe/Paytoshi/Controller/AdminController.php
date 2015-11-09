@@ -95,7 +95,7 @@ class AdminController
         }
 
         if ($this->app->request->isGet()) {
-            $params = array_merge($this->settingRepository->getAdminView(),
+            $params = array_merge($this->getView(),
                 array('themes' => $this->themeService->getThemes()));
             $this->app->render($this->themeService->getTemplate('admin.html.twig'), $params);
             return;
@@ -135,4 +135,35 @@ class AdminController
         return $randomString;
     }
 
+    private function getView()
+    {
+        return array(
+            'version' => $this->settingRepository->getVersion(),
+            'api_key' => $this->settingRepository->getApiKey(),
+            'name' => $this->settingRepository->getName(),
+            'description' => $this->settingRepository->getDescription(),
+            'current_theme' => $this->settingRepository->getTheme(),
+            'captcha_provider' => $this->settingRepository->getCaptchaProvider(),
+            'solve_media' => array(
+                'challenge_key' => $this->settingRepository->getSolveMediaChallengeKey(),
+                'verification_key' => $this->settingRepository->getSolveMediaVerificationKey(),
+                'authentication_key' => $this->settingRepository->getSolveMediaAuthenticationKey(),
+            ),
+            'recaptcha' => array(
+                'public_key' => $this->settingRepository->getRecaptchaPublicKey(),
+                'private_key' => $this->settingRepository->getRecaptchaPrivateKey()
+            ),
+            'waiting_interval' => $this->settingRepository->getWaitingInterval(),
+            'rewards' => $this->settingRepository->getRewards(),
+            'referral_percentage' => $this->settingRepository->getReferralPercentage(),
+            'css' => $this->settingRepository->getCss(),
+            'header_box' => $this->settingRepository->getHeaderBox(),
+            'left_box' => $this->settingRepository->getLeftBox(),
+            'right_box' => $this->settingRepository->getRightBox(),
+            'center1_box' => $this->settingRepository->getCenter1Box(),
+            'center2_box' => $this->settingRepository->getCenter2Box(),
+            'center3_box' => $this->settingRepository->getCenter3Box(),
+            'footer_box' => $this->settingRepository->getFooterBox(),
+        );
+    }
 }
