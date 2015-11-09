@@ -12,7 +12,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Looptribe\\": "src/Looptribe"
+            "": "src/"
         }
     }
 }
