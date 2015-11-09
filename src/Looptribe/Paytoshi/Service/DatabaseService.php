@@ -52,7 +52,7 @@ class DatabaseService
                     $this->config['config_file']), null, $e);
             }
 
-            throw new PaytoshiException(sprintf('Unable to connect. Please check your database exists and the config in %s is correct.',
+            throw new PaytoshiException(sprintf('Unable to connect. Please check your database exists and the config in "%s" is correct.',
                 $this->config['config_file']), null, $e);
         }
     }
@@ -63,8 +63,8 @@ class DatabaseService
             $config = Yaml::parse($this->config['config_file']);
             $this->config['database'] = $config['database'];
         } catch (Exception $e) {
-            throw new PaytoshiException(sprintf('The configuration file %s is missing or not readable. Please check the file and its permissions.',
-                $this->config['config_file']), null, $e);
+            throw new PaytoshiException(sprintf('Error while reading configuration file "%s": %s',
+                $this->config['config_file'], $e->getMessage()), null, $e);
         }
     }
 
