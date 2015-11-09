@@ -19,6 +19,8 @@ INSERT IGNORE INTO paytoshi_settings (name, value) VALUES
     ('solve_media_authentication_key', ''),
     ('recaptcha_private_key', ''),
     ('recaptcha_public_key', ''),
+    ('funcaptcha_public_key', ''),
+    ('funcaptcha_private_key', ''),
     ('theme', :theme),
     ('version', 1),
     ('custom_css', '/**
