@@ -153,6 +153,10 @@ class AdminController
                 'public_key' => $this->settingRepository->getRecaptchaPublicKey(),
                 'private_key' => $this->settingRepository->getRecaptchaPrivateKey()
             ),
+            'funcaptcha' => array(
+                'public_key' => $this->settingRepository->getFuncaptchaPublicKey(),
+                'private_key' => $this->settingRepository->getFuncaptchaPrivateKey()
+            ),
             'waiting_interval' => $this->settingRepository->getWaitingInterval(),
             'rewards' => $this->settingRepository->getRewards(),
             'referral_percentage' => $this->settingRepository->getReferralPercentage(),
