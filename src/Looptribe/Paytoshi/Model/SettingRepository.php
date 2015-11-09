@@ -36,12 +36,12 @@ class SettingRepository
 
     public function isNew()
     {
-        return !isset($this->data['password']) || !$this->data['password'];
+        return !$this->get('password');
     }
 
     public function isIncomplete()
     {
-        return !$this->data['installed_at'] || !$this->data['api_key'];
+        return !$this->get('installed_at') || !$this->get('api_key');
     }
 
     public function getName()
@@ -88,13 +88,15 @@ class SettingRepository
     {
         return $this->get('recaptcha_private_key');
     }
-    
-    public function getFuncaptchaPublicKey() {
-        return $this->data['funcaptcha_public_key'];
+
+    public function getFuncaptchaPublicKey()
+    {
+        return $this->get('funcaptcha_public_key');
     }
 
-    public function getFuncaptchaPrivateKey() {
-        return $this->data['funcaptcha_private_key'];
+    public function getFuncaptchaPrivateKey()
+    {
+        return $this->get('funcaptcha_private_key');
     }
 
     public function getApiKey()
