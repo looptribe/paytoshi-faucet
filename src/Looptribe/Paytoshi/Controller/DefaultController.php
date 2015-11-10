@@ -93,6 +93,7 @@ class DefaultController
             'rewards_max' => $this->rewardService->getMax(),
             'waiting_interval' => $this->settingRepository->getWaitingInterval(),
             'address' => isset($_SESSION['address']) ? $_SESSION['address'] : null,
+            'base_path' => $this->getBasePath(),
             'base_url' => $this->app->request->getUrl() . $this->app->request->getPath(),
             'captcha' => array(
                 'name' => $this->captchaService->getName(),
@@ -304,6 +305,11 @@ class DefaultController
         }
 
         return $result;
+    }
+
+    private function getBasePath()
+    {
+        return rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
     }
 
 }
