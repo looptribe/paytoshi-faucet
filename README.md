@@ -9,7 +9,7 @@ Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fa
 
 ## Features
 * Ready-to-use script
-* Captcha support (ReCaptcha v2, SolveMedia)
+* Captcha support (ReCaptcha v2, SolveMedia, FunCaptcha)
 * Private admin area
 * Minimal configuration needed
 * Support to theming (Twig-powered)
