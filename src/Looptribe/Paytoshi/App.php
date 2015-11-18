@@ -113,15 +113,15 @@ class App extends Slim
         });
 
         $this->container->singleton('SolveMediaService', function () use($self) {
-            return new SolveMediaService($self, $self->SettingRepository);
+            return new SolveMediaService($self->SettingRepository);
         });
 
         $this->container->singleton('RecaptchaService', function () use($self) {
-            return new RecaptchaService($self, $self->SettingRepository);
+            return new RecaptchaService($self->SettingRepository);
         });
 
         $this->container->singleton('FuncaptchaService', function () use($self) {
-            return new FuncaptchaService($self, $self->SettingRepository);
+            return new FuncaptchaService($self->SettingRepository);
         });
 
         $this->container->singleton('RecipientRepository', function () use($self) {

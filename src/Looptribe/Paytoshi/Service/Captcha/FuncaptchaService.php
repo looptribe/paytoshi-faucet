@@ -21,14 +21,12 @@ class FuncaptchaService implements CaptchaServiceInterface {
     const SERVER = 'https://funcaptcha.com';
     const VERIFY_SERVER = 'https://funcaptcha.com/fc/v/';
     
-    protected $app;
     protected $settingRepository;
     
     private $publicKey;
     private $privateKey;
 
-    public function __construct($app, SettingRepository $settingRepository) {
-        $this->app = $app;
+    public function __construct(SettingRepository $settingRepository) {
         $this->settingRepository = $settingRepository;
         
         $this->publicKey = $this->settingRepository->getFuncaptchaPublicKey();

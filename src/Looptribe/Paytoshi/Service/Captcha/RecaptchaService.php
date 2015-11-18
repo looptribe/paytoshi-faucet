@@ -22,16 +22,14 @@ class RecaptchaService implements CaptchaServiceInterface
     const SERVER = 'https://www.google.com';
     const VERIFY_SERVER = 'https://www.google.com/recaptcha/api/siteverify';
 
-    protected $app;
     /** @var  SettingRepository */
     protected $settingRepository;
 
     private $publicKey;
     private $privateKey;
 
-    public function __construct($app, SettingRepository $settingRepository)
+    public function __construct(SettingRepository $settingRepository)
     {
-        $this->app = $app;
         $this->settingRepository = $settingRepository;
 
         $this->publicKey = $this->settingRepository->getRecaptchaPublicKey();

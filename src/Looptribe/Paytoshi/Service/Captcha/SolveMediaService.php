@@ -24,7 +24,6 @@ class SolveMediaService implements CaptchaServiceInterface
     const ADCOPY_VERIFY_SERVER = 'http://verify.solvemedia.com/papi/verify';
     const ADCOPY_SIGNUP = 'http://api.solvemedia.com/public/signup';
 
-    protected $app;
     /** @var  SettingRepository */
     protected $settingRepository;
 
@@ -34,9 +33,8 @@ class SolveMediaService implements CaptchaServiceInterface
 
     private $useSSL;
 
-    public function __construct($app, SettingRepository $settingRepository)
+    public function __construct(SettingRepository $settingRepository)
     {
-        $this->app = $app;
         $this->settingRepository = $settingRepository;
 
         $this->publicKey = $this->settingRepository->getSolveMediaChallengeKey();
