@@ -32,7 +32,7 @@ class CaptchaServiceFactory
             case 'funcaptcha':
                 return $this->app->FuncaptchaService;
             default:
-                throw RuntimeException();
+                throw new \RuntimeException();
         }
     }
 }
