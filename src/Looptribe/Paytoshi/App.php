@@ -62,9 +62,10 @@ class App extends Slim
 
     private function registerErrorHandler()
     {
+        $self = $this;
         // ERROR HANDLER
-        $this->error(function (Exception $e) {
-            return $this->render($this->ThemeService->getTemplate('error.html.twig'),
+        $this->error(function (Exception $e) use($self) {
+            return $self->render($self->ThemeService->getTemplate('error.html.twig'),
                 array('message' => $e->getMessage()));
         });
     }
@@ -72,9 +73,10 @@ class App extends Slim
     private function registerHooks()
     {
         // HOOKS
-        $this->hook('slim.before.dispatch', function () {
-            if ((!$this->SettingRepository || $this->SettingRepository->isNew()) && $this->router()->getCurrentRoute()->getName() != 'setup') {
-                $this->redirect($this->urlFor('setup'));
+        $self = $this;
+        $this->hook('slim.before.dispatch', function () use($self) {
+            if ((!$self->SettingRepository || $self->SettingRepository->isNew()) && $self->router()->getCurrentRoute()->getName() != 'setup') {
+                $self->redirect($self->urlFor('setup'));
             }
         });
     }
@@ -82,63 +84,64 @@ class App extends Slim
     private function registerServices()
     {
         // SERVICES
-        $this->container->singleton('DatabaseService', function () {
+        $self = $this;
+        $this->container->singleton('DatabaseService', function () use($self) {
             return new DatabaseService(array(
-                'config_file' => $this->config('config_file')
+                'config_file' => $self->config('config_file')
             ));
         });
 
-        $this->container->singleton('SettingRepository', function () {
+        $this->container->singleton('SettingRepository', function () use($self) {
             try {
-                return new SettingRepository($this->DatabaseService);
+                return new SettingRepository($self->DatabaseService);
             } catch (PaytoshiException $e) {
                 return null;
             }
         });
 
-        $this->container->singleton('ApiService', function () {
+        $this->container->singleton('ApiService', function () use($self) {
             return new ApiService(array(
-                'settingRepository' => $this->SettingRepository,
+                'settingRepository' => $self->SettingRepository,
                 'config' => array(
-                    'api_url' => $this->config('api_url'),
+                    'api_url' => $self->config('api_url'),
                 )
             ));
         });
 
-        $this->container->singleton('CaptchaServiceFactory', function () {
-            return new CaptchaServiceFactory($this);
+        $this->container->singleton('CaptchaServiceFactory', function () use($self) {
+            return new CaptchaServiceFactory($self);
         });
 
-        $this->container->singleton('SolveMediaService', function () {
-            return new SolveMediaService($this, $this->SettingRepository);
+        $this->container->singleton('SolveMediaService', function () use($self) {
+            return new SolveMediaService($self, $self->SettingRepository);
         });
 
-        $this->container->singleton('RecaptchaService', function () {
-            return new RecaptchaService($this, $this->SettingRepository);
+        $this->container->singleton('RecaptchaService', function () use($self) {
+            return new RecaptchaService($self, $self->SettingRepository);
         });
 
-        $this->container->singleton('FuncaptchaService', function () {
-            return new FuncaptchaService($this, $this->SettingRepository);
+        $this->container->singleton('FuncaptchaService', function () use($self) {
+            return new FuncaptchaService($self, $self->SettingRepository);
         });
 
-        $this->container->singleton('RecipientRepository', function () {
-            return new RecipientRepository($this->DatabaseService);
+        $this->container->singleton('RecipientRepository', function () use($self) {
+            return new RecipientRepository($self->DatabaseService);
         });
 
-        $this->container->singleton('PayoutRepository', function () {
-            return new PayoutRepository($this->DatabaseService);
+        $this->container->singleton('PayoutRepository', function () use($self) {
+            return new PayoutRepository($self->DatabaseService);
         });
 
-        $this->container->singleton('RewardService', function () {
-            return new RewardService($this->SettingRepository->getRewards());
+        $this->container->singleton('RewardService', function () use($self) {
+            return new RewardService($self->SettingRepository->getRewards());
         });
 
-        $this->container->singleton('ThemeService', function () {
+        $this->container->singleton('ThemeService', function () use($self) {
             return new ThemeService(array(
-                'settingRepository' => $this->SettingRepository,
+                'settingRepository' => $self->SettingRepository,
                 'config' => array(
-                    'default_theme' => $this->config('default_theme'),
-                    'template_path' => $this->config('templates.path')
+                    'default_theme' => $self->config('default_theme'),
+                    'template_path' => $self->config('templates.path')
                 )
             ));
         });
@@ -147,25 +150,26 @@ class App extends Slim
     private function registerControllers()
     {
         // CONTROLLERS
-        $this->container->singleton('AdminController', function () {
-            return new AdminController($this, array(
-                'databaseService' => $this->DatabaseService,
-                'settingRepository' => $this->SettingRepository,
-                'themeService' => $this->ThemeService,
-                'config' => array('setup' => $this->config('setup'))
+        $self = $this;
+        $this->container->singleton('AdminController', function () use($self) {
+            return new AdminController($self, array(
+                'databaseService' => $self->DatabaseService,
+                'settingRepository' => $self->SettingRepository,
+                'themeService' => $self->ThemeService,
+                'config' => array('setup' => $self->config('setup'))
             ));
         });
 
-        $this->container->singleton('DefaultController', function () {
-            return new DefaultController($this, array(
-                'databaseService' => $this->DatabaseService,
-                'settingRepository' => $this->SettingRepository,
-                'captchaServiceFactory' => $this->CaptchaServiceFactory,
-                'recipientRepository' => $this->RecipientRepository,
-                'payoutRepository' => $this->PayoutRepository,
-                'apiService' => $this->ApiService,
-                'rewardService' => $this->RewardService,
-                'themeService' => $this->ThemeService
+        $this->container->singleton('DefaultController', function () use($self) {
+            return new DefaultController($self, array(
+                'databaseService' => $self->DatabaseService,
+                'settingRepository' => $self->SettingRepository,
+                'captchaServiceFactory' => $self->CaptchaServiceFactory,
+                'recipientRepository' => $self->RecipientRepository,
+                'payoutRepository' => $self->PayoutRepository,
+                'apiService' => $self->ApiService,
+                'rewardService' => $self->RewardService,
+                'themeService' => $self->ThemeService
             ));
         });
     }
@@ -173,49 +177,50 @@ class App extends Slim
     private function registerRoutes()
     {
         // ROUTES
-        $this->get('/setup', function () {
-            if (!$this->SettingRepository || $this->SettingRepository->isNew()) {
-                return $this->AdminController->setup();
+        $self = $this;
+        $this->get('/setup', function () use($self) {
+            if (!$self->SettingRepository || $self->SettingRepository->isNew()) {
+                return $self->AdminController->setup();
             }
 
-            $this->response->redirect($this->urlFor('login'));
+            $self->response->redirect($self->urlFor('login'));
 
         })->name('setup');
 
-        $this->get('/login', function () {
-            $this->AdminController->login();
+        $this->get('/login', function () use($self) {
+            $self->AdminController->login();
         })->name('login');
 
-        $this->post('/login', function () {
-            $this->AdminController->login();
+        $this->post('/login', function () use($self) {
+            $self->AdminController->login();
         });
 
-        $this->get('/logout', function () {
-            $this->AdminController->logout();
+        $this->get('/logout', function () use($self) {
+            $self->AdminController->logout();
         });
 
-        $this->get('/admin', function () {
-            $this->AdminController->admin();
+        $this->get('/admin', function () use($self) {
+            $self->AdminController->admin();
         })->name('admin');
 
-        $this->post('/admin', function () {
-            $this->AdminController->admin();
+        $this->post('/admin', function () use($self) {
+            $self->AdminController->admin();
         })->name('admin_post');
 
-        $this->post('/reward', function () {
-            $this->DefaultController->reward();
+        $this->post('/reward', function () use($self) {
+            $self->DefaultController->reward();
         })->name('reward');
 
-        $this->get('/faq', function () {
-            $this->DefaultController->faq();
+        $this->get('/faq', function () use($self) {
+            $self->DefaultController->faq();
         })->name('faq');
 
-        $this->get('/', function () {
-            if ($this->SettingRepository->isIncomplete()) {
-                return $this->DefaultController->incomplete();
+        $this->get('/', function () use($self) {
+            if ($self->SettingRepository->isIncomplete()) {
+                return $self->DefaultController->incomplete();
             }
 
-            $this->DefaultController->index();
+            $self->DefaultController->index();
         })->name('index');
     }
 }
