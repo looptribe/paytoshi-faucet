@@ -34,6 +34,8 @@ class RewardService
                 return $reward['amount'];
             }
         }
+
+        return 0;
     }
 
     public function getAsArray()
