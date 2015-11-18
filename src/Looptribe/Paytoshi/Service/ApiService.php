@@ -44,7 +44,7 @@ class ApiService
 
         $browser = new Browser();
         $browser->getClient()->setVerifyPeer(false);
-        /** @var Response */
+        /** @var Response $response */
         try {
             $response = $browser->post($url, array(), $data);
         } catch (Exception $e) {

@@ -13,7 +13,9 @@
 namespace Looptribe\Paytoshi\Service\Captcha;
 
 use Buzz\Browser;
+use Buzz\Message\Response;
 use Exception;
+use Looptribe\Paytoshi\Model\SettingRepository;
 
 class RecaptchaService implements CaptchaServiceInterface
 {
@@ -21,15 +23,13 @@ class RecaptchaService implements CaptchaServiceInterface
     const VERIFY_SERVER = 'https://www.google.com/recaptcha/api/siteverify';
 
     protected $app;
+    /** @var  SettingRepository */
     protected $settingRepository;
 
     private $publicKey;
     private $privateKey;
-    private $hashKey;
 
-    private $useSSL;
-
-    public function __construct($app, $settingRepository)
+    public function __construct($app, SettingRepository $settingRepository)
     {
         $this->app = $app;
         $this->settingRepository = $settingRepository;
@@ -91,9 +91,9 @@ class RecaptchaService implements CaptchaServiceInterface
         $browser->getClient()->setVerifyPeer(false);
 
         try {
+            /** @var Response $resp */
             $resp = $browser->post(self::VERIFY_SERVER, $headers, http_build_query($content));
         } catch (Exception $e) {
-            throw $e;
             throw new CaptchaException('Failed to check captcha', 500, $e);
         }
 

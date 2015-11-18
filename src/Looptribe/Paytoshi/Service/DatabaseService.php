@@ -22,6 +22,7 @@ class DatabaseService
 {
 
     protected $config;
+    /** @var PDO */
     protected $conn;
 
     public function __construct($config)

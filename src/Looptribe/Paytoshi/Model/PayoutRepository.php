@@ -21,7 +21,7 @@ class PayoutRepository
     private $database;
     const TABLE_NAME = 'paytoshi_payouts';
 
-    public function __construct($database)
+    public function __construct(DatabaseService $database)
     {
         $this->database = $database;
     }

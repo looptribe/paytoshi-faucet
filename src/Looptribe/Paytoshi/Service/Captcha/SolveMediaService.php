@@ -13,7 +13,9 @@
 namespace Looptribe\Paytoshi\Service\Captcha;
 
 use Buzz\Browser;
+use Buzz\Message\Response;
 use Exception;
+use Looptribe\Paytoshi\Model\SettingRepository;
 
 class SolveMediaService implements CaptchaServiceInterface
 {
@@ -23,6 +25,7 @@ class SolveMediaService implements CaptchaServiceInterface
     const ADCOPY_SIGNUP = 'http://api.solvemedia.com/public/signup';
 
     protected $app;
+    /** @var  SettingRepository */
     protected $settingRepository;
 
     private $publicKey;
@@ -31,7 +34,7 @@ class SolveMediaService implements CaptchaServiceInterface
 
     private $useSSL;
 
-    public function __construct($app, $settingRepository)
+    public function __construct($app, SettingRepository $settingRepository)
     {
         $this->app = $app;
         $this->settingRepository = $settingRepository;
@@ -97,6 +100,7 @@ class SolveMediaService implements CaptchaServiceInterface
 
         $browser = new Browser();
         try {
+            /** @var Response $resp */
             $resp = $browser->post(self::ADCOPY_VERIFY_SERVER, $headers, http_build_query($content));
         } catch (Exception $e) {
             throw new CaptchaException('Failed to check captcha', 500, $e);

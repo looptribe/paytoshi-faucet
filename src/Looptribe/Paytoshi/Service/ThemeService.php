@@ -13,10 +13,11 @@
 namespace Looptribe\Paytoshi\Service;
 
 use Looptribe\Paytoshi\Exception\PaytoshiException;
+use Looptribe\Paytoshi\Model\SettingRepository;
 
 class ThemeService
 {
-
+    /** @var  SettingRepository */
     protected $settingRepository;
     protected $config;
 

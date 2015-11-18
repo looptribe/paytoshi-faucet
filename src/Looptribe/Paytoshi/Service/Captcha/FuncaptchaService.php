@@ -13,7 +13,9 @@
 namespace Looptribe\Paytoshi\Service\Captcha;
 
 use Buzz\Browser;
+use Buzz\Message\Response;
 use Exception;
+use Looptribe\Paytoshi\Model\SettingRepository;
 
 class FuncaptchaService implements CaptchaServiceInterface {
     const SERVER = 'https://funcaptcha.com';
@@ -25,7 +27,7 @@ class FuncaptchaService implements CaptchaServiceInterface {
     private $publicKey;
     private $privateKey;
 
-    public function __construct($app, $settingRepository) {
+    public function __construct($app, SettingRepository $settingRepository) {
         $this->app = $app;
         $this->settingRepository = $settingRepository;
         
@@ -76,6 +78,7 @@ class FuncaptchaService implements CaptchaServiceInterface {
         $browser->getClient()->setVerifyPeer(false);
         
         try {
+            /** @var Response $resp */
             $resp = $browser->post(self::VERIFY_SERVER, $headers, http_build_query($content));
         }
         catch (Exception $e) {

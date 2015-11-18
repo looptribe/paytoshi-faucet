@@ -21,7 +21,7 @@ class RecipientRepository
     private $database;
     const TABLE_NAME = 'paytoshi_recipients';
 
-    public function __construct($database)
+    public function __construct(DatabaseService $database)
     {
         $this->database = $database;
     }
