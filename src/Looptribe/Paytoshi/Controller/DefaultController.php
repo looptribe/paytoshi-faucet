@@ -138,6 +138,7 @@ class DefaultController
         if (empty($address) || empty($challenge) || empty($response)) {
             $this->app->flash('warning', 'Missing address or captcha.');
             $this->app->redirect($this->app->urlFor('index'));
+            return;
         }
 
         $remoteIp = $this->ipService->determineClientIpAddress($_SERVER);
@@ -170,6 +171,7 @@ class DefaultController
         } catch (PaytoshiException $e) {
             $this->app->flash('error', 'Unable to connect to database.');
             $this->app->redirect($this->app->urlFor('index'));
+            return;
         }
 
         $recipient = $this->recipientRepository->findOneByAddress($address);
