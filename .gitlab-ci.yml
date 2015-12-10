@@ -1,0 +1,10 @@
+before_script:
+  - composer.phar install
+
+tests:
+  script:
+    - composer.phar test
+  tags:
+    - mysql
+    - php
+    - composer
