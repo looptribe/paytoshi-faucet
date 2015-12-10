@@ -123,6 +123,24 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
         $this->assertSame('192.168.1.3', $ipAddress);
     }
 
+    public function testXForwardedForWithTrustedProxyWithMultipleRanges()
+    {
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher, true, array(
+            '192.168.0.0/24',
+            '192.168.1.0',
+            '192.168.3.0/26',
+            '192.169.0.0/16'
+        ));
+        $serverParams = array(
+            'REMOTE_ADDR' => '192.168.0.2',
+            'HTTP_X_FORWARDED_FOR' => '192.168.1.3, 192.168.1.2, 192.168.1.1'
+        );
+        $ipAddress = $sut->determineClientIpAddress($serverParams);
+        $this->assertSame('192.168.1.3', $ipAddress);
+    }
+
     public function testXForwardedForWithUntrustedProxy()
     {
         $ipValidator = new IpValidatorService();
@@ -147,6 +165,24 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
         );
         $ipAddress = $sut->determineClientIpAddress($serverParams);
         $this->assertSame('192.168.0.2', $ipAddress);
+    }
+
+    public function testXForwardedForWithUntrustedProxyWithMultipleRanges()
+    {
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher, true, array(
+            '192.168.0.0/24',
+            '192.168.1.0',
+            '192.168.3.0/26',
+            '192.169.0.0/16'
+        ));
+        $serverParams = array(
+            'REMOTE_ADDR' => '192.168.2.2',
+            'HTTP_X_FORWARDED_FOR' => '192.168.1.3, 192.168.1.2, 192.168.1.1'
+        );
+        $ipAddress = $sut->determineClientIpAddress($serverParams);
+        $this->assertSame('192.168.2.2', $ipAddress);
     }
 
     public function testHttpClientIp()

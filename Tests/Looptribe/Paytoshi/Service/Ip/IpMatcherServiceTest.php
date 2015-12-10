@@ -45,10 +45,24 @@ class IpMatcherServiceTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
-    public function testKoInRange()
+    public function testKoInRange24()
     {
         $sut = new IpMatcherService();
-        $result = $sut->match('192.168.0.0', '192.168.1.0/24');
+        $result = $sut->match('192.168.1.0', '192.168.0.0/24');
+        $this->assertFalse($result);
+    }
+
+    public function testKoInRange16()
+    {
+        $sut = new IpMatcherService();
+        $result = $sut->match('192.169.0.0', '192.168.0.0/16');
+        $this->assertFalse($result);
+    }
+
+    public function testKoInRange8()
+    {
+        $sut = new IpMatcherService();
+        $result = $sut->match('193.0.0.0', '192.0.0.0/8');
         $this->assertFalse($result);
     }
 
