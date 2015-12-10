@@ -171,12 +171,13 @@ class App extends Slim
         $this->container->singleton('IpMatcherService', function () use ($self) {
             return new IpMatcherService();
         });
-        $this->container->singleton('IpService', function () use ($self) {
+        $trustedProxies = $this->trustedProxies;
+        $this->container->singleton('IpService', function () use ($self, $trustedProxies) {
             return new IpService(
                 $self->IpValidatorService,
                 $self->IpMatcherService,
                 true,
-                $self->trustedProxies
+                $trustedProxies
             );
         });
     }
