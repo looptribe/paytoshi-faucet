@@ -73,6 +73,12 @@ class ApiService
                     case 'ACCESS_DENIED':
                         $apiResponse->setError('Access denied, please check your apikey.');
                         break;
+                    case 'INTERNAL ERROR':
+                        $apiResponse->setError('An internal server error has occurred, try again later.');
+                        break;
+                    case 'BAD_REQUEST':
+                        $apiResponse->setError('Invalid request.');
+                        break;
                     default:
                         $apiResponse->setError(sprintf("Generic error: %s.", $content['code']));
                         break;
