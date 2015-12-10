@@ -107,7 +107,7 @@ class Payout
     /**
      * Set referralRecipientAddress
      *
-     * @param Recipient $referralRecipientAddress
+     * @param string $referralRecipientAddress
      * @return Recipient
      */
     public function setReferralRecipientAddress($referralRecipientAddress)
@@ -119,7 +119,7 @@ class Payout
     /**
      * Get referralRecipientAddress
      *
-     * @return Recipient
+     * @return string
      */
     public function getReferralRecipientAddress()
     {
