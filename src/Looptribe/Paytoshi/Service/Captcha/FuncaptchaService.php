@@ -64,6 +64,7 @@ class FuncaptchaService implements CaptchaServiceInterface {
      */
     public function checkAnswer($remoteIp, $challenge, $response) {
         $headers = array(
+            'Connection' => 'close'
         );
         
         $content = array(

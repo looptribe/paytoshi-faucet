@@ -35,6 +35,9 @@ class ApiService
         $apiKey = $this->settingRepository->getApiKey();
         $query = http_build_query(array('apikey' => $apiKey));
         $url = $this->config['api_url'] . '?' . $query;
+        $headers = array(
+            'Connection' => 'close'
+        );
         $data = http_build_query(array(
             'address' => $address,
             'amount' => $amount,
@@ -46,7 +49,7 @@ class ApiService
         $browser->getClient()->setVerifyPeer(false);
         /** @var Response $response */
         try {
-            $response = $browser->post($url, array(), $data);
+            $response = $browser->post($url, $headers, $data);
         } catch (Exception $e) {
             throw new PaytoshiException('Error while posting request', 500, $e);
         }

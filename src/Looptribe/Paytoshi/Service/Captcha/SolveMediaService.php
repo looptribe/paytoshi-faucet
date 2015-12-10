@@ -86,7 +86,8 @@ class SolveMediaService implements CaptchaServiceInterface
 
         $headers = array(
             'User-Agent' => 'solvemedia/PHP',
-            'Content-Type' => 'application/x-www-form-urlencoded'
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Connection' => 'close'
         );
 
         $content = array(

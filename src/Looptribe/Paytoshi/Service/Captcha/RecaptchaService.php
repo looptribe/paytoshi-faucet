@@ -76,7 +76,9 @@ class RecaptchaService implements CaptchaServiceInterface
             throw new CaptchaException('RemoteIp missing');
         }
 
-        $headers = array();
+        $headers = array(
+            'Connection' => 'close'
+        );
 
         $content = array(
             'secret' => $this->privateKey,
