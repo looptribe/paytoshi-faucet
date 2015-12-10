@@ -1,11 +1,22 @@
 <?php
 
+/**
+ * Paytoshi Faucet Script
+ *
+ * Contact: info@paytoshi.org
+ *
+ * @author: Looptribe
+ * @link: https://paytoshi.org
+ * @package: Looptribe\Paytoshi
+ */
+
 namespace Tests\Looptribe\Paytoshi\Servicec;
 
 use Looptribe\Paytoshi\Service\Ip\IpMatcherService;
 use Looptribe\Paytoshi\Service\Ip\IpService;
 use Looptribe\Paytoshi\Service\Ip\IpValidatorService;
 use PHPUnit_Framework_TestCase;
+use Slim\Environment;
 
 class IpServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -127,7 +138,11 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testNullForIpv6()
     {
-        $ipValidator = new IpValidatorService();
+        $ipValidator = $this->getMockBuilder('Looptribe\Paytoshi\Service\Ip\IpValidatorService')
+            ->getMock();
+        $ipValidator->expects($this->once())
+            ->method('validate')
+            ->willReturn(false);
         $ipMatcher = new IpMatcherService();
         $sut = new IpService($ipValidator, $ipMatcher);
         $serverParams = array(
