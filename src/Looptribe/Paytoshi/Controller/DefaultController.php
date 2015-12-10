@@ -26,6 +26,7 @@ use Looptribe\Paytoshi\Service\ApiService;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaException;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaServiceInterface;
 use Looptribe\Paytoshi\Service\DatabaseService;
+use Looptribe\Paytoshi\Service\IpService;
 use Looptribe\Paytoshi\Service\RewardService;
 use Looptribe\Paytoshi\Service\ThemeService;
 
@@ -49,6 +50,8 @@ class DefaultController
     protected $rewardService;
     /** @var  ThemeService */
     protected $themeService;
+    /** @var  IpService */
+    protected $ipService;
 
     public function __construct(App $app, $options = array())
     {
@@ -61,6 +64,7 @@ class DefaultController
         $this->apiService = $options['apiService'];
         $this->rewardService = $options['rewardService'];
         $this->themeService = $options['themeService'];
+        $this->ipService = $options['ipService'];
 
     }
 
@@ -135,7 +139,11 @@ class DefaultController
             $this->app->redirect($this->app->urlFor('index'));
         }
 
-        $remoteIp = $this->app->request->getIp();
+        $remoteIp = $this->ipService->determineClientIpAddress($_SERVER);
+        if (!$remoteIp) {
+            $this->app->flash('warning', 'Incorrect ip address.');
+            $this->app->redirect($this->app->urlFor('index'));
+        }
 
         // Captcha Check
         try {

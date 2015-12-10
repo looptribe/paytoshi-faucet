@@ -25,6 +25,7 @@ use Looptribe\Paytoshi\Service\Captcha\FuncaptchaService;
 use Looptribe\Paytoshi\Service\Captcha\RecaptchaService;
 use Looptribe\Paytoshi\Service\Captcha\SolveMediaService;
 use Looptribe\Paytoshi\Service\DatabaseService;
+use Looptribe\Paytoshi\Service\IpService;
 use Looptribe\Paytoshi\Service\RewardService;
 use Looptribe\Paytoshi\Service\ThemeService;
 use Slim\Slim;
@@ -42,6 +43,8 @@ class App extends Slim
         'api_url' => 'http://paytoshi.org/api/v1/faucet/send',
         'balance_url' => 'https://paytoshi.org/_ADDRESS_/balance',
         'default_theme' => 'default'
+    );
+    private $trustedProxies = array(
     );
 
     public function __construct(array $userSettings = array())
@@ -145,6 +148,10 @@ class App extends Slim
                 )
             ));
         });
+
+        $this->container->singleton('IpService', function () use ($self) {
+            return new IpService(true, $self->trustedProxies);
+        });
     }
 
     private function registerControllers()
@@ -169,7 +176,8 @@ class App extends Slim
                 'payoutRepository' => $self->PayoutRepository,
                 'apiService' => $self->ApiService,
                 'rewardService' => $self->RewardService,
-                'themeService' => $self->ThemeService
+                'themeService' => $self->ThemeService,
+                'ipService' => $self->IpService
             ));
         });
     }
