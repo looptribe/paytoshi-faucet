@@ -24,6 +24,7 @@ use Looptribe\Paytoshi\Model\SettingRepository;
 use Looptribe\Paytoshi\Service\ApiResponse;
 use Looptribe\Paytoshi\Service\ApiService;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaException;
+use Looptribe\Paytoshi\Service\Captcha\CaptchaResponse;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaServiceInterface;
 use Looptribe\Paytoshi\Service\DatabaseService;
 use Looptribe\Paytoshi\Service\Ip\IpService;
@@ -147,6 +148,7 @@ class DefaultController
 
         // Captcha Check
         try {
+            /** @var CaptchaResponse $captchaResponse */
             $captchaResponse = $this->captchaService->checkAnswer($remoteIp, $challenge, $response);
         } catch (CaptchaException $e) {
             $this->app->flash('error', 'Unable to complete request.');
