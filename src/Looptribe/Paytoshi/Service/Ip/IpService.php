@@ -88,7 +88,14 @@ class IpService
         }
         $checkProxyHeaders = $this->checkProxyHeaders;
         if ($checkProxyHeaders && !empty($this->trustedProxies)) {
-            if (!in_array($ipAddress, $this->trustedProxies)) {
+            $existsProxy = false;
+            foreach($this->trustedProxies as $proxy) {
+                if ($this->ipMatcherService->match($ipAddress, $proxy)) {
+                    $existsProxy = true;
+                    break;
+                }
+            }
+            if (!$existsProxy) {
                 $checkProxyHeaders = false;
             }
         }
