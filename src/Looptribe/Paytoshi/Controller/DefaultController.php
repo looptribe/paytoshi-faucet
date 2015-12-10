@@ -151,7 +151,7 @@ class DefaultController
             /** @var CaptchaResponse $captchaResponse */
             $captchaResponse = $this->captchaService->checkAnswer($remoteIp, $challenge, $response);
         } catch (CaptchaException $e) {
-            $this->app->flash('error', 'Unable to complete request.');
+            $this->app->flash('error', 'Unable to verify captcha.');
             $this->app->redirect($this->app->urlFor('index'));
             return;
         }
@@ -167,7 +167,7 @@ class DefaultController
                 ;
             }
         } catch (PaytoshiException $e) {
-            $this->app->flash('error', 'Unable to complete request.');
+            $this->app->flash('error', 'Unable to connect to database.');
             $this->app->redirect($this->app->urlFor('index'));
         }
 
