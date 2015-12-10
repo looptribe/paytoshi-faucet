@@ -78,7 +78,7 @@ class Payout
     /**
      * Set recipientAddress
      *
-     * @param Recipient $recipientAddress
+     * @param string $recipientAddress
      * @return Payout
      */
     public function setRecipientAddress($recipientAddress)
@@ -90,7 +90,7 @@ class Payout
     /**
      * Get recipientAddress
      *
-     * @return Recipient
+     * @return string
      */
     public function getRecipientAddress()
     {
