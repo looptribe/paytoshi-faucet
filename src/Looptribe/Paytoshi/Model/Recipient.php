@@ -16,11 +16,17 @@ use DateTime;
 
 class Recipient
 {
+    /** @var  integer */
     private $id;
+    /** @var  string */
     private $address;
+    /** @var  integer */
     private $earning;
+    /** @var  integer */
     private $referralEarning;
+    /** @var  DateTime */
     private $updatedAt;
+    /** @var  DateTime */
     private $createdAt;
 
     public function __construct()
@@ -156,7 +162,7 @@ class Recipient
     /**
      * Get updatedAt
      *
-     * @return datatime
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {

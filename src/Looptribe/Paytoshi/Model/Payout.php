@@ -16,12 +16,19 @@ use DateTime;
 
 class Payout
 {
+    /** @var  integer */
     private $id;
+    /** @var  DateTime */
     private $earning;
+    /** @var  DateTime */
     private $referralEarning;
+    /** @var  string */
     private $ip;
+    /** @var  string */
     private $recipientAddress;
+    /** @var  string */
     private $referralRecipientAddress;
+    /** @var  DateTime */
     private $createdAt;
 
     public function __construct()
