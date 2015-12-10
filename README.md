@@ -13,6 +13,7 @@ Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fa
 * Private admin area
 * Minimal configuration needed
 * Support to theming (Twig-powered)
+* Cloudflare support
 * Clean and lightweight
 
 ## Requirements
@@ -35,10 +36,6 @@ database:
 ```
 * Visit your faucet. A wizard will create the admin password and populate the database. 
 * Customize your faucet in your admin area.
-
-## Work in progress
-* Diagnostics script
-* Detection system for systems that does not support TLS connections (needed by CloudFlare).
 
 ## Contributing
 When contributing code to Paytoshi Faucet, you must follow its coding standards.
