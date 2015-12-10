@@ -10,7 +10,7 @@
  * @package: Looptribe\Paytoshi
  */
 
-namespace Tests\Looptribe\Paytoshi\Servicec;
+namespace Tests\Looptribe\Paytoshi\Service;
 
 use Looptribe\Paytoshi\Service\Ip\IpMatcherService;
 use PHPUnit_Framework_TestCase;
