@@ -20,6 +20,6 @@
         }
     },
     "scripts": {
-        "test": "php vendor/bin/phpunit --colors=always --coverage-html=coverage"
+        "test": "php vendor/bin/phpunit --colors=always --coverage-html=coverage --coverage-text"
     }
 }
