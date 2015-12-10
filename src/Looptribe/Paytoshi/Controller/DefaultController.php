@@ -144,6 +144,7 @@ class DefaultController
         if (!$remoteIp) {
             $this->app->flash('warning', 'Incorrect ip address.');
             $this->app->redirect($this->app->urlFor('index'));
+            return;
         }
 
         // Captcha Check
