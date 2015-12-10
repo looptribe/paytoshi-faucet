@@ -9,7 +9,7 @@
         "symfony/yaml": "2.*",
         "slim/views": "0.*",
         "twig/twig": "1.*",
-        "kriswallsmith/buzz": "dev-master"
+        "kriswallsmith/buzz": "0.15"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0"

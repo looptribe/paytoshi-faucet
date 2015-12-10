@@ -4,12 +4,12 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7d2f182a32f69128d25fd8ba4167ce10",
-    "content-hash": "feee3a6208c3373a374bfae91ec3c768",
+    "hash": "594cbeb7f9316d75c59c4e9e98d45f0a",
+    "content-hash": "db6142c031f29d3cfb9d42e57f719909",
     "packages": [
         {
             "name": "kriswallsmith/buzz",
-            "version": "dev-master",
+            "version": "v0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/Buzz.git",
@@ -1171,9 +1171,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "kriswallsmith/buzz": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
