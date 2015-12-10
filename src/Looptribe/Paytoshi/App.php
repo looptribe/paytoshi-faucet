@@ -25,7 +25,9 @@ use Looptribe\Paytoshi\Service\Captcha\FuncaptchaService;
 use Looptribe\Paytoshi\Service\Captcha\RecaptchaService;
 use Looptribe\Paytoshi\Service\Captcha\SolveMediaService;
 use Looptribe\Paytoshi\Service\DatabaseService;
+use Looptribe\Paytoshi\Service\IpMatcherService;
 use Looptribe\Paytoshi\Service\IpService;
+use Looptribe\Paytoshi\Service\IpValidatorService;
 use Looptribe\Paytoshi\Service\RewardService;
 use Looptribe\Paytoshi\Service\ThemeService;
 use Slim\Slim;
@@ -149,8 +151,19 @@ class App extends Slim
             ));
         });
 
+        $this->container->singleton('IpValidatorService', function () use ($self) {
+            return new IpValidatorService();
+        });
+        $this->container->singleton('IpMatcherService', function () use ($self) {
+            return new IpMatcherService();
+        });
         $this->container->singleton('IpService', function () use ($self) {
-            return new IpService(true, $self->trustedProxies);
+            return new IpService(
+                $self->IpValidatorService,
+                $self->IpMatcherService,
+                true,
+                $self->trustedProxies
+            );
         });
     }
 

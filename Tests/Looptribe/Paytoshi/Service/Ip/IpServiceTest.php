@@ -1,8 +1,10 @@
 <?php
 
-namespace Tests\Looptribe\Paytoshi\Service;
+namespace Tests\Looptribe\Paytoshi\Servicec;
 
-use Looptribe\Paytoshi\Service\IpService;
+use Looptribe\Paytoshi\Service\Ip\IpMatcherService;
+use Looptribe\Paytoshi\Service\Ip\IpService;
+use Looptribe\Paytoshi\Service\Ip\IpValidatorService;
 use PHPUnit_Framework_TestCase;
 
 class IpServiceTest extends PHPUnit_Framework_TestCase
@@ -12,7 +14,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
         $headers = array(
             'CUSTOM_HEADER'
         );
-        $sut = new IpService(true, array(), $headers);
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher, true, array(), $headers);
         $serverParams = array(
             'REMOTE_ADDR' => '192.168.1.1',
             'CUSTOM_HEADER' => '192.168.1.3'
@@ -23,7 +27,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testIpSetByRemoteAddr()
     {
-        $sut = new IpService();
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher);
         $serverParams = array(
             'REMOTE_ADDR' => '192.168.1.1',
         );
@@ -33,7 +39,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testIpIsNullIfMissing()
     {
-        $sut = new IpService();
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher);
         $serverParams = array();
         $ipAddress = $sut->determineClientIpAddress($serverParams);
         $this->assertNull($ipAddress);
@@ -41,7 +49,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testXForwardedForIp()
     {
-        $sut = new IpService(true);
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher, true);
         $serverParams = array(
             'REMOTE_ADDR' => '192.168.1.1',
             'HTTP_X_FORWARDED_FOR' => '192.168.1.3, 192.168.1.2, 192.168.1.1'
@@ -52,7 +62,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testXForwardedForIgnored()
     {
-        $sut = new IpService();
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher);
         $serverParams = array(
             'REMOTE_ADDR' => '192.168.0.1',
             'HTTP_X_FORWARDED_FOR' => '192.168.1.3, 192.168.1.2, 192.168.1.1'
@@ -63,7 +75,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testXForwardedForWithInvalidIp()
     {
-        $sut = new IpService(true);
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher, true);
         $serverParams = array(
             'REMOTE_ADDR' => '192.168.1.1',
             'HTTP_X_FORWARDED_FOR' => 'invalid'
@@ -74,7 +88,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testXForwardedForWithTrustedProxy()
     {
-        $sut = new IpService(true, array('192.168.0.1', '192.168.0.2'));
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher, true, array('192.168.0.1', '192.168.0.2'));
         $serverParams = array(
             'REMOTE_ADDR' => '192.168.0.2',
             'HTTP_X_FORWARDED_FOR' => '192.168.1.3, 192.168.1.2, 192.168.1.1'
@@ -85,7 +101,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testXForwardedForWithUntrustedProxy()
     {
-        $sut = new IpService(true, array('192.168.0.1'));
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher, true, array('192.168.0.1'));
         $serverParams = array(
             'REMOTE_ADDR' => '192.168.0.2',
             'HTTP_X_FORWARDED_FOR' => '192.168.1.3, 192.168.1.2, 192.168.1.1'
@@ -96,7 +114,9 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
 
     public function testHttpClientIp()
     {
-        $sut = new IpService(true);
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher, true);
         $serverParams = array(
             'REMOTE_ADDR' => '192.168.1.1',
             'HTTP_CLIENT_IP' => '192.168.1.3'
@@ -105,9 +125,11 @@ class IpServiceTest extends PHPUnit_Framework_TestCase
         $this->assertSame('192.168.1.3', $ipAddress);
     }
 
-    public function testIpv6SetByRemoteAddr()
+    public function testNullForIpv6()
     {
-        $sut = new IpService();
+        $ipValidator = new IpValidatorService();
+        $ipMatcher = new IpMatcherService();
+        $sut = new IpService($ipValidator, $ipMatcher);
         $serverParams = array(
             'REMOTE_ADDR' => '001:DB8::21f:5bff:febf:ce22:8a2e',
         );

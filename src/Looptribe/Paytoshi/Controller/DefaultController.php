@@ -26,7 +26,7 @@ use Looptribe\Paytoshi\Service\ApiService;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaException;
 use Looptribe\Paytoshi\Service\Captcha\CaptchaServiceInterface;
 use Looptribe\Paytoshi\Service\DatabaseService;
-use Looptribe\Paytoshi\Service\IpService;
+use Looptribe\Paytoshi\Service\Ip\IpService;
 use Looptribe\Paytoshi\Service\RewardService;
 use Looptribe\Paytoshi\Service\ThemeService;
 

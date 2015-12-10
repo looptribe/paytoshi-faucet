@@ -1,13 +1,16 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Diego
- * Date: 10/12/2015
- * Time: 10.08
+ * Paytoshi Faucet Script
+ *
+ * Contact: info@paytoshi.org
+ *
+ * @author: Looptribe
+ * @link: https://paytoshi.org
+ * @package: Looptribe\Paytoshi
  */
 
-namespace Looptribe\Paytoshi\Service;
-
+namespace Looptribe\Paytoshi\Service\Ip;
 
 class IpService
 {
@@ -41,14 +44,23 @@ class IpService
         'HTTP_X_FORWARDED_FOR'
     );
 
+    /** @var IpValidatorService  */
+    protected $ipValidatorService;
+    /** @var IpMatcherService  */
+    protected $ipMatcherService;
+
     /**
      * Constructor
      *
+     * @param IpValidatorService $ipValidatorService
+     * @param IpMatcherService $ipMatcherService
      * @param bool $checkProxyHeaders Whether to use proxy headers to determine client IP
      * @param array $trustedProxies List of IP addresses of trusted proxies
      * @param array $headersToInspect List of headers to inspect
      */
     public function __construct(
+        IpValidatorService $ipValidatorService,
+        IpMatcherService $ipMatcherService,
         $checkProxyHeaders = false,
         array $trustedProxies = array(),
         array $headersToInspect = array()
@@ -58,6 +70,8 @@ class IpService
         if (!empty($headersToInspect)) {
             $this->headersToInspect = $headersToInspect;
         }
+        $this->ipValidatorService = $ipValidatorService;
+        $this->ipMatcherService = $ipMatcherService;
     }
 
     /**
@@ -69,7 +83,7 @@ class IpService
     public function determineClientIpAddress($serverParams)
     {
         $ipAddress = null;
-        if (isset($serverParams['REMOTE_ADDR']) && $this->isValidIpAddress($serverParams['REMOTE_ADDR'])) {
+        if (isset($serverParams['REMOTE_ADDR']) && $this->ipValidatorService->validate($serverParams['REMOTE_ADDR'])) {
             $ipAddress = $serverParams['REMOTE_ADDR'];
         }
         $checkProxyHeaders = $this->checkProxyHeaders;
@@ -82,7 +96,7 @@ class IpService
             foreach ($this->headersToInspect as $header) {
                 if (array_key_exists($header, $serverParams)) {
                     $ip = trim(current(explode(',', $serverParams[$header])));
-                    if ($this->isValidIpAddress($ip)) {
+                    if ($this->ipValidatorService->validate($ip)) {
                         $ipAddress = $ip;
                         break;
                     }
@@ -93,19 +107,4 @@ class IpService
         return $ipAddress;
     }
 
-    /**
-     * Check that a given string is a valid IP address
-     *
-     * @param  string $ip
-     * @return boolean
-     */
-    protected function isValidIpAddress($ip)
-    {
-        $flags = FILTER_FLAG_IPV4;# | FILTER_FLAG_IPV6;
-        if (filter_var($ip, FILTER_VALIDATE_IP, $flags) === false) {
-            return false;
-        }
-
-        return true;
-    }
 }
