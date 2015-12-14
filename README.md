@@ -5,7 +5,7 @@ Faucet Script for [Paytoshi](https://paytoshi.org): the Bitcoin micropayment wal
 Create a Paytoshi account, get an apikey and start using your Bitcoin faucet website.
 
 
-Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fabpot/Twig).
+Based on [Silex](http://silex.sensiolabs.org/) and [Twig](https://github.com/fabpot/Twig).
 
 ## Features
 * Ready-to-use script
@@ -18,7 +18,7 @@ Based on [Slim](http://github.com/codeguy/Slim) and [Twig](https://github.com/fa
 
 ## Requirements
 * Apache >= 2.2 (with mod_rewrite)
-* PHP >= 5.3
+* PHP >= 5.3.9
 * MySQL >= 5 (with PDO support)
 * php5-mcrypt extension
 
