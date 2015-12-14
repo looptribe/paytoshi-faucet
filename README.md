@@ -1,6 +1,8 @@
 Paytoshi Faucet
 ========================================================
 
+[![Build Status](https://img.shields.io/travis/looptribe/paytoshi-faucet.svg)](https://travis-ci.org/looptribe/paytoshi-faucet)
+
 Faucet Script for [Paytoshi](https://paytoshi.org): the Bitcoin micropayment wallet. 
 Create a Paytoshi account, get an apikey and start using your Bitcoin faucet website.
 
