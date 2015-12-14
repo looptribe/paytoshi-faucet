@@ -3,7 +3,7 @@ before_script:
 
 tests:
   script:
-    - php vendor/bin/phpunit --colors=never
+    - php vendor/bin/phpunit --coverage-text --colors=never
   tags:
     - mysql
     - php-5.3
