@@ -2,6 +2,7 @@
 
 namespace Looptribe\Paytoshi;
 
+use Doctrine\DBAL\Exception\TableNotFoundException;
 use Looptribe\Paytoshi\Controller;
 use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
@@ -33,16 +34,16 @@ class Application extends \Silex\Application
         $app->register(new Provider\DoctrineServiceProvider());
 
         $app['config'] = $app->share(function () use ($app) {
-            Application::loadConfig($app['root_path'] . '/config/config.yml');
+            return Application::loadConfig($app['root_path'] . '/config/config.yml');
         });
 
-        $app['db.default_options'] = $app->share(function () use ($app) {
-            $config = $app['db.default_options'];
-            $config['dbname'] = $app['config']['database']['name'];
-            $config['user'] = $app['config']['database']['username'];
-            $config['password'] = $app['config']['database']['password'];
-            $config['host'] = $app['config']['database']['host'];
-            return $config;
+        $app['db.options'] = $app->share(function () use ($app) {
+            return array(
+                'dbname' => $app['config']['database']['name'],
+                'user' => $app['config']['database']['username'],
+                'password' => $app['config']['database']['password'],
+                'host' => $app['config']['database']['host'],
+            );
         });
 
         $app['templating'] = $app->share(function () use ($app) {
@@ -61,7 +62,12 @@ class Application extends \Silex\Application
         });
 
         $requireSetup = function (Request $request, Application $app) {
-            if (false === $app['repository.settings']->get('password')) {
+            try {
+                if (false === $app['repository.settings']->get('password')) {
+                    return new RedirectResponse($app['url_generator']->generate('setup'));
+                }
+            }
+            catch (TableNotFoundException $ex) {
                 return new RedirectResponse($app['url_generator']->generate('setup'));
             }
         };
