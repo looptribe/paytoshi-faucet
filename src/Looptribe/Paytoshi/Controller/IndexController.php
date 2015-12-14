@@ -16,6 +16,6 @@ class IndexController
 
     public function action()
     {
-        return $this->templating->render('index.html.twig');
+        return $this->templating->render('default/layout.html.twig');
     }
 }

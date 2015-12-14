@@ -18,7 +18,7 @@ class SettingsRepository
         $this->database = $dabatase;
     }
 
-    public function get($key, $default = false)
+    public function get($key, $default = null)
     {
         if ($this->cache === null) {
             $this->loadAll();

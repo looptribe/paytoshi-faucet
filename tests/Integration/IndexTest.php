@@ -17,6 +17,17 @@ class IndexTest extends WebTestCase
 
     public function testIndex()
     {
+        $mock = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->expects($this->any())
+            ->method('get')
+            ->with('password')
+            ->willReturn('fakepasswordhash');
+        $this->app['repository.settings'] = function () use ($mock) {
+            return $mock;
+        };
+
         $client = $this->createClient();
         $crawler = $client->request('GET', '/');
 

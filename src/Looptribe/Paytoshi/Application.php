@@ -63,7 +63,7 @@ class Application extends \Silex\Application
 
         $requireSetup = function (Request $request, Application $app) {
             try {
-                if (false === $app['repository.settings']->get('password')) {
+                if (null === $app['repository.settings']->get('password')) {
                     return new RedirectResponse($app['url_generator']->generate('setup'));
                 }
             }
