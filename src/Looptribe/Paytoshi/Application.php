@@ -4,7 +4,7 @@ namespace Looptribe\Paytoshi;
 
 use Looptribe\Paytoshi\Controller\IndexController;
 use Looptribe\Paytoshi\Controller\PublicControllerProvider;
-use Silex\Provider\ServiceControllerServiceProvider;
+use Silex\Provider;
 
 class Application extends \Silex\Application
 {
@@ -18,7 +18,10 @@ class Application extends \Silex\Application
     {
         $app = $this;
 
-        $app->register(new ServiceControllerServiceProvider());
+        $app->register(new Provider\ServiceControllerServiceProvider());
+        $app->register(new Provider\TwigServiceProvider(), array(
+            'twig.path' => __DIR__ . '/../../themes',
+        ));
 
         $app['controller.index'] = $app->share(function () use ($app) {
             return new IndexController();
