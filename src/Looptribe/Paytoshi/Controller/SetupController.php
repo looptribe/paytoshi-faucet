@@ -4,7 +4,7 @@ namespace Looptribe\Paytoshi\Controller;
 
 use Looptribe\Paytoshi\Templating\TemplatingEngineInterface;
 
-class IndexController
+class SetupController
 {
     /** @var TemplatingEngineInterface */
     private $templating;
@@ -14,8 +14,13 @@ class IndexController
         $this->templating = $templating;
     }
 
+    public function startAction()
+    {
+        return $this->templating->render('default/setup.html.twig');
+    }
+
     public function action()
     {
-        return $this->templating->render('index.html.twig');
+
     }
 }

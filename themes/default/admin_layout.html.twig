@@ -7,7 +7,6 @@
         <meta name="description" content="{% block description %}Paytoshi Faucet{% endblock %}">
         <meta name="keywords" content="{% block keywords %}bitcoin,free bitcoin,faucet,bitcoin faucet,free satoshi,get free bitcoin{% endblock %}">
         <meta name="author" content="Looptribe">
-        {#<meta name="google-site-verification" content="TODO: WEBMASTER TOOLS" />#}
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         
@@ -22,7 +21,7 @@
             {% endblock %}
         </div>
         <footer id="footer" class="text-center">
-            Powered by <a href="https://paytoshi.org">Paytoshi</a> | <a href="{{ urlFor('index') }}">Faucet</a>
+            Powered by <a href="https://paytoshi.org">Paytoshi</a> | <a href="{{ path('homepage') }}">Faucet</a>
         </footer>
                 
         {% block javascripts %}

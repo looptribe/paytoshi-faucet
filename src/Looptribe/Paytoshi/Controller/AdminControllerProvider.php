@@ -6,7 +6,7 @@ use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 
-class PublicControllerProvider implements ControllerProviderInterface
+class AdminControllerProvider implements ControllerProviderInterface
 {
     private $before;
 
@@ -23,9 +23,8 @@ class PublicControllerProvider implements ControllerProviderInterface
         /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', 'controller.index:action')->bind('homepage');
-        $controllers->get('/faq', 'controller.faq:action')->bind('faq');
-        $controllers->post('/reward', 'controller.reward:action')->bind('reward');
+        $controllers->get('/', 'controller.admin:action')->bind('admin');
+        $controllers->get('/', 'controller.admin.save:action')->bind('admin_save');
 
         $controllers->before($this->before);
 

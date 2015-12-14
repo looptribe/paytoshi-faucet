@@ -3,7 +3,8 @@
 {% block content %}
     <h1>{{ name|default('Paytoshi Faucet') }} Setup</h1>
     <hr>
-    <p>This generated password is used for the administration of your faucet. It cannot be recovered: keep it safe.</p>
-    <p class="alert alert-success">{{ password }}</p>
-    <a href="{{ urlFor('login') }}"class="btn btn-primary">Continue</a>
+    <p>TODO</p>
+    <form action="{{ path('setup_execute') }}" method="post">
+        <button type="submit" class="btn btn-primary">Start now</button>
+    </form>
 {% endblock %}
