@@ -30,8 +30,8 @@ class SettingsRepository
     {
         $results = $this->database->fetchAll(sprintf('SELECT * FROM %s', self::TABLE_NAME));
         $this->cache = array();
-        foreach ($results as $key => $value) {
-            $this->cache[$key] = $value;
+        foreach ($results as $row) {
+            $this->cache[$row['name']] = $row['value'];
         }
     }
 }

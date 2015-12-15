@@ -45,7 +45,7 @@ class SetupController
     public function action()
     {
         $results = $this->configurator->setup();
-        
+
         return $this->templating->render('default/setup_completed.html.twig', array(
             'results' => $results,
         ));

@@ -8,6 +8,7 @@ use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Model\SetupDiagnostics;
 use Looptribe\Paytoshi\Security\AlphaNumericPasswordGenerator;
 use Looptribe\Paytoshi\Security\BCryptSaltGenerator;
+use Looptribe\Paytoshi\Security\CryptPasswordEncoder;
 use Looptribe\Paytoshi\Security\CryptPasswordHasher;
 use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
 use Silex\Provider;
@@ -36,9 +37,32 @@ class Application extends \Silex\Application
         ));
         $app->register(new Provider\UrlGeneratorServiceProvider());
         $app->register(new Provider\DoctrineServiceProvider());
+        $app->register(new Provider\SessionServiceProvider());
+        $app->register(new Provider\SecurityServiceProvider());
 
         $app['config'] = $app->share(function () use ($app) {
             return Application::loadConfig($app['rootPath'] . '/config/config.yml');
+        });
+
+        $app['security.firewalls'] = $app->share(function () use ($app) {
+            $adminPassword = null;
+            if (!$app['setup.diagnostics']->requiresSetup()) {
+                $adminPassword = $app['repository.settings']->get('password');
+            }
+            return array(
+                'admin' => array(
+                    'pattern' => '^/admin',
+                    'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
+                    'logout' => array('logout_path' => '/admin/logout', 'invalidate_session' => true),
+                    'users' => array(
+                        'admin' => array('ROLE_ADMIN', $adminPassword),
+                    ),
+                ),
+            );
+        });
+
+        $app['security.encoder.digest'] = $app->share(function () use ($app) {
+            return new CryptPasswordEncoder();
         });
 
         $app['db.options'] = $app->share(function () use ($app) {
@@ -92,6 +116,13 @@ class Application extends \Silex\Application
         $app->mount('/', new Controller\PublicControllerProvider($requireSetup));
         $app->mount('/admin', new Controller\AdminControllerProvider($requireSetup));
         $app->mount('/setup', new Controller\SetupControllerProvider());
+
+        $app->get('/login', function (Request $request) use ($app) {
+            $lastError = $app['security.last_error'];
+            return $app['twig']->render('default/login.html.twig', array(
+                'error' => $lastError($request),
+            ));
+        })->bind('login');
     }
 
     public static function loadConfig($path)
