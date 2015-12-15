@@ -7,7 +7,7 @@ use Looptribe\Paytoshi\Controller\IndexController;
 
 class IndexControllerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testIndex()
+    public function testAction()
     {
         $templating = $this->getMock('Looptribe\Paytoshi\Templating\TemplatingEngineInterface');
 
