@@ -15,9 +15,8 @@ class AdminController
 
     /** @var SettingsRepository */
     private $settingsRepository;
-    /**
-     * @var UrlGeneratorInterface
-     */
+
+    /** @var UrlGeneratorInterface */
     private $urlGenerator;
 
     public function __construct(TemplatingEngineInterface $templating, UrlGeneratorInterface $urlGenerator, SettingsRepository $settingsRepository)
