@@ -4,6 +4,7 @@ namespace Looptribe\Paytoshi\Tests\Controller;
 
 
 use Looptribe\Paytoshi\Controller\AdminController;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AdminControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -68,5 +69,30 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             );
 
         $this->sut->action();
+    }
+
+    public function testSaveFailAction()
+    {
+        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $parameterBag = new ParameterBag(array('rewards' => array()));
+        $request->request = $parameterBag;
+
+        $this->settingsRepository->expects($this->once())
+            ->method('setAll')
+            ->willThrowException(new \Exception());
+
+        $this->urlGenerator->expects($this->once())
+            ->method('generate')
+            ->with('admin')
+            ->willReturn('/admin');
+
+        $response = $this->sut->saveAction($request);
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
+        $this->assertEquals('/admin', $response->getTargetUrl());
+
     }
 }
