@@ -26,7 +26,7 @@
             <p>{{ flash['save_success'] }}</p>
         </div>
     {% endif %#}
-    <form method="POST" class="form" role="form" action="{{ path('admin') }}">
+    <form method="POST" class="form" role="form" action="{{ path('admin_save') }}">
         <div class="row">
             <div class="col-xs-12">
                 <ul class="nav nav-tabs" role="tablist">
@@ -75,7 +75,6 @@
 
                             <p class="help solve_media">Set up a <a href="https://portal.solvemedia.com/portal/public">SolveMedia
                                     account</a> and get the needed keys.</p>
-
                             <p class="help recaptcha">Get a <a href="https://www.google.com/recaptcha">ReCaptcha
                                     account</a> and get the needed keys.</p>
                             <p class="help funcaptcha">Get a <a href="https://www.funcaptcha.com/dashboard/">FunCaptcha
@@ -83,42 +82,42 @@
                         </div>
                         <div class="form-group solve_media">
                             <label for="solve_media[challenge_key]" class="control-label">Challenge Key:</label>
-                            <input type="text" class="form-control" name="solve_media[challenge_key]"
-                                   placeholder="Challenge Key (C-Key)" value="{{ solve_media.challenge_key }}">
+                            <input type="text" class="form-control" name="solve_media_challenge_key"
+                                   placeholder="Challenge Key (C-Key)" value="{{ solve_media_challenge_key }}">
                         </div>
                         <div class="form-group solve_media">
                             <label for="solve_media[verification_key]" class="control-label">Verification Key:</label>
-                            <input type="text" class="form-control" name="solve_media[verification_key]"
-                                   placeholder="Verification Key (V-Key)" value="{{ solve_media.verification_key }}">
+                            <input type="text" class="form-control" name="solve_media_verification_key"
+                                   placeholder="Verification Key (V-Key)" value="{{ solve_media_verification_key }}">
                         </div>
                         <div class="form-group solve_media">
                             <label for="solve_media[authentication_key]" class="control-label">Authentication
                                 Key:</label>
-                            <input type="text" class="form-control" name="solve_media[authentication_key]"
+                            <input type="text" class="form-control" name="solve_media_authentication_key"
                                    placeholder="Authentication Key (H-Key)"
-                                   value="{{ solve_media.authentication_key }}">
+                                   value="{{ solve_media_authentication_key }}">
                         </div>
 
                         <div class="form-group recaptcha">
                             <label for="recaptcha[public_key]" class="control-label">Public Key:</label>
-                            <input type="text" class="form-control" name="recaptcha[public_key]"
-                                   placeholder="Public Key" value="{{ recaptcha.public_key }}">
+                            <input type="text" class="form-control" name="recaptcha_public_key"
+                                   placeholder="Public Key" value="{{ recaptcha_public_key }}">
                         </div>
                         <div class="form-group recaptcha">
                             <label for="recaptcha[private_key]" class="control-label">Private Key:</label>
-                            <input type="text" class="form-control" name="recaptcha[private_key]"
-                                   placeholder="Private Key" value="{{ recaptcha.private_key }}">
+                            <input type="text" class="form-control" name="recaptcha_private_key"
+                                   placeholder="Private Key" value="{{ recaptcha_private_key }}">
                         </div>
 
                         <div class="form-group funcaptcha">
                             <label for="funcaptcha[public_key]" class="control-label">Public Key:</label>
-                            <input type="text" class="form-control" name="funcaptcha[public_key]"
-                                   placeholder="Public Key" value="{{ funcaptcha.public_key }}">
+                            <input type="text" class="form-control" name="funcaptcha_public_key"
+                                   placeholder="Public Key" value="{{ funcaptcha_public_key }}">
                         </div>
                         <div class="form-group funcaptcha">
                             <label for="funcaptcha[private_key]" class="control-label">Private Key:</label>
-                            <input type="text" class="form-control" name="funcaptcha[private_key]"
-                                   placeholder="Private Key" value="{{ funcaptcha.private_key }}">
+                            <input type="text" class="form-control" name="funcaptcha_private_key"
+                                   placeholder="Private Key" value="{{ funcaptcha_private_key }}">
                         </div>
                     </div>
 
@@ -209,9 +208,8 @@
                         <div class="form-group">
                             <label for="themes" class="control-label">Theme:</label>
                             <select name="theme" id="themes" required>
-                                {% for theme in themes %}
-                                    <option value="{{ theme }}"
-                                            {% if theme == current_theme %}selected{% endif %}>{{ theme|capitalize }}</option>
+                                {% for t in themes %}
+                                    <option value="{{ t }}"{% if theme == t %} selected{% endif %}>{{ t|capitalize }}</option>
                                 {% endfor %}
                             </select>
 
@@ -219,64 +217,64 @@
                         </div>
                         <div class="form-group">
                             <label for="css" class="control-label">Css:</label>
-                            <textarea data-editor="css" rows="15" class="form-control" name="css"
-                                      placeholder="Css">{{ css|raw }}</textarea>
+                            <textarea data-editor="css" rows="15" class="form-control" name="custom_css"
+                                      placeholder="Css">{{ custom_css|raw }}</textarea>
 
                             <p class="help">You can add css in here.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="header_box" class="control-label">Header Box:</label>
-                            <textarea data-editor="html" rows="15" class="form-control" name="header_box"
-                                      placeholder="Header Box">{{ header_box|raw }}</textarea>
+                            <label for="content_header_box" class="control-label">Header Box:</label>
+                            <textarea data-editor="html" rows="15" class="form-control" name="content_header_box"
+                                      placeholder="Header Box">{{ content_header_box|raw }}</textarea>
 
                             <p class="help">You can add html and css in here.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="left_box" class="control-label">Left Box:</label>
-                            <textarea data-editor="html" rows="15" class="form-control" name="left_box"
-                                      placeholder="Left Box">{{ left_box|raw }}</textarea>
+                            <label for="content_left_box" class="control-label">Left Box:</label>
+                            <textarea data-editor="html" rows="15" class="form-control" name="content_left_box"
+                                      placeholder="Left Box">{{ content_left_box|raw }}</textarea>
 
                             <p class="help">You can add html and css in here.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="right_box" class="control-label">Right Box:</label>
-                            <textarea data-editor="html" rows="15" class="form-control" name="right_box"
-                                      placeholder="Right Box">{{ right_box|raw }}</textarea>
+                            <label for="content_right_box" class="control-label">Right Box:</label>
+                            <textarea data-editor="html" rows="15" class="form-control" name="content_right_box"
+                                      placeholder="Right Box">{{ content_right_box|raw }}</textarea>
 
                             <p class="help">You can add html and css in here.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="center1_box" class="control-label">Center1 Box:</label>
-                            <textarea data-editor="html" rows="15" class="form-control" name="center1_box"
-                                      placeholder="Center1 Box">{{ center1_box|raw }}</textarea>
+                            <label for="content_center1_box" class="control-label">Center1 Box:</label>
+                            <textarea data-editor="html" rows="15" class="form-control" name="content_center1_box"
+                                      placeholder="Center1 Box">{{ content_center1_box|raw }}</textarea>
 
                             <p class="help">You can add html and css in here.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="center2_box" class="control-label">Center2 Box:</label>
-                            <textarea data-editor="html" rows="15" class="form-control" name="center2_box"
-                                      placeholder="Center2 Box">{{ center2_box|raw }}</textarea>
+                            <label for="content_center2_box" class="control-label">Center2 Box:</label>
+                            <textarea data-editor="html" rows="15" class="form-control" name="content_center2_box"
+                                      placeholder="Center2 Box">{{ content_center2_box|raw }}</textarea>
 
                             <p class="help">You can add html and css in here.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="center3_box" class="control-label">Center3 Box:</label>
-                            <textarea data-editor="html" rows="15" class="form-control" name="center3_box"
-                                      placeholder="Center3 Box">{{ center3_box|raw }}</textarea>
+                            <label for="content_center3_box" class="control-label">Center3 Box:</label>
+                            <textarea data-editor="html" rows="15" class="form-control" name="content_center3_box"
+                                      placeholder="Center3 Box">{{ content_center3_box|raw }}</textarea>
 
                             <p class="help">You can add html and css in here.</p>
                         </div>
 
                         <div class="form-group">
-                            <label for="footer_box" class="control-label">Footer Box:</label>
-                            <textarea data-editor="html" rows="15" class="form-control" name="footer_box"
-                                      placeholder="Footer Box">{{ footer_box|raw }}</textarea>
+                            <label for="content_footer_box" class="control-label">Footer Box:</label>
+                            <textarea data-editor="html" rows="15" class="form-control" name="content_footer_box"
+                                      placeholder="Footer Box">{{ content_footer_box|raw }}</textarea>
 
                             <p class="help">You can add html and css in here.</p>
                         </div>

@@ -24,7 +24,7 @@ class AdminControllerProvider implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', 'controller.admin:action')->bind('admin');
-        $controllers->get('/', 'controller.admin.save:action')->bind('admin_save');
+        $controllers->post('/', 'controller.admin:saveAction')->bind('admin_save');
 
         $controllers->before($this->before);
 

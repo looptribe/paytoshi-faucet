@@ -88,7 +88,7 @@ class Application extends \Silex\Application
             return new Controller\SetupController($app['templating'], $app['setup.diagnostics'], $app['setup.configurator']);
         });
         $app['controller.admin'] = $app->share(function () use ($app) {
-            return new Controller\AdminController($app['templating'], $app['repository.settings']);
+            return new Controller\AdminController($app['templating'], $app['url_generator'], $app['repository.settings']);
         });
 
         $app['security.passwordGenerator'] = $app->share(function () use ($app) {
