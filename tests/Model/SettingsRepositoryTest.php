@@ -99,4 +99,75 @@ class SettingsRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('testvalue1', $result);
     }
+
+    public function testSetAll1()
+    {
+        $this->connection
+            ->expects($this->once())
+            ->method('fetchAll')
+            ->willReturn(array(
+                array('name' => 'key1', 'value' => 'testvalue1'),
+                array('name' => 'key2', 'value' => 'testvalue2'),
+                array('name' => 'key3', 'value' => 'testvalue3'),
+                array('name' => 'key4', 'value' => 'testvalue4'),
+            ));
+
+        $this->connection
+            ->expects($this->never())
+            ->method('executeUpdate');
+
+        $result = $this->sut->setAll(array());
+
+        $this->assertEquals(0, $result);
+    }
+
+    public function testSetAll2()
+    {
+        $this->connection
+            ->expects($this->once())
+            ->method('fetchAll')
+            ->willReturn(array(
+                array('name' => 'key1', 'value' => 'testvalue1'),
+                array('name' => 'key2', 'value' => 'testvalue2'),
+                array('name' => 'key3', 'value' => 'testvalue3'),
+                array('name' => 'key4', 'value' => 'testvalue4'),
+            ));
+
+        $this->connection
+            ->expects($this->once())
+            ->method('executeUpdate')
+            ->with($this->stringContains('UPDATE'))
+            ->willReturn(1);
+
+        $result = $this->sut->setAll(array(
+            'key1' => 'newvalue',
+        ));
+
+        $this->assertEquals(1, $result);
+    }
+
+    public function testSetAll3()
+    {
+        $this->connection
+            ->expects($this->once())
+            ->method('fetchAll')
+            ->willReturn(array(
+                array('name' => 'key1', 'value' => 'testvalue1'),
+                array('name' => 'key2', 'value' => 'testvalue2'),
+                array('name' => 'key3', 'value' => 'testvalue3'),
+                array('name' => 'key4', 'value' => 'testvalue4'),
+            ));
+
+        $this->connection
+            ->expects($this->once())
+            ->method('executeUpdate')
+            ->with($this->stringContains('INSERT'))
+            ->willReturn(1);
+
+        $result = $this->sut->setAll(array(
+            'key10' => 'newvalue',
+        ));
+
+        $this->assertEquals(1, $result);
+    }
 }
