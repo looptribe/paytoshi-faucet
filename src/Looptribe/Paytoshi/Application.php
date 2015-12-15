@@ -38,9 +38,7 @@ class Application extends \Silex\Application
         $app->register(new Provider\UrlGeneratorServiceProvider());
         $app->register(new Provider\DoctrineServiceProvider());
         $app->register(new Provider\SessionServiceProvider());
-        $app->register(new Provider\SecurityServiceProvider(array(
-            'session.storage.save_path' => null,
-        )));
+        $app->register(new Provider\SecurityServiceProvider());
 
         $app['config'] = $app->share(function () use ($app) {
             return Application::loadConfig($app['rootPath'] . '/config/config.yml');
