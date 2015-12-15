@@ -21,7 +21,7 @@ INSERT IGNORE INTO paytoshi_settings (name, value) VALUES
     ('recaptcha_public_key', ''),
     ('funcaptcha_public_key', ''),
     ('funcaptcha_private_key', ''),
-    ('theme', :theme),
+    ('theme', 'default'),
     ('version', 1),
     ('custom_css', '/**
 * Paytoshi Faucet Custom CSS

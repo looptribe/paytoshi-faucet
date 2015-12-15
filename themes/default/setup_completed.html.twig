@@ -1,9 +1,21 @@
 {% extends 'default/admin_layout.html.twig' %}
 
 {% block content %}
-    <h1>{{ name|default('Paytoshi Faucet') }} Setup</h1>
-    <hr>
-    <p>This generated password is used for the administration of your faucet. It cannot be recovered: keep it safe.</p>
-    <p class="alert alert-success">{{ password }}</p>
-    <a href="{{ path('login') }}"class="btn btn-primary">Continue</a>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="page-header">
+                <h1>Paytoshi Faucet setup</h1>
+            </div>
+            <div class="alert alert-success" role="alert"><strong>Congratulations!</strong> The setup of your faucet
+                completed successfully.
+            </div>
+            <p>
+                This generated password is used for the administration of your faucet. It cannot be recovered: keep it safe.
+            </p>
+            <pre>{{ results.password }}</pre>
+
+            <p><a class="btn btn-primary" href="{#{ path('login') }#}" role="button">Login now</a></p>
+        </div>
+    </div>
+
 {% endblock %}

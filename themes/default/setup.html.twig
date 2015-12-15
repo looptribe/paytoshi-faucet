@@ -3,8 +3,9 @@
 {% block content %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>{{ name|default('Paytoshi Faucet') }} Setup</h1>
-            <hr>
+            <div class="page-header">
+                <h1>Paytoshi Faucet setup</h1>
+            </div>
 
             <div class="panel panel-default {% if errors %}panel-danger{% else %}panel-success{% endif %}">
                 <div class="panel-heading">

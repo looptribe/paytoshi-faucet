@@ -2,6 +2,7 @@
 
 namespace Looptribe\Paytoshi\Controller;
 
+use Looptribe\Paytoshi\Model\Configurator;
 use Looptribe\Paytoshi\Model\SetupDiagnostics;
 use Looptribe\Paytoshi\Templating\TemplatingEngineInterface;
 
@@ -13,10 +14,17 @@ class SetupController
     /** @var SetupDiagnostics */
     private $diagnostics;
 
-    public function __construct(TemplatingEngineInterface $templating, SetupDiagnostics $diagnostics)
-    {
+    /** @var Configurator */
+    private $configurator;
+
+    public function __construct(
+        TemplatingEngineInterface $templating,
+        SetupDiagnostics $diagnostics,
+        Configurator $configurator
+    ) {
         $this->templating = $templating;
         $this->diagnostics = $diagnostics;
+        $this->configurator = $configurator;
     }
 
     public function startAction()
@@ -24,8 +32,7 @@ class SetupController
         $dbException = false;
         try {
             $this->diagnostics->checkDatabase();
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             $dbException = $ex;
         }
 
@@ -37,6 +44,10 @@ class SetupController
 
     public function action()
     {
-
+        $results = $this->configurator->setup();
+        
+        return $this->templating->render('default/setup_completed.html.twig', array(
+            'results' => $results,
+        ));
     }
 }

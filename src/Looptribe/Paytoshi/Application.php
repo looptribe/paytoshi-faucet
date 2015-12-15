@@ -3,8 +3,12 @@
 namespace Looptribe\Paytoshi;
 
 use Looptribe\Paytoshi\Controller;
+use Looptribe\Paytoshi\Model\Configurator;
 use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Model\SetupDiagnostics;
+use Looptribe\Paytoshi\Security\AlphaNumericPasswordGenerator;
+use Looptribe\Paytoshi\Security\BCryptSaltGenerator;
+use Looptribe\Paytoshi\Security\CryptPasswordHasher;
 use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,17 +28,17 @@ class Application extends \Silex\Application
     {
         $app = $this;
 
-        $app['root_path'] = realpath(__DIR__ . '/../../..');
+        $app['rootPath'] = realpath(__DIR__ . '/../../..');
 
         $app->register(new Provider\ServiceControllerServiceProvider());
         $app->register(new Provider\TwigServiceProvider(), array(
-            'twig.path' => $app['root_path'] . '/themes',
+            'twig.path' => $app['rootPath'] . '/themes',
         ));
         $app->register(new Provider\UrlGeneratorServiceProvider());
         $app->register(new Provider\DoctrineServiceProvider());
 
         $app['config'] = $app->share(function () use ($app) {
-            return Application::loadConfig($app['root_path'] . '/config/config.yml');
+            return Application::loadConfig($app['rootPath'] . '/config/config.yml');
         });
 
         $app['db.options'] = $app->share(function () use ($app) {
@@ -58,11 +62,25 @@ class Application extends \Silex\Application
             return new Controller\IndexController($app['templating']);
         });
         $app['controller.setup'] = $app->share(function () use ($app) {
-            return new Controller\SetupController($app['templating'], $app['setup.diagnostics']);
+            return new Controller\SetupController($app['templating'], $app['setup.diagnostics'], $app['setup.configurator']);
+        });
+
+        $app['security.passwordGenerator'] = $app->share(function () use ($app) {
+            return new AlphaNumericPasswordGenerator();
+        });
+        $app['security.saltGenerator'] = $app->share(function () use ($app) {
+            return new BCryptSaltGenerator();
+        });
+        $app['security.passwordHasher'] = $app->share(function () use ($app) {
+            return new CryptPasswordHasher();
         });
 
         $app['setup.diagnostics'] = $app->share(function () use ($app) {
             return new SetupDiagnostics($app['db'], $app['repository.settings']);
+        });
+        $app['setup.configurator'] = $app->share(function () use ($app) {
+            return new Configurator($app['db'], $app['security.passwordGenerator'], $app['security.saltGenerator'],
+                $app['security.passwordHasher'], $app['rootPath'] . '/data/setup.sql');
         });
 
         $requireSetup = function (Request $request, Application $app) {
