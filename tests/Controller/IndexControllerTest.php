@@ -9,9 +9,7 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function testIndex()
     {
-        $templating = $this->getMockBuilder('Looptribe\Paytoshi\Templating\TemplatingEngineInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $templating = $this->getMock('Looptribe\Paytoshi\Templating\TemplatingEngineInterface');
 
         $templating->expects($this->once())
             ->method('render')
