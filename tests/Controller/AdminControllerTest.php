@@ -36,7 +36,36 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->templating->expects($this->once())
             ->method('render')
-            ->with('default/admin.html.twig');
+            ->with(
+                'default/admin.html.twig',
+                $this->logicalAnd(
+                    $this->arrayHasKey('version'),
+                    $this->arrayHasKey('api_key'),
+                    $this->arrayHasKey('name'),
+                    $this->arrayHasKey('description'),
+                    $this->arrayHasKey('theme'),
+                    $this->arrayHasKey('captcha_provider'),
+                    $this->arrayHasKey('solve_media_challenge_key'),
+                    $this->arrayHasKey('solve_media_verification_key'),
+                    $this->arrayHasKey('solve_media_authentication_key'),
+                    $this->arrayHasKey('recaptcha_public_key'),
+                    $this->arrayHasKey('recaptcha_private_key'),
+                    $this->arrayHasKey('funcaptcha_public_key'),
+                    $this->arrayHasKey('funcaptcha_private_key'),
+                    $this->arrayHasKey('waiting_interval'),
+                    $this->arrayHasKey('rewards'),
+                    $this->arrayHasKey('referral_percentage'),
+                    $this->arrayHasKey('custom_css'),
+                    $this->arrayHasKey('content_header_box'),
+                    $this->arrayHasKey('content_left_box'),
+                    $this->arrayHasKey('content_right_box'),
+                    $this->arrayHasKey('content_center1_box'),
+                    $this->arrayHasKey('content_center2_box'),
+                    $this->arrayHasKey('content_center3_box'),
+                    $this->arrayHasKey('content_footer_box'),
+                    $this->arrayHasKey('theme')
+                )
+            );
 
         $this->sut->action();
     }
