@@ -5,10 +5,10 @@
     <hr>
     <p>Login here with the password created during the Paytoshi Faucet setup.</p>
     {% if error %}
-    <div class="alert alert-warning" role="alert">
-        <p>{{ error }}</p>
-        <p>Lost you password? Execute this query to reset it: <code>DELETE FROM `paytoshi_settings` WHERE `name` = 'password'</code>.</p>
-    </div>
+        <div class="alert alert-warning" role="alert">
+            <p>{{ error }}</p>
+            <p>Lost you password? Execute this query to reset it: <code>DELETE FROM `paytoshi_settings` WHERE `name` = 'password'</code>.</p>
+        </div>
     {% endif %}
     <form method="POST" class="form" role="form" action="{{ path('admin_login_check') }}">
         <input type="hidden" name="_username" value="admin" />

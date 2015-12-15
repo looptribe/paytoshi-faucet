@@ -38,7 +38,9 @@ class Application extends \Silex\Application
         $app->register(new Provider\UrlGeneratorServiceProvider());
         $app->register(new Provider\DoctrineServiceProvider());
         $app->register(new Provider\SessionServiceProvider());
-        $app->register(new Provider\SecurityServiceProvider());
+        $app->register(new Provider\SecurityServiceProvider(array(
+            'session.storage.save_path' => null,
+        )));
 
         $app['config'] = $app->share(function () use ($app) {
             return Application::loadConfig($app['rootPath'] . '/config/config.yml');
@@ -118,6 +120,7 @@ class Application extends \Silex\Application
         $app->mount('/setup', new Controller\SetupControllerProvider());
 
         $app->get('/login', function (Request $request) use ($app) {
+            /** @var \Closure $lastError */
             $lastError = $app['security.last_error'];
             return $app['twig']->render('default/login.html.twig', array(
                 'error' => $lastError($request),
