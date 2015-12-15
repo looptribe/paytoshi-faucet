@@ -1,7 +1,7 @@
 Paytoshi Faucet
 ========================================================
 
-[![Build Status](https://img.shields.io/travis/looptribe/paytoshi-faucet.svg)](https://travis-ci.org/looptribe/paytoshi-faucet)
+[![Build Status](https://img.shields.io/travis/looptribe/paytoshi-faucet/silex.svg)](https://travis-ci.org/looptribe/paytoshi-faucet)
 [![Coverage Status](https://img.shields.io/coveralls/looptribe/paytoshi-faucet/silex.svg)](https://coveralls.io/github/looptribe/paytoshi-faucet)
 
 Faucet Script for [Paytoshi](https://paytoshi.org): the Bitcoin micropayment wallet. 
