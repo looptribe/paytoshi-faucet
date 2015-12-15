@@ -2,9 +2,9 @@
 
 namespace Looptribe\Paytoshi;
 
-use Doctrine\DBAL\Exception\TableNotFoundException;
 use Looptribe\Paytoshi\Controller;
 use Looptribe\Paytoshi\Model\SettingsRepository;
+use Looptribe\Paytoshi\Model\SetupDiagnostics;
 use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -61,13 +61,12 @@ class Application extends \Silex\Application
             return new Controller\SetupController($app['templating']);
         });
 
+        $app['setup.diagnostics'] = $app->share(function () use ($app) {
+            return new SetupDiagnostics($app['repository.settings']);
+        });
+
         $requireSetup = function (Request $request, Application $app) {
-            try {
-                if (null === $app['repository.settings']->get('password')) {
-                    return new RedirectResponse($app['url_generator']->generate('setup'));
-                }
-            }
-            catch (TableNotFoundException $ex) {
+            if ($app['setup.diagnostics']->requiresSetup()) {
                 return new RedirectResponse($app['url_generator']->generate('setup'));
             }
         };
