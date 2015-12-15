@@ -9,7 +9,6 @@ use Looptribe\Paytoshi\Model\SetupDiagnostics;
 use Looptribe\Paytoshi\Security\AlphaNumericPasswordGenerator;
 use Looptribe\Paytoshi\Security\BCryptSaltGenerator;
 use Looptribe\Paytoshi\Security\CryptPasswordEncoder;
-use Looptribe\Paytoshi\Security\CryptPasswordHasher;
 use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -95,16 +94,13 @@ class Application extends \Silex\Application
         $app['security.saltGenerator'] = $app->share(function () use ($app) {
             return new BCryptSaltGenerator();
         });
-        $app['security.passwordHasher'] = $app->share(function () use ($app) {
-            return new CryptPasswordHasher();
-        });
 
         $app['setup.diagnostics'] = $app->share(function () use ($app) {
             return new SetupDiagnostics($app['db'], $app['repository.settings']);
         });
         $app['setup.configurator'] = $app->share(function () use ($app) {
             return new Configurator($app['db'], $app['security.passwordGenerator'], $app['security.saltGenerator'],
-                $app['security.passwordHasher'], $app['rootPath'] . '/data/setup.sql');
+                $app['security.encoder.digest'], $app['rootPath'] . '/data/setup.sql');
         });
 
         $requireSetup = function (Request $request, Application $app) {

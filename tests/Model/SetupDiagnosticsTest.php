@@ -1,8 +1,10 @@
 <?php
 
+namespace Looptribe\Paytoshi\Tests\Model;
+
 use Looptribe\Paytoshi\Model\SetupDiagnostics;
 
-class SetupDiagnosticsTest extends PHPUnit_Framework_TestCase
+class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
 {
     public function testRequiresSetupShouldReturnFalse()
     {

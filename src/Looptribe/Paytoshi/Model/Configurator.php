@@ -4,8 +4,8 @@ namespace Looptribe\Paytoshi\Model;
 
 use Doctrine\DBAL\Connection;
 use Looptribe\Paytoshi\Security\PasswordGeneratorInterface;
-use Looptribe\Paytoshi\Security\PasswordHasherInterface;
 use Looptribe\Paytoshi\Security\SaltGeneratorInterface;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class Configurator
 {
@@ -18,8 +18,8 @@ class Configurator
     /** @var SaltGeneratorInterface */
     private $saltGenerator;
 
-    /** @var PasswordHasherInterface */
-    private $passwordHasher;
+    /** @var PasswordEncoderInterface */
+    private $passwordEncoder;
 
     private $sqlFile;
 
@@ -27,13 +27,13 @@ class Configurator
         Connection $database,
         PasswordGeneratorInterface $passwordGenerator,
         SaltGeneratorInterface $saltGenerator,
-        PasswordHasherInterface $passwordHasher,
+        PasswordEncoderInterface $passwordEncoder,
         $sqlFile
     ) {
         $this->database = $database;
         $this->passwordGenerator = $passwordGenerator;
         $this->saltGenerator = $saltGenerator;
-        $this->passwordHasher = $passwordHasher;
+        $this->passwordEncoder = $passwordEncoder;
         $this->sqlFile = $sqlFile;
     }
 
@@ -41,7 +41,7 @@ class Configurator
     {
         $password = $this->passwordGenerator->generate();
         $salt = $this->saltGenerator->generate();
-        $passwordHash = $this->passwordHasher->hash($password, $salt);
+        $passwordHash = $this->passwordEncoder->encodePassword($password, $salt);
         $this->setupDatabase($passwordHash);
         return array(
             'password' => $password
