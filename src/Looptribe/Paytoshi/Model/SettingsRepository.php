@@ -28,8 +28,8 @@ class SettingsRepository
 
     private function loadAll()
     {
-        $this->cache = array();
         $results = $this->database->fetchAll(sprintf('SELECT * FROM %s', self::TABLE_NAME));
+        $this->cache = array();
         foreach ($results as $key => $value) {
             $this->cache[$key] = $value;
         }

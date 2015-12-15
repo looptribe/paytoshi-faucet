@@ -58,11 +58,11 @@ class Application extends \Silex\Application
             return new Controller\IndexController($app['templating']);
         });
         $app['controller.setup'] = $app->share(function () use ($app) {
-            return new Controller\SetupController($app['templating']);
+            return new Controller\SetupController($app['templating'], $app['setup.diagnostics']);
         });
 
         $app['setup.diagnostics'] = $app->share(function () use ($app) {
-            return new SetupDiagnostics($app['repository.settings']);
+            return new SetupDiagnostics($app['db'], $app['repository.settings']);
         });
 
         $requireSetup = function (Request $request, Application $app) {

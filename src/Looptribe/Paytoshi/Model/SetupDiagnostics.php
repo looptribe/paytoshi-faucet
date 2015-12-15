@@ -2,6 +2,8 @@
 
 namespace Looptribe\Paytoshi\Model;
 
+use Doctrine\DBAL\Connection;
+
 class SetupDiagnostics
 {
     /**
@@ -9,8 +11,14 @@ class SetupDiagnostics
      */
     private $settingsRepository;
 
-    public function __construct(SettingsRepository $settingsRepository)
+    /**
+     * @var Connection
+     */
+    private $dabatase;
+
+    public function __construct(Connection $dabatase, SettingsRepository $settingsRepository)
     {
+        $this->dabatase = $dabatase;
         $this->settingsRepository = $settingsRepository;
     }
 
@@ -28,5 +36,10 @@ class SetupDiagnostics
             return true;
         }
         return false;
+    }
+
+    public function checkDatabase()
+    {
+        $this->dabatase->fetchAll('SHOW TABLES');
     }
 }
