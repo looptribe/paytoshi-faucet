@@ -76,8 +76,15 @@ class AdminController
         );
     }
 
+    /**
+     * @param string $rewards
+     * @return array
+     */
     private function parseRewards($rewards)
     {
+        if (empty($rewards))
+            return array();
+
         $rewards = explode(',', $rewards);
         $sortedRewards = array();
         foreach ($rewards as $reward) {
@@ -93,13 +100,26 @@ class AdminController
         return $sortedRewards;
     }
 
+    /**
+     * @param array $rewards
+     * @return string
+     */
     private function serializeRewards($rewards)
     {
-        return implode(',', array_map(function ($i) {
+        if (empty($rewards))
+            return '';
+
+        //Unpack amount-probability couples
+        $rewardArray = array_map(function ($i) {
             if (!isset($i['amount']) || !isset($i['probability'])) {
                 return '';
             }
             return sprintf("%s*%s", $i['amount'], $i['probability']);
-        }, $rewards));
+        }, $rewards);
+
+        //Remove empty values
+        $rewardArray = array_filter($rewardArray);
+
+        return implode(',', $rewardArray);
     }
 }
