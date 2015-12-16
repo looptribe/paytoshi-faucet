@@ -71,6 +71,30 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
         $this->sut->action();
     }
 
+    public function testSaveActionNoRewards()
+    {
+        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $parameterBag = new ParameterBag(array('rewards' => array()));
+        $request->request = $parameterBag;
+
+        $this->settingsRepository->expects($this->once())
+            ->method('setAll');
+
+        $this->urlGenerator->expects($this->once())
+            ->method('generate')
+            ->with('admin')
+            ->willReturn('/admin');
+
+        $response = $this->sut->saveAction($request);
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
+        $this->assertEquals('/admin', $response->getTargetUrl());
+
+    }
+
     public function testSaveFailAction()
     {
         $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
