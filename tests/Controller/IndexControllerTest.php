@@ -4,6 +4,7 @@ namespace Looptribe\Paytoshi\Tests\Controller;
 
 
 use Looptribe\Paytoshi\Controller\IndexController;
+use Symfony\Component\HttpFoundation\Response;
 
 class IndexControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,9 +14,12 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
 
         $templating->expects($this->once())
             ->method('render')
-            ->with('default/layout.html.twig');
+            ->with('default/layout.html.twig')
+            ->willReturn(new Response());
 
         $sut = new IndexController($templating);
-        $sut->action();
+        $response = $sut->action();
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
     }
 }
