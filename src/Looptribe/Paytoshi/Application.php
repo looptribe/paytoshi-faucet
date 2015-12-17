@@ -9,6 +9,7 @@ use Looptribe\Paytoshi\Model\SetupDiagnostics;
 use Looptribe\Paytoshi\Security\AlphaNumericPasswordGenerator;
 use Looptribe\Paytoshi\Security\BCryptSaltGenerator;
 use Looptribe\Paytoshi\Security\CryptPasswordEncoder;
+use Looptribe\Paytoshi\Templating\LocalThemeProvider;
 use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,6 +43,8 @@ class Application extends \Silex\Application
         $app['config'] = $app->share(function () use ($app) {
             return Application::loadConfig($app['rootPath'] . '/config/config.yml');
         });
+        $app['themes.default'] = 'default';
+        $app['themes.directory'] = 'themes';
 
         $app['security.firewalls'] = $app->share(function () use ($app) {
             $adminPassword = null;
@@ -76,13 +79,16 @@ class Application extends \Silex\Application
         $app['templating'] = $app->share(function () use ($app) {
             return new TwigTemplatingEngine($app['twig']);
         });
+        $app['themeProvider'] = $app->share(function() use ($app) {
+            return new LocalThemeProvider($app['repository.settings'], $app['themes.directory'], $app['themes.default']);
+        });
 
         $app['repository.settings'] = $app->share(function () use ($app) {
             return new SettingsRepository($app['db']);
         });
 
         $app['controller.index'] = $app->share(function () use ($app) {
-            return new Controller\IndexController($app['templating']);
+            return new Controller\IndexController($app['templating'], $app['themeProvider']);
         });
         $app['controller.setup'] = $app->share(function () use ($app) {
             return new Controller\SetupController($app['templating'], $app['setup.diagnostics'], $app['setup.configurator']);

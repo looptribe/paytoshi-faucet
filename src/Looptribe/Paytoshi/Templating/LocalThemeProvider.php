@@ -50,7 +50,6 @@ class LocalThemeProvider implements ThemeProviderInterface
             $templateName
         );
         $filePath = sprintf('%s%s', $this->getTemplatePath(), $templateString);
-
         if (!(is_file($filePath) && is_readable($filePath)))
             throw new \Exception('Unable to load template (not a file or not readable)');
 

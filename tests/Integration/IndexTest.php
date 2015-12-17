@@ -22,8 +22,14 @@ class IndexTest extends WebTestCase
             ->getMock();
         $mock->expects($this->any())
             ->method('get')
-            ->with('password')
-            ->willReturn('fakepasswordhash');
+            ->willReturnCallback(function ($params) {
+                switch($params) {
+                    case 'password':
+                        return 'fakepasswordhash';
+                    case 'theme':
+                        return 'default';
+                }
+            });
         $this->app['repository.settings'] = function () use ($mock) {
             return $mock;
         };
