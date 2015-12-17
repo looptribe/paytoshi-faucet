@@ -10,8 +10,24 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
 {
     public function testAction()
     {
-        $templating = $this->getMock('Looptribe\Paytoshi\Templating\TemplatingEngineInterface');
+        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
+            ->disableOriginalConstructor()
+            ->getMock();
         $themeProvider = $this->getMock('Looptribe\Paytoshi\Templating\ThemeProviderInterface');
+        $templating = $this->getMock('Looptribe\Paytoshi\Templating\TemplatingEngineInterface');
+        $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
+
+        $request->method('get')
+            ->willReturn('');
+
+        $request->method('getSession')
+            ->willReturn($session);
+
+        $session->method('get')
+            ->willReturn('');
 
         $themeProvider->method('getTemplate')
             ->willReturn('default/index.html.twig');
@@ -20,8 +36,8 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
             ->method('render')
             ->willReturn(new Response());
 
-        $sut = new IndexController($templating, $themeProvider);
-        $response = $sut->action();
+        $sut = new IndexController($templating, $themeProvider, $settingsRepository);
+        $response = $sut->action($request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
     }

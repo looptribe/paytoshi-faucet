@@ -88,7 +88,7 @@ class Application extends \Silex\Application
         });
 
         $app['controller.index'] = $app->share(function () use ($app) {
-            return new Controller\IndexController($app['templating'], $app['themeProvider']);
+            return new Controller\IndexController($app['templating'], $app['themeProvider'], $app['repository.settings']);
         });
         $app['controller.setup'] = $app->share(function () use ($app) {
             return new Controller\SetupController($app['templating'], $app['setup.diagnostics'], $app['setup.configurator']);
