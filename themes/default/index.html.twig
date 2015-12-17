@@ -27,7 +27,7 @@
                     <h4 class="text-center">Get a reward every {{ waiting_interval / 60 }} mins!</h4>
                     <hr>
 
-                    <form action="{{ urlFor('reward') }}" novalidate="novalidate" method="POST" class="form">
+                    <form action="{{ path('reward') }}" novalidate="novalidate" method="POST" class="form">
                         <div class="form-group">
                             <input class="form-control input-lg" type="text" name="address" 
                                    value="{% if address is defined %}{{ address }}{% endif %}" 
@@ -58,7 +58,7 @@
                     </form>
 
                     <div class="well well-sm text-center referral-box">Earn {{ referral_percentage }}% referral bonus! 
-                        Share your referral URL:<br>{{ base_url ~ '?r=' ~ address|default('Bitcoin Address') }}</div>
+                        Share your referral URL:<br>{{ url('homepage') ~ '?r=' ~ address|default('Bitcoin Address') }}</div>
 
                 </div>
                         
@@ -66,7 +66,7 @@
                     <h3>What is a Bitcoin Faucet?</h3>
                     <p>
                         A faucet is a FREE Bitcoin site paying out up to {{ rewards_max }} satoshi every hour. Each time you visit this page and complete the captcha you will receive a payout amount randomly selected from the available amounts shown above. You will receive your payment directly to your <a href="https://paytoshi.org">Paytoshi wallet.</a><br/>
-                        <a href="{{ urlFor('faq') }}">Read more</a>
+                        <a href="{{ path('faq') }}">Read more</a>
                     </p>
                 </div>
             </div>
