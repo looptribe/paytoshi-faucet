@@ -15,10 +15,9 @@ interface ThemeProviderInterface
      * Get a theme's template
      *
      * @param string $templateName
-     * @param string $theme
      * @return string
      */
-    public function getTemplate($templateName, $theme);
+    public function getTemplate($templateName);
 
     /**
      * Get the current theme

@@ -11,11 +11,14 @@ class LocalThemeProvider implements ThemeProviderInterface
 
     /** @var string */
     private $templateDir;
+    /** @var string */
+    private $defaultTheme;
 
-    public function __construct(SettingsRepository $settingsRepository, $templateDir)
+    public function __construct(SettingsRepository $settingsRepository, $templateDir, $defaultTheme)
     {
         $this->settingsRepository = $settingsRepository;
         $this->templateDir = $templateDir;
+        $this->defaultTheme = $defaultTheme;
     }
 
     /**
@@ -36,12 +39,21 @@ class LocalThemeProvider implements ThemeProviderInterface
      * Get a theme's template
      *
      * @param string $templateName
-     * @param string $theme
      * @return string
      */
-    public function getTemplate($templateName, $theme = 'default')
+    public function getTemplate($templateName)
     {
-        // TODO: Implement getTemplate() method.
+        $templateString = sprintf('%s%s%s',
+            $this->getCurrent(),
+            DIRECTORY_SEPARATOR,
+            $templateName
+        );
+        $filePath = sprintf('%s%s', $this->getTemplatePath(), $templateString);
+
+        if (!(is_file($filePath) && is_readable($filePath)))
+            throw new \Exception('Unable to load template (not a file or not readable)');
+
+        return $templateString;
     }
 
 
@@ -52,7 +64,7 @@ class LocalThemeProvider implements ThemeProviderInterface
      */
     public function getCurrent()
     {
-        return $this->settingsRepository->get('theme', 'default');
+        return $this->settingsRepository->get('theme', $this->defaultTheme);
     }
 
     private function getTemplatePath()

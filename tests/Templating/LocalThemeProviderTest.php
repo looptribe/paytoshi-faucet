@@ -21,8 +21,9 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
+        $defaultTheme = 'default';
 
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir);
+        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
         $themes = $sut->getList();
         $this->assertInternalType('array', $themes);
         $this->assertEquals(0, count($themes));
@@ -34,13 +35,14 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
+        $defaultTheme = 'default';
 
         mkdir('theme1');
         mkdir('theme2');
         touch('file1');
         touch('file2');
 
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir);
+        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
         $themes = $sut->getList();
         $this->assertInternalType('array', $themes);
         $this->assertEquals(2, count($themes));
@@ -56,9 +58,71 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $settingsRepository->method('get')
             ->willReturn('theme1');
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir);
+        $defaultTheme = 'default';
+
+        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
         $currentTheme = $sut->getCurrent();
         $this->assertEquals('theme1', $currentTheme);
+    }
+
+    public function testGetTemplate1()
+    {
+        $templateDir = '.';
+        $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $settingsRepository->method('get')
+            ->willReturn('theme1');
+        $defaultTheme = 'default';
+        mkdir('theme1');
+        touch('theme1/template.html.twig');
+
+        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        $templateString = $sut->getTemplate('template.html.twig');
+        $this->assertEquals('theme1/template.html.twig', $templateString);
+        $this->assertFileExists('theme1/template.html.twig');
+    }
+
+    public function testGetTemplate2()
+    {
+        $templateDir = '.';
+        $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $settingsRepository->method('get')
+            ->willReturn('theme1');
+        $defaultTheme = 'default';
+        mkdir('theme1');
+
+        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        try {
+            $templateString = $sut->getTemplate('template.html.twig');
+        }
+        catch(\Exception $e) {
+            $this->assertInstanceOf('\Exception', $e);
+            $this->assertFalse(is_file('theme1/template.html.twig'));
+        }
+    }
+
+    public function testGetTemplate3()
+    {
+        $templateDir = '.';
+        $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $settingsRepository->method('get')
+            ->willReturn('theme1');
+        $defaultTheme = 'default';
+        mkdir('theme1/template.html.twig', 0777, true);
+
+        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        try {
+            $templateString = $sut->getTemplate('template.html.twig');
+        }
+        catch(\Exception $e) {
+            $this->assertInstanceOf('\Exception', $e);
+            $this->assertFalse(is_file('theme1/template.html.twig'));
+        }
     }
 
     public function tearDown()
