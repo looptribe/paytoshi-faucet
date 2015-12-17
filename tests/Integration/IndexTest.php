@@ -15,10 +15,11 @@ class IndexTest extends WebTestCase
         return $app;
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testIndex()
     {
-        $this->markTestSkipped('Fails with \'headers already sent\'');
-
         $mock = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
