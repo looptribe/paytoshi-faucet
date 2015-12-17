@@ -40,6 +40,7 @@ class LocalThemeProvider implements ThemeProviderInterface
      *
      * @param string $templateName
      * @return string
+     * @throws \Exception
      */
     public function getTemplate($templateName)
     {
