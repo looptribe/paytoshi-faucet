@@ -13,3 +13,6 @@ script:
   - php vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 after_success:
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php vendor/bin/coveralls -v; fi;'
+notifications:
+  slack:
+    secure: XkTV32y5XuMPDOGTQL77OP30g5O1ER+se5QIhzigApvngbU7UPUl+BCDFxpfnfqww17JSoigfH2uNg/TwYhYkY6ewUYA5jGYhZJrKeH6IPyM4ko5/XE2ZDi5ILORuF1ky2XoCr9mhxGD5RPcV6Jfhu/6M3PvNPnZQuxJGf/AJ1ki4m8t4euYSYPNRqlvEY2C+LVcTAm06jUBnOlFcEODoWroLRM3Dkrw/yFU6j4vfF57//OB4WAkGSEeFMUaA2lMc0knClPzgrRxJPaXa9rrjQZwJmT7S5VUQbRQniQeJfzzI87TowQ5XkZC8yXBjrI3JuLtU+pInjClQYWh/pT+iA2aROxQemzyckNUO96H3Mzo5jLHl7GaFoefEtxQZNT08m7Ex3ipsRDDq4akHZBkGEUihDXtVpxKGA0FwvCtJHSo+yUv0RdfTN21PqqzWeoFwW58kpgaw/fhCJrvhX2EGaIBn5rkndb7tMtLy0esg0+IarnDEAuh9CfdnNCkUuMtYN5FK3iAF1EFI+mxVNElcWufplNuOtFxBAqQrv12RugXw02zbK27uqbRkHv+PuBsIroJ8RHwGbB1LUuzK2IJnbZzOe/aKS3RIQeVVYyy2InUa3yyEf1n/lNeyiYVSw0HGRoGM+kjn2rGDSMBgmHfueSlqltKUkMW01TokGEROJ4=
