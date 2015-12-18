@@ -10,14 +10,14 @@ class LocalThemeProvider implements ThemeProviderInterface
     private $settingsRepository;
 
     /** @var string */
-    private $templateDir;
+    private $templatePath;
     /** @var string */
     private $defaultTheme;
 
-    public function __construct(SettingsRepository $settingsRepository, $templateDir, $defaultTheme)
+    public function __construct(SettingsRepository $settingsRepository, $templatePath, $defaultTheme)
     {
         $this->settingsRepository = $settingsRepository;
-        $this->templateDir = $templateDir;
+        $this->templatePath = $templatePath;
         $this->defaultTheme = $defaultTheme;
     }
 
@@ -70,9 +70,8 @@ class LocalThemeProvider implements ThemeProviderInterface
     private function getTemplatePath()
     {
         return sprintf(
-            '.%s%s%s',
-            DIRECTORY_SEPARATOR,
-            $this->templateDir,
+            '%s%s',
+            $this->templatePath,
             DIRECTORY_SEPARATOR
 
         );

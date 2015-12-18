@@ -17,13 +17,13 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetThemes1()
     {
-        $templateDir = '.';
+        $templatePath = '.';
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
         $defaultTheme = 'default';
 
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        $sut = new LocalThemeProvider($settingsRepository, $templatePath, $defaultTheme);
         $themes = $sut->getList();
         $this->assertInternalType('array', $themes);
         $this->assertEquals(0, count($themes));
@@ -31,7 +31,7 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetThemes2()
     {
-        $templateDir = '.';
+        $templatePath = '.';
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
@@ -42,7 +42,7 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
         touch('file1');
         touch('file2');
 
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        $sut = new LocalThemeProvider($settingsRepository, $templatePath, $defaultTheme);
         $themes = $sut->getList();
         $this->assertInternalType('array', $themes);
         $this->assertEquals(2, count($themes));
@@ -52,7 +52,7 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCurrent()
     {
-        $templateDir = '.';
+        $templatePath = '.';
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
@@ -60,14 +60,14 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
             ->willReturn('theme1');
         $defaultTheme = 'default';
 
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        $sut = new LocalThemeProvider($settingsRepository, $templatePath, $defaultTheme);
         $currentTheme = $sut->getCurrent();
         $this->assertEquals('theme1', $currentTheme);
     }
 
     public function testGetTemplate1()
     {
-        $templateDir = '.';
+        $templatePath = '.';
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
@@ -77,7 +77,7 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
         mkdir('theme1');
         touch('theme1/template.html.twig');
 
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        $sut = new LocalThemeProvider($settingsRepository, $templatePath, $defaultTheme);
         $templateString = $sut->getTemplate('template.html.twig');
         $this->assertEquals('theme1/template.html.twig', $templateString);
         $this->assertFileExists('theme1/template.html.twig');
@@ -85,7 +85,7 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTemplate2()
     {
-        $templateDir = '.';
+        $templatePath = '.';
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
@@ -94,7 +94,7 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
         $defaultTheme = 'default';
         mkdir('theme1');
 
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        $sut = new LocalThemeProvider($settingsRepository, $templatePath, $defaultTheme);
         try {
             $templateString = $sut->getTemplate('template.html.twig');
         }
@@ -106,7 +106,7 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTemplate3()
     {
-        $templateDir = '.';
+        $templatePath = '.';
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
@@ -115,7 +115,7 @@ class LocalThemeProviderTest extends \PHPUnit_Framework_TestCase
         $defaultTheme = 'default';
         mkdir('theme1/template.html.twig', 0777, true);
 
-        $sut = new LocalThemeProvider($settingsRepository, $templateDir, $defaultTheme);
+        $sut = new LocalThemeProvider($settingsRepository, $templatePath, $defaultTheme);
         try {
             $templateString = $sut->getTemplate('template.html.twig');
         }

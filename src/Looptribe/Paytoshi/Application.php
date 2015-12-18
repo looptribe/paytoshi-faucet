@@ -32,8 +32,10 @@ class Application extends \Silex\Application
         $app['rootPath'] = realpath(__DIR__ . '/../../..');
 
         $app->register(new Provider\ServiceControllerServiceProvider());
+        $app['themes.default'] = 'default';
+        $app['themes.path'] = $app['rootPath'] . '/themes';
         $app->register(new Provider\TwigServiceProvider(), array(
-            'twig.path' => $app['rootPath'] . '/themes',
+            'twig.path' => $app['themes.path']
         ));
         $app->register(new Provider\UrlGeneratorServiceProvider());
         $app->register(new Provider\DoctrineServiceProvider());
@@ -43,8 +45,6 @@ class Application extends \Silex\Application
         $app['config'] = $app->share(function () use ($app) {
             return Application::loadConfig($app['rootPath'] . '/config/config.yml');
         });
-        $app['themes.default'] = 'default';
-        $app['themes.directory'] = 'themes';
 
         $app['security.firewalls'] = $app->share(function () use ($app) {
             $adminPassword = null;
@@ -80,7 +80,7 @@ class Application extends \Silex\Application
             return new TwigTemplatingEngine($app['twig']);
         });
         $app['themeProvider'] = $app->share(function() use ($app) {
-            return new LocalThemeProvider($app['repository.settings'], $app['themes.directory'], $app['themes.default']);
+            return new LocalThemeProvider($app['repository.settings'], $app['themes.path'], $app['themes.default']);
         });
 
         $app['repository.settings'] = $app->share(function () use ($app) {
