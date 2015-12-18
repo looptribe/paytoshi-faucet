@@ -85,6 +85,17 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $reward);
     }
 
+    public function testGetReward7()
+    {
+        $rewards = array(
+            array('probability' => 5, 'amount' => -10),
+            array('probability' => 15, 'amount' => 20),
+        );
+        $sut = new RewardProvider($rewards);
+        $reward = $sut->getReward();
+        $this->assertEquals(20, $reward);
+    }
+
     public function testGetAverage1()
     {
         $rewards = array(
