@@ -9,11 +9,17 @@ class RecipientRepository
     /** @var Connection */
     private $database;
 
-    const TABLE_NAME = 'paytoshi_recipients';
+    /** @var RecipientMapper */
+    private $recipientMapper;
 
-    public function __construct(Connection $database)
+    /** @var RecipientQueryBuilder */
+    private $queryBuilder;
+
+    public function __construct(Connection $database, RecipientMapper $recipientMapper, RecipientQueryBuilder $queryBuilder)
     {
         $this->database = $database;
+        $this->recipientMapper = $recipientMapper;
+        $this->queryBuilder = $queryBuilder;
     }
 
     /**
@@ -22,22 +28,14 @@ class RecipientRepository
      */
     public function findOneByAddress($address)
     {
-        $qb = $this->database->createQueryBuilder();
-        $qb->select('*')
-            ->from(self::TABLE_NAME)
-            ->where('address', ':address')
-            ->setParameter('address', $address);
+        if (!$address)
+            return null;
+
+        $qb = $this->queryBuilder->getFindOneByAddressQuery($address);
         $result = $qb->execute()->fetch();
         if (!$result)
             return null;
 
-        $recipient = new Recipient();
-        $recipient->setId($result['id']);
-        $recipient->setAddress($result['address']);
-        $recipient->setEarning($result['earning']);
-        $recipient->setReferralEarning($result['referral_earning']);
-        $recipient->setCreatedAt($result['created_at']);
-        $recipient->setUpdatedAt($result['updated_at']);
-        return $recipient;
+        return $this->recipientMapper->toModel($result);
     }
 }
