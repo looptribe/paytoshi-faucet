@@ -4,6 +4,7 @@ namespace Looptribe\Paytoshi\Controller;
 
 use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Templating\TemplatingEngineInterface;
+use Looptribe\Paytoshi\Templating\ThemeProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -19,31 +20,27 @@ class AdminController
     /** @var UrlGeneratorInterface */
     private $urlGenerator;
 
-    public function __construct(TemplatingEngineInterface $templating, UrlGeneratorInterface $urlGenerator, SettingsRepository $settingsRepository)
-    {
+    /** @var ThemeProviderInterface */
+    private $themeProvider;
+
+    public function __construct(
+        TemplatingEngineInterface $templating,
+        UrlGeneratorInterface $urlGenerator,
+        SettingsRepository $settingsRepository,
+        ThemeProviderInterface $themeProvider
+    ) {
         $this->templating = $templating;
         $this->settingsRepository = $settingsRepository;
         $this->urlGenerator = $urlGenerator;
+        $this->themeProvider = $themeProvider;
     }
 
     public function action()
     {
         $params = array_merge($this->getView(), array(
-           'themes' => array('default', 'wide'),
+            'themes' => $this->themeProvider->getList(),
         ));
-        return $this->templating->render('default/admin.html.twig', $params);
-    }
-
-    public function saveAction(Request $request)
-    {
-        $data = $request->request->all();
-        $data['rewards'] = $this->serializeRewards($data['rewards']);
-        try {
-            $this->settingsRepository->setAll($data);
-        }
-        catch (\Exception $ex) {
-        }
-        return new RedirectResponse($this->urlGenerator->generate('admin'));
+        return $this->templating->render('admin/admin.html.twig', $params);
     }
 
     private function getView()
@@ -82,8 +79,9 @@ class AdminController
      */
     private function parseRewards($rewards)
     {
-        if (empty($rewards))
+        if (empty($rewards)) {
             return array();
+        }
 
         $rewards = explode(',', $rewards);
         $sortedRewards = array();
@@ -100,14 +98,26 @@ class AdminController
         return $sortedRewards;
     }
 
+    public function saveAction(Request $request)
+    {
+        $data = $request->request->all();
+        $data['rewards'] = $this->serializeRewards($data['rewards']);
+        try {
+            $this->settingsRepository->setAll($data);
+        } catch (\Exception $ex) {
+        }
+        return new RedirectResponse($this->urlGenerator->generate('admin'));
+    }
+
     /**
      * @param array $rewards
      * @return string
      */
     private function serializeRewards($rewards)
     {
-        if (empty($rewards))
+        if (empty($rewards)) {
             return '';
+        }
 
         //Unpack amount-probability couples
         $rewardArray = array_map(function ($i) {

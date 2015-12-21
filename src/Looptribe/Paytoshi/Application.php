@@ -35,7 +35,7 @@ class Application extends \Silex\Application
         $app['themes.default'] = 'default';
         $app['themes.path'] = $app['rootPath'] . '/themes';
         $app->register(new Provider\TwigServiceProvider(), array(
-            'twig.path' => $app['themes.path']
+            'twig.path' => array($app['rootPath'] . '/src/Looptribe/Paytoshi/Resources/views', $app['themes.path'])
         ));
         $app->register(new Provider\UrlGeneratorServiceProvider());
         $app->register(new Provider\DoctrineServiceProvider());
@@ -97,7 +97,7 @@ class Application extends \Silex\Application
             return new Controller\SetupController($app['templating'], $app['setup.diagnostics'], $app['setup.configurator']);
         });
         $app['controller.admin'] = $app->share(function () use ($app) {
-            return new Controller\AdminController($app['templating'], $app['url_generator'], $app['repository.settings']);
+            return new Controller\AdminController($app['templating'], $app['url_generator'], $app['repository.settings'], $app['themeProvider']);
         });
 
         $app['security.passwordGenerator'] = $app->share(function () use ($app) {
@@ -128,7 +128,7 @@ class Application extends \Silex\Application
         $app->get('/login', function (Request $request) use ($app) {
             /** @var \Closure $lastError */
             $lastError = $app['security.last_error'];
-            return $app['twig']->render('default/login.html.twig', array(
+            return $app['twig']->render('admin/login.html.twig', array(
                 'error' => $lastError($request),
             ));
         })->bind('login');

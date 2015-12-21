@@ -36,7 +36,7 @@ class SetupController
             $dbException = $ex;
         }
 
-        return $this->templating->render('default/setup.html.twig', array(
+        return $this->templating->render('admin/setup.html.twig', array(
             'dbException' => $dbException,
             'errors' => $dbException,
         ));
@@ -46,7 +46,7 @@ class SetupController
     {
         $results = $this->configurator->setup();
 
-        return $this->templating->render('default/setup_completed.html.twig', array(
+        return $this->templating->render('admin/setup_completed.html.twig', array(
             'results' => $results,
         ));
     }
