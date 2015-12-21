@@ -96,9 +96,7 @@ class SetupController
 
         $results['errors']['db'] = false;
         try {
-            $connectionParams = array_merge($config['database'], array('driver' => 'pdo_mysql'));
-            $connection = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, new \Doctrine\DBAL\Configuration());
-            $connection->getSchemaManager()->listTables();
+            $this->diagnostics->checkDatabase($config['database']);
         } catch (\Exception $ex) {
             $results['errors']['db'] = $ex->getMessage();
             $results['ok'] = false;

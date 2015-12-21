@@ -2,23 +2,21 @@
 
 namespace Looptribe\Paytoshi\Model;
 
-use Doctrine\DBAL\Connection;
-
 class SetupDiagnostics
 {
     /** @var SettingsRepository */
     private $settingsRepository;
 
-    /** @var Connection */
-    private $dabatase;
+    /** @var ConnectionFactory */
+    private $connectionFactory;
 
     /** @var string */
     private $configPath;
 
-    public function __construct(Connection $dabatase, SettingsRepository $settingsRepository, $configPath)
+    public function __construct(SettingsRepository $settingsRepository, ConnectionFactory $connectionFactory, $configPath)
     {
-        $this->dabatase = $dabatase;
         $this->settingsRepository = $settingsRepository;
+        $this->connectionFactory = $connectionFactory;
         $this->configPath = $configPath;
     }
 
@@ -41,5 +39,12 @@ class SetupDiagnostics
     public function isConfigWritable()
     {
         return is_writable($this->configPath);
+    }
+
+    public function checkDatabase($connectionParams)
+    {
+        $connectionParams = array_merge($connectionParams, array('driver' => 'pdo_mysql'));
+        $connection = $this->connectionFactory->create($connectionParams);
+        $connection->getSchemaManager()->listTables();
     }
 }

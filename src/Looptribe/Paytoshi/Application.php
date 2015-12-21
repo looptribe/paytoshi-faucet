@@ -4,6 +4,7 @@ namespace Looptribe\Paytoshi;
 
 use Looptribe\Paytoshi\Controller;
 use Looptribe\Paytoshi\Model\Configurator;
+use Looptribe\Paytoshi\Model\ConnectionFactory;
 use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Model\SetupDiagnostics;
 use Looptribe\Paytoshi\Security\AlphaNumericPasswordGenerator;
@@ -77,6 +78,10 @@ class Application extends \Silex\Application
             );
         });
 
+        $app['connectionFactory'] = $app->share(function () use ($app) {
+            return new ConnectionFactory();
+        });
+
         $app['templating'] = $app->share(function () use ($app) {
             return new TwigTemplatingEngine($app['twig']);
         });
@@ -109,7 +114,7 @@ class Application extends \Silex\Application
         });
 
         $app['setup.diagnostics'] = $app->share(function () use ($app) {
-            return new SetupDiagnostics($app['db'], $app['repository.settings'], $app['configPath']);
+            return new SetupDiagnostics($app['repository.settings'], $app['connectionFactory'], $app['configPath']);
         });
         $app['setup.configurator'] = $app->share(function () use ($app) {
             return new Configurator($app['db'], $app['security.passwordGenerator'], $app['security.saltGenerator'],
