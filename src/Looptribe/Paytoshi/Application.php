@@ -15,6 +15,7 @@ use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -127,9 +128,15 @@ class Application extends \Silex\Application
             }
         };
 
+        $setupAlreadyDone = function (Request $request, Application $app) {
+            if (!$app['setup.diagnostics']->requiresSetup()) {
+                throw new AccessDeniedHttpException('Setup already completed.');
+            }
+        };
+
         $app->mount('/', new Controller\PublicControllerProvider($requireSetup));
         $app->mount('/admin', new Controller\AdminControllerProvider($requireSetup));
-        $app->mount('/setup', new Controller\SetupControllerProvider());
+        $app->mount('/setup', new Controller\SetupControllerProvider($setupAlreadyDone));
 
         $app->get('/login', function (Request $request) use ($app) {
             /** @var \Closure $lastError */

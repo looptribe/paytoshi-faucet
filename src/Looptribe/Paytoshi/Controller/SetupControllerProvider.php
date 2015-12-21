@@ -8,6 +8,13 @@ use Silex\ControllerProviderInterface;
 
 class SetupControllerProvider implements ControllerProviderInterface
 {
+    private $before;
+
+    public function __construct($before)
+    {
+        $this->before = $before;
+    }
+
     /**
      * @inheritdoc
      */
@@ -20,6 +27,8 @@ class SetupControllerProvider implements ControllerProviderInterface
         $controllers->post('/', 'controller.setup:saveAction')->bind('setup_save');
         $controllers->get('/complete', 'controller.setup:completeAction')->bind('setup_complete');
         $controllers->post('/check.json', 'controller.setup:checkAction')->bind('setup_check');
+
+        $controllers->before($this->before);
 
         return $controllers;
     }

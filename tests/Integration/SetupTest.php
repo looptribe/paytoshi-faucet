@@ -20,13 +20,13 @@ class SetupTest extends WebTestCase
      */
     public function testStart()
     {
-        $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
             ->disableOriginalConstructor()
             ->getMock();
-        $settingsRepository->expects($this->any())
-            ->method('get')
-            ->willReturn(null);
-        $this->app['repository.settings'] = $settingsRepository;
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(true);
+        $this->app['setup.diagnostics'] = $setupDiagnostics;
 
         $client = $this->createClient();
         $client->request('GET', '/');
@@ -38,24 +38,44 @@ class SetupTest extends WebTestCase
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Paytoshi Faucet setup")')->count());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testCheck()
+    public function testStartDeniedAlreadyCompleted()
     {
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
         $settingsRepository->expects($this->any())
             ->method('get')
-            ->willReturn(null);
+            ->with('password')
+            ->willReturn('fakepwd');
         $this->app['repository.settings'] = $settingsRepository;
 
         $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
             ->disableOriginalConstructor()
             ->getMock();
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(false);
+        $this->app['setup.diagnostics'] = $setupDiagnostics;
+
+        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException');
+
+        $client = $this->createClient();
+        $client->request('GET', '/setup/');
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testCheck()
+    {
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
+            ->disableOriginalConstructor()
+            ->getMock();
         $setupDiagnostics->expects($this->once())
             ->method('checkDatabase');
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(true);
         $this->app['setup.diagnostics'] = $setupDiagnostics;
 
         $client = $this->createClient();
@@ -76,20 +96,15 @@ class SetupTest extends WebTestCase
      */
     public function testCheckDbFail()
     {
-        $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $settingsRepository->expects($this->any())
-            ->method('get')
-            ->willReturn(null);
-        $this->app['repository.settings'] = $settingsRepository;
-
         $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
             ->disableOriginalConstructor()
             ->getMock();
         $setupDiagnostics->expects($this->once())
             ->method('checkDatabase')
             ->willThrowException(new \RuntimeException('Failed!'));
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(true);
         $this->app['setup.diagnostics'] = $setupDiagnostics;
 
         $client = $this->createClient();
