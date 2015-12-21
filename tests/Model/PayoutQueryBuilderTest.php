@@ -25,7 +25,8 @@ class PayoutQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb->method('from')
             ->with('paytoshi_payouts')
             ->willReturn($qb);
-        $qb->method('where')->willReturn($qb);
+        $qb->method('where')
+            ->willReturn($qb);
         $qb->expects($this->exactly(2))
             ->method('setParameter')
             ->willReturnCallback(function($field, $value) use ($self, $qb, $ip, $address) {
@@ -40,7 +41,13 @@ class PayoutQueryBuilderTest extends \PHPUnit_Framework_TestCase
                         $self->fail('Invalid field');
                         break;
                 }
+                return $qb;
             });
+        $qb->method('orderBy')
+            ->with('created_at', 'DESC')
+            ->willReturn($qb);
+        $qb->method('orWhere')
+            ->willReturn($qb);
         $connection->method('createQueryBuilder')
             ->willReturn($qb);
 
@@ -53,7 +60,6 @@ class PayoutQueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $ip = '10.10.10.10';
 
-        $self = $this;
         $connection = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->disableOriginalConstructor()
             ->getMock();
@@ -67,10 +73,15 @@ class PayoutQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb->method('from')
             ->with('paytoshi_payouts')
             ->willReturn($qb);
-        $qb->method('where')->willReturn($qb);
+        $qb->method('where')
+            ->willReturn($qb);
         $qb->expects($this->once())
             ->method('setParameter')
-            ->with($this->anything(), $ip);
+            ->with($this->anything(), $ip)
+            ->willReturn($qb);
+        $qb->method('orderBy')
+            ->with('created_at', 'DESC')
+            ->willReturn($qb);
         $connection->method('createQueryBuilder')
             ->willReturn($qb);
 

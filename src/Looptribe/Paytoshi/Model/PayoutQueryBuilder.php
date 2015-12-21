@@ -27,9 +27,10 @@ class PayoutQueryBuilder
             ->orderBy('created_at', 'DESC')
             ->setMaxResults(1);
 
-        if ($address)
+        if ($address) {
             $qb->orWhere('recipient_address', ':address')
                 ->setParameter('address', $address);
+        }
 
         return $qb;
     }
