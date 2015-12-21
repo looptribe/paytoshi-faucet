@@ -10,14 +10,14 @@ use Symfony\Component\Security\Acl\Exception\Exception;
 class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  PHPUnit_Framework_MockObject_MockObject */
-    private $db;
+    private $connection;
 
     /** @var  PHPUnit_Framework_MockObject_MockObject */
     private $mapper;
 
     public function setUp()
     {
-        $this->db = $this->getMockBuilder('Doctrine\DBAL\Connection')
+        $this->connection = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -69,7 +69,7 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
             ->willReturn($statement);
 
 
-        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
         $result = $sut->findOneByAddress('addr1');
         $this->assertInstanceOf('Looptribe\Paytoshi\Model\Recipient', $result);
         $this->assertEquals(1, $result->getId());
@@ -100,17 +100,17 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
             ->with('addr1')
             ->willReturn($qb);
 
-        $this->db->method('createQueryBuilder')
+        $this->connection->method('createQueryBuilder')
             ->willReturn($qb);
 
-        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
         $result = $sut->findOneByAddress('addr1');
         $this->assertNull($result);
     }
 
     public function testFindOneByAddress3()
     {
-        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
         $result = $sut->findOneByAddress(null);
         $this->assertNull($result);
     }
@@ -142,10 +142,10 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $qb->method('execute')
             ->willReturn($statement);
 
-        $this->db->method('lastInsertId')
+        $this->connection->method('lastInsertId')
             ->willReturn(1);
 
-        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
         $result = $sut->insert($recipient);
         $this->assertInstanceOf('Looptribe\Paytoshi\Model\Recipient', $result);
         $this->assertEquals(1, $result->getId());
@@ -183,7 +183,7 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $qb->method('execute')
             ->willReturn($statement);
 
-        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
         $result = $sut->insert($recipient);
         $this->assertNull($result);
     }
@@ -196,7 +196,7 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $recipient->setCreatedAt(new \DateTime());
         $recipient->setUpdatedAt(new \DateTime());
 
-        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
         try {
             $result = $sut->insert($recipient);
         }

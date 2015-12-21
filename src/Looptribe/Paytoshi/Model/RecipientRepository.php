@@ -7,7 +7,7 @@ use Doctrine\DBAL\Connection;
 class RecipientRepository
 {
     /** @var Connection */
-    private $database;
+    private $connection;
 
     /** @var RecipientMapper */
     private $recipientMapper;
@@ -15,9 +15,9 @@ class RecipientRepository
     /** @var RecipientQueryBuilder */
     private $queryBuilder;
 
-    public function __construct(Connection $database, RecipientMapper $recipientMapper, RecipientQueryBuilder $queryBuilder)
+    public function __construct(Connection $connection, RecipientMapper $recipientMapper, RecipientQueryBuilder $queryBuilder)
     {
-        $this->database = $database;
+        $this->connection = $connection;
         $this->recipientMapper = $recipientMapper;
         $this->queryBuilder = $queryBuilder;
     }
@@ -54,7 +54,7 @@ class RecipientRepository
         if (!$result)
             return null;
 
-        $recipient->setId($this->database->lastInsertId());
+        $recipient->setId($this->connection->lastInsertId());
         return $recipient;
     }
 }

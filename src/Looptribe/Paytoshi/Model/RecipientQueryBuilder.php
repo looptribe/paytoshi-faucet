@@ -11,16 +11,16 @@ class RecipientQueryBuilder
 
 
     /** @var Connection */
-    private $database;
+    private $connection;
 
-    public function __construct(Connection $database)
+    public function __construct(Connection $connection)
     {
-        $this->database = $database;
+        $this->connection = $connection;
     }
 
     public function getFindOneByAddressQuery($address)
     {
-        $qb = $this->database->createQueryBuilder();
+        $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
             ->from(self::TABLE_NAME)
             ->where('address', ':address')
@@ -30,7 +30,7 @@ class RecipientQueryBuilder
 
     public function getInsertQuery(Recipient $recipient)
     {
-        $qb = $this->database->createQueryBuilder();
+        $qb = $this->connection->createQueryBuilder();
         $qb->insert(self::TABLE_NAME)
             ->values(array(
                 'address' => ':address',
@@ -50,7 +50,7 @@ class RecipientQueryBuilder
 
     public function getUpdateQuery(Recipient $recipient)
     {
-        $qb = $this->database->createQueryBuilder();
+        $qb = $this->connection->createQueryBuilder();
         $qb->update(self::TABLE_NAME)
             ->set('earning', ':earning')
             ->set('referral_earning', ':referral_earning')

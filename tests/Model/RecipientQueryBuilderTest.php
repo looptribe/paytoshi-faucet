@@ -12,7 +12,7 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $address = 'addr1';
 
-        $db = $this->getMockBuilder('Doctrine\DBAL\Connection')
+        $connection = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -29,10 +29,10 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb->method('setParameter')
             ->with($this->anything(), $address)
             ->willReturn($qb);
-        $db->method('createQueryBuilder')
+        $connection->method('createQueryBuilder')
             ->willReturn($qb);
 
-        $sut = new RecipientQueryBuilder($db);
+        $sut = new RecipientQueryBuilder($connection);
         $result = $sut->getFindOneByAddressQuery($address);
         $this->assertInstanceOf('\Doctrine\DBAL\Query\QueryBuilder', $result);
     }
@@ -47,7 +47,7 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $recipient->setCreatedAt(new \DateTime());
         $recipient->setUpdatedAt(new \DateTime());
 
-        $db = $this->getMockBuilder('Doctrine\DBAL\Connection')
+        $connection = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -84,10 +84,10 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
                 }
                 return $qb;
             });
-        $db->method('createQueryBuilder')
+        $connection->method('createQueryBuilder')
             ->willReturn($qb);
 
-        $sut = new RecipientQueryBuilder($db);
+        $sut = new RecipientQueryBuilder($connection);
         $result = $sut->getInsertQuery($recipient);
         $this->assertInstanceOf('\Doctrine\DBAL\Query\QueryBuilder', $result);
     }
@@ -103,7 +103,7 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $recipient->setCreatedAt(new \DateTime());
         $recipient->setUpdatedAt(new \DateTime());
 
-        $db = $this->getMockBuilder('Doctrine\DBAL\Connection')
+        $connection = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -137,10 +137,10 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
                 }
                 return $qb;
             });
-        $db->method('createQueryBuilder')
+        $connection->method('createQueryBuilder')
             ->willReturn($qb);
 
-        $sut = new RecipientQueryBuilder($db);
+        $sut = new RecipientQueryBuilder($connection);
         $result = $sut->getUpdateQuery($recipient);
         $this->assertInstanceOf('\Doctrine\DBAL\Query\QueryBuilder', $result);
     }
