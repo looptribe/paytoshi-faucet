@@ -6,20 +6,20 @@ use Doctrine\DBAL\Connection;
 
 class SetupDiagnostics
 {
-    /**
-     * @var SettingsRepository
-     */
+    /** @var SettingsRepository */
     private $settingsRepository;
 
-    /**
-     * @var Connection
-     */
+    /** @var Connection */
     private $dabatase;
 
-    public function __construct(Connection $dabatase, SettingsRepository $settingsRepository)
+    /** @var string */
+    private $configPath;
+
+    public function __construct(Connection $dabatase, SettingsRepository $settingsRepository, $configPath)
     {
         $this->dabatase = $dabatase;
         $this->settingsRepository = $settingsRepository;
+        $this->configPath = $configPath;
     }
 
     /**
@@ -38,8 +38,8 @@ class SetupDiagnostics
         return false;
     }
 
-    public function checkDatabase()
+    public function isConfigWritable()
     {
-        $this->dabatase->fetchAll('SHOW TABLES');
+        return is_writable($this->configPath);
     }
 }

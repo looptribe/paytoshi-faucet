@@ -17,7 +17,9 @@ class SetupControllerProvider implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', 'controller.setup:startAction')->bind('setup');
-        $controllers->post('/', 'controller.setup:action')->bind('setup_execute');
+        $controllers->post('/', 'controller.setup:saveAction')->bind('setup_save');
+        $controllers->get('/complete', 'controller.setup:completeAction')->bind('setup_complete');
+        $controllers->post('/check.json', 'controller.setup:checkAction')->bind('setup_check');
 
         return $controllers;
     }

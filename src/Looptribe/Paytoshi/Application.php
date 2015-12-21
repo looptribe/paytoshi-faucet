@@ -30,6 +30,7 @@ class Application extends \Silex\Application
         $app = $this;
 
         $app['rootPath'] = realpath(__DIR__ . '/../../..');
+        $app['configPath'] = $app['rootPath'] . '/config/config.yml';
 
         $app->register(new Provider\ServiceControllerServiceProvider());
         $app['themes.default'] = 'default';
@@ -43,7 +44,7 @@ class Application extends \Silex\Application
         $app->register(new Provider\SecurityServiceProvider());
 
         $app['config'] = $app->share(function () use ($app) {
-            return Application::loadConfig($app['rootPath'] . '/config/config.yml');
+            return Application::loadConfig($app['configPath']);
         });
 
         $app['security.firewalls'] = $app->share(function () use ($app) {
@@ -94,7 +95,7 @@ class Application extends \Silex\Application
             return new Controller\FaqController($app['templating'], $app['themeProvider'], $app['repository.settings']);
         });
         $app['controller.setup'] = $app->share(function () use ($app) {
-            return new Controller\SetupController($app['templating'], $app['setup.diagnostics'], $app['setup.configurator']);
+            return new Controller\SetupController($app['templating'], $app['url_generator'], $app['setup.diagnostics'], $app['setup.configurator'], $app['db.options'], $app['configPath']);
         });
         $app['controller.admin'] = $app->share(function () use ($app) {
             return new Controller\AdminController($app['templating'], $app['url_generator'], $app['repository.settings'], $app['themeProvider']);
@@ -108,7 +109,7 @@ class Application extends \Silex\Application
         });
 
         $app['setup.diagnostics'] = $app->share(function () use ($app) {
-            return new SetupDiagnostics($app['db'], $app['repository.settings']);
+            return new SetupDiagnostics($app['db'], $app['repository.settings'], $app['configPath']);
         });
         $app['setup.configurator'] = $app->share(function () use ($app) {
             return new Configurator($app['db'], $app['security.passwordGenerator'], $app['security.saltGenerator'],
@@ -132,6 +133,13 @@ class Application extends \Silex\Application
                 'error' => $lastError($request),
             ));
         })->bind('login');
+
+        $app->before(function (Request $request) {
+            if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+                $data = json_decode($request->getContent(), true);
+                $request->request->replace(is_array($data) ? $data : array());
+            }
+        });
     }
 
     public static function loadConfig($path)

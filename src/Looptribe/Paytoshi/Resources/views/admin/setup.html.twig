@@ -1,13 +1,13 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block content %}
-    <div class="row">
+    <div class="row ng-cloak" ng-app="paytoshi.setup" ng-controller="SetupController">
         <div class="col-xs-12">
             <div class="page-header">
                 <h1>Paytoshi Faucet setup</h1>
             </div>
 
-            <div class="panel panel-default {% if errors %}panel-danger{% else %}panel-success{% endif %}">
+            {#<div class="panel panel-default {% if errors %}panel-danger{% else %}panel-success{% endif %}">
                 <div class="panel-heading">
                     <h3 class="panel-title">Requirements check</h3>
                 </div>
@@ -24,13 +24,114 @@
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div>#}
 
-            <p>TODO</p>
+            <p>
+                Welcome to the installer of your Paytoshi Faucet.
+                This wizard will guide you through the installation and configuration of a Paytoshi Faucet.
+            </p>
 
-            <form action="{{ path('setup_execute') }}" method="post">
-                <button type="submit" class="btn btn-primary">Start now</button>
+            <form action="{{ path('setup_save') }}" method="post" name="form">
+                <fieldset{% if not isConfigWritable %} disabled{% endif %}>
+                    <legend>Database configuration</legend>
+
+                    {% if not isConfigWritable %}
+                        <div class="panel panel-default panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">The database configuration file is not writable.</h3>
+                            </div>
+                            <div class="panel-body">
+                                Warning: the configuration file is not writable, you must edit manually the database configuration
+                                before continuing with the setup.<br>
+                                See <a href="https://paytoshi.org/faucet-script#manual">our guide</a> for further instructions.
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="dbHost">Host (eg. localhost)</label>
+                        <input type="text" class="form-control" name="dbHost" id="dbHost" ng-model="config.database.host" required ng-change="check()" ng-model-options='{ debounce: 300 }'>
+                    </div>
+                    <div class="form-group">
+                        <label for="dbName">Database name</label>
+                        <input type="text" class="form-control" name="dbName" id="dbName" ng-model="config.database.dbname" required ng-change="check()" ng-model-options='{ debounce: 300 }'>
+                    </div>
+                    <div class="form-group">
+                        <label for="dbUser">User</label>
+                        <input type="text" class="form-control" name="dbUser" id="dbUser" ng-model="config.database.user" required ng-change="check()" ng-model-options='{ debounce: 300 }'>
+                    </div>
+                    <div class="form-group">
+                        <label for="dbPass">Password</label>
+                        <input type="password" class="form-control" name="dbPass" id="dbPass" ng-model="config.database.password" ng-change="check()" ng-model-options='{ debounce: 300 }'>
+                    </div>
+
+                    {% verbatim %}
+                    <div ng-if="status.errors.db" class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        <strong>Invalid database configuration.</strong>
+                        {{ status.errors.db }}
+                    </div>
+                    {% endverbatim %}
+                </fieldset>
+
+                <div class="form-group">
+                    {% verbatim %}
+                    <div ng-if="status.ok" class="alert alert-success" role="alert">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <strong>Success!</strong> Your configuration looks OK.
+                    </div>
+                    {% endverbatim %}
+
+                    <button type="submit" class="btn btn-primary" ng-disabled="form.$invalid || !status.ok">Start now</button>
+                </div>
             </form>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+
+    <script>
+        (function () {
+            'use strict';
+            angular.module('paytoshi.setup', [])
+                    .value('paytoshiConfig', {{ config|json_encode|raw }})
+                    .service('paytoshiSetupApi', ['$http', '$q', function ($http, $q) {
+                        var canceler;
+                        return {
+                            check: function (data) {
+                                if (canceler !== undefined) {
+                                    canceler.resolve();
+                                }
+                                canceler = $q.defer();
+                                return $http.post({{ path('setup_check')|json_encode|raw }}, data, {timeout: canceler.promise});
+                            }
+                        }
+                    }])
+                    .controller('SetupController', ['$scope', 'paytoshiSetupApi', 'paytoshiConfig', function ($scope, paytoshiSetupApi, paytoshiConfig) {
+                        $scope.config = angular.copy(paytoshiConfig);
+
+                        $scope.check = function () {
+                            paytoshiSetupApi.check($scope.config)
+                                    .then(function (response) {
+                                        $scope.status = response.data;
+                                    }, function () {
+                                    });
+                        };
+
+                        $scope.check();
+                    }]);
+        })();
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
 {% endblock %}
