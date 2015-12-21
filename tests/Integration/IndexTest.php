@@ -33,9 +33,7 @@ class IndexTest extends WebTestCase
                         return 'default';
                 }
             });
-        $this->app['repository.settings'] = function () use ($mock) {
-            return $mock;
-        };
+        $this->app['repository.settings'] = $mock;
 
         $client = $this->createClient();
         $crawler = $client->request('GET', '/');
