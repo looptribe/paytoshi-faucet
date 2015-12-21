@@ -5,7 +5,6 @@ namespace Looptribe\Paytoshi\Tests\Model;
 use Looptribe\Paytoshi\Model\Recipient;
 use Looptribe\Paytoshi\Model\RecipientRepository;
 use PHPUnit_Framework_MockObject_MockObject;
-use Symfony\Component\Security\Acl\Exception\Exception;
 
 class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,6 +13,9 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
 
     /** @var  PHPUnit_Framework_MockObject_MockObject */
     private $mapper;
+
+    /** @var  PHPUnit_Framework_MockObject_MockObject */
+    private $queryBuilder;
 
     public function setUp()
     {
