@@ -65,4 +65,12 @@ class RecipientTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Looptribe\Paytoshi\Model\Recipient', $result);
         $this->assertEquals($now, $sut->getUpdatedAt());
     }
+
+    public function testIsNew()
+    {
+        $sut = new Recipient();
+        $this->assertTrue($sut->isNew());
+        $sut->setId(10);
+        $this->assertFalse($sut->isNew());
+    }
 }

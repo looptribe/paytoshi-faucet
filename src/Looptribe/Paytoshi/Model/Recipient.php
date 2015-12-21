@@ -165,4 +165,12 @@ class Recipient
         return $this->updatedAt;
     }
 
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return !$this->id;
+    }
+
 }
