@@ -6,6 +6,14 @@ class RecipientMapper
 {
     public function toArray(Recipient $model)
     {
+        $data = array();
+        $data['id'] = $model->getId();
+        $data['address'] = $model->getAddress();
+        $data['earning'] = $model->getEarning();
+        $data['referral_earning'] = $model->getReferralEarning();
+        $data['created_at'] = $model->getCreatedAt();
+        $data['updated_at'] = $model->getUpdatedAt();
+        return $data;
     }
 
     public function toModel(array $data)

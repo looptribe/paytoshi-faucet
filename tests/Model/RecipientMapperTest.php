@@ -2,6 +2,7 @@
 
 namespace Looptribe\Paytoshi\Tests\Model;
 
+use Looptribe\Paytoshi\Model\Recipient;
 use Looptribe\Paytoshi\Model\RecipientMapper;
 
 class RecipientMapperTest extends \PHPUnit_Framework_TestCase
@@ -138,5 +139,120 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(10, $model->getReferralEarning());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
         $this->assertInstanceOf('DateTime', $model->getUpdatedAt());
+    }
+
+    public function testToArray1()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $sut = new RecipientMapper();
+        $data = $sut->toArray($recipient);
+        $this->assertEquals(1, $data['id']);
+        $this->assertEquals('addr1', $data['address']);
+        $this->assertEquals(100, $data['earning']);
+        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertInstanceOf('DateTime', $data['updated_at']);
+    }
+
+    public function testToArray2()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $sut = new RecipientMapper();
+        $data = $sut->toArray($recipient);
+        $this->assertEquals(1, $data['id']);
+        $this->assertNull($data['address']);
+        $this->assertEquals(100, $data['earning']);
+        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertInstanceOf('DateTime', $data['updated_at']);
+    }
+
+    public function testToArray3()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setAddress('addr1');
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $sut = new RecipientMapper();
+        $data = $sut->toArray($recipient);
+        $this->assertEquals(1, $data['id']);
+        $this->assertEquals('addr1', $data['address']);
+        $this->assertEquals(0, $data['earning']);
+        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertInstanceOf('DateTime', $data['updated_at']);
+    }
+
+    public function testToArray4()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $sut = new RecipientMapper();
+        $data = $sut->toArray($recipient);
+        $this->assertEquals(1, $data['id']);
+        $this->assertEquals('addr1', $data['address']);
+        $this->assertEquals(100, $data['earning']);
+        $this->assertEquals(0, $data['referral_earning']);
+        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertInstanceOf('DateTime', $data['updated_at']);
+    }
+
+    public function testToArray5()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $sut = new RecipientMapper();
+        $data = $sut->toArray($recipient);
+        $this->assertEquals(1, $data['id']);
+        $this->assertEquals('addr1', $data['address']);
+        $this->assertEquals(100, $data['earning']);
+        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertInstanceOf('DateTime', $data['updated_at']);
+    }
+
+    public function testToArray6()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+
+        $sut = new RecipientMapper();
+        $data = $sut->toArray($recipient);
+        $this->assertEquals(1, $data['id']);
+        $this->assertEquals('addr1', $data['address']);
+        $this->assertEquals(100, $data['earning']);
+        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertInstanceOf('DateTime', $data['updated_at']);
     }
 }
