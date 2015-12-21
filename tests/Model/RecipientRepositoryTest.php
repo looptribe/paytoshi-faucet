@@ -106,4 +106,11 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $result = $sut->findOneByAddress('addr1');
         $this->assertNull($result);
     }
+
+    public function testFindOneByAddress3()
+    {
+        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $result = $sut->findOneByAddress(null);
+        $this->assertNull($result);
+    }
 }
