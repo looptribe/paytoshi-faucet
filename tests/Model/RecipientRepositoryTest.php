@@ -5,6 +5,7 @@ namespace Looptribe\Paytoshi\Tests\Model;
 use Looptribe\Paytoshi\Model\Recipient;
 use Looptribe\Paytoshi\Model\RecipientRepository;
 use PHPUnit_Framework_MockObject_MockObject;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -138,9 +139,6 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $statement->method('fetch')
             ->willReturn(true);
 
-        $this->mapper->method('toModel')
-            ->willReturn($recipient);
-
         $qb->method('execute')
             ->willReturn($statement);
 
@@ -157,4 +155,55 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('DateTime', $result->getCreatedAt());
         $this->assertInstanceOf('DateTime', $result->getUpdatedAt());
     }
+
+    public function testInsert2()
+    {
+        $recipient = new Recipient();
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->queryBuilder->method('getInsertQuery')
+            ->with($recipient)
+            ->willReturn($qb);
+
+        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $statement->method('fetch')
+            ->willReturn(false);
+
+        $qb->method('execute')
+            ->willReturn($statement);
+
+        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $result = $sut->insert($recipient);
+        $this->assertNull($result);
+    }
+
+    public function testInsert3()
+    {
+        $recipient = new Recipient();
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        try {
+            $result = $sut->insert($recipient);
+        }
+        catch (\Exception $e) {
+            $this->assertInstanceOf('Exception', $e);
+            $this->assertSame('Invalid Recipient', $e->getMessage());
+        }
+    }
+
 }

@@ -46,7 +46,7 @@ class RecipientRepository
      */
     public function insert(Recipient $recipient)
     {
-        if (!$recipient)
+        if (!$recipient || !$recipient->getAddress())
             throw new \Exception('Invalid Recipient');
 
         $qb = $this->queryBuilder->getInsertQuery($recipient);
