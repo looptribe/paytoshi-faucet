@@ -4,6 +4,7 @@ namespace Looptribe\Paytoshi\Logic;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ConnectionException;
+use Looptribe\Paytoshi\Api\PaytoshiApiInterface;
 use Looptribe\Paytoshi\Model\Payout;
 use Looptribe\Paytoshi\Model\Recipient;
 use Looptribe\Paytoshi\Model\RecipientRepository;
@@ -15,14 +16,23 @@ class RewardLogic
 
     /** @var RecipientRepository */
     private $recipientRepository;
+
     /** @var RewardProviderInterface */
     private $rewardProvider;
 
-    public function __construct(Connection $connection, RecipientRepository $recipientRepository, RewardProviderInterface $rewardProvider)
-    {
+    /** @var PaytoshiApiInterface */
+    private $api;
+
+    public function __construct(
+        Connection $connection,
+        RecipientRepository $recipientRepository,
+        RewardProviderInterface $rewardProvider,
+        PaytoshiApiInterface $api
+    ) {
         $this->connection = $connection;
         $this->recipientRepository = $recipientRepository;
         $this->rewardProvider = $rewardProvider;
+        $this->api = $api;
     }
 
     /**
@@ -62,8 +72,7 @@ class RewardLogic
             // TODO: payment process
 
             //$this->connection->commit();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->connection->rollBack();
             throw $e;
         }
