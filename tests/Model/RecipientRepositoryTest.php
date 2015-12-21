@@ -113,4 +113,48 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $result = $sut->findOneByAddress(null);
         $this->assertNull($result);
     }
+
+    public function testInsert1()
+    {
+        $recipient = new Recipient();
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->queryBuilder->method('getInsertQuery')
+            ->with($recipient)
+            ->willReturn($qb);
+
+        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $statement->method('fetch')
+            ->willReturn(true);
+
+        $this->mapper->method('toModel')
+            ->willReturn($recipient);
+
+        $qb->method('execute')
+            ->willReturn($statement);
+
+        $this->db->method('lastInsertId')
+            ->willReturn(1);
+
+        $sut = new RecipientRepository($this->db, $this->mapper, $this->queryBuilder);
+        $result = $sut->insert($recipient);
+        $this->assertInstanceOf('Looptribe\Paytoshi\Model\Recipient', $result);
+        $this->assertEquals(1, $result->getId());
+        $this->assertEquals('addr1', $result->getAddress());
+        $this->assertEquals(100, $result->getEarning());
+        $this->assertEquals(10, $result->getReferralEarning());
+        $this->assertInstanceOf('DateTime', $result->getCreatedAt());
+        $this->assertInstanceOf('DateTime', $result->getUpdatedAt());
+    }
 }
