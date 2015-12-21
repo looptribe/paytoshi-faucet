@@ -2,6 +2,7 @@
 
 namespace Looptribe\Paytoshi;
 
+use Looptribe\Paytoshi\Api\PaytoshiApi;
 use Looptribe\Paytoshi\Controller;
 use Looptribe\Paytoshi\Model\Configurator;
 use Looptribe\Paytoshi\Model\ConnectionFactory;
@@ -33,6 +34,8 @@ class Application extends \Silex\Application
 
         $app['rootPath'] = realpath(__DIR__ . '/../../..');
         $app['configPath'] = $app['rootPath'] . '/config/config.yml';
+
+        $app['apiUrl'] = 'http://paytoshi.org/api/v1/';
 
         $app->register(new Provider\ServiceControllerServiceProvider());
         $app['themes.default'] = 'default';
@@ -79,8 +82,18 @@ class Application extends \Silex\Application
             );
         });
 
-        $app['connectionFactory'] = $app->share(function () use ($app) {
+        $app['connectionFactory'] = $app->share(function () {
             return new ConnectionFactory();
+        });
+
+        $app['buzz'] = $app->share(function () {
+            $browser = new \Buzz\Browser();
+            $browser->getClient()->setVerifyPeer(false);
+            return $browser;
+        });
+
+        $app['api'] = $app->share(function () use ($app) {
+            return new PaytoshiApi($app['buzz'], $app['apiUrl']);
         });
 
         $app['templating'] = $app->share(function () use ($app) {
