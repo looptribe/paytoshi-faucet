@@ -21,6 +21,8 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $settingsRepository;
 
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    private $themeProvider;
 
     public function setUp()
     {
@@ -29,8 +31,9 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
         $this->settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
+        $this->themeProvider = $this->getMock('Looptribe\Paytoshi\Templating\ThemeProviderInterface');
 
-        $this->sut = new AdminController($this->templating, $this->urlGenerator, $this->settingsRepository);
+        $this->sut = new AdminController($this->templating, $this->urlGenerator, $this->settingsRepository, $this->themeProvider);
     }
 
     public function testAction1()
@@ -45,7 +48,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
         $this->templating->expects($this->once())
             ->method('render')
             ->with(
-                'default/admin.html.twig',
+                'admin/admin.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('version'),
                     $this->arrayHasKey('api_key'),
@@ -96,7 +99,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
         $this->templating->expects($this->once())
             ->method('render')
             ->with(
-                'default/admin.html.twig',
+                'admin/admin.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('version'),
                     $this->arrayHasKey('api_key'),
@@ -149,7 +152,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
         $this->templating->expects($this->once())
             ->method('render')
             ->with(
-                'default/admin.html.twig',
+                'admin/admin.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('version'),
                     $this->arrayHasKey('api_key'),
@@ -203,7 +206,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
         $this->templating->expects($this->once())
             ->method('render')
             ->with(
-                'default/admin.html.twig',
+                'admin/admin.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('version'),
                     $this->arrayHasKey('api_key'),

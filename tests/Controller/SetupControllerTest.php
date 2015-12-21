@@ -37,7 +37,7 @@ class SetupControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->templating->method('render')
             ->with(
-                'default/setup_completed.html.twig',
+                'admin/setup_completed.html.twig',
                 $this->arrayHasKey('results')
             )
             ->willReturn(new Response());
@@ -50,7 +50,7 @@ class SetupControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->templating->method('render')
             ->with(
-                'default/setup.html.twig',
+                'admin/setup.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('dbException'),
                     $this->arrayHasKey('errors')
@@ -69,7 +69,7 @@ class SetupControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->templating->method('render')
             ->with(
-                'default/setup.html.twig',
+                'admin/setup.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('dbException'),
                     $this->arrayHasKey('errors')
