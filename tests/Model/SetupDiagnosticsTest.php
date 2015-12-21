@@ -18,7 +18,7 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('password')
             ->willReturn('fakepasswordhash');
-        $sut = new SetupDiagnostics($db, $repository);
+        $sut = new SetupDiagnostics($db, $repository, '/path/to/config.yml');
         $result = $sut->requiresSetup();
         $this->assertFalse($result);
     }
@@ -35,7 +35,7 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('password')
             ->willReturn(null);
-        $sut = new SetupDiagnostics($db, $repository);
+        $sut = new SetupDiagnostics($db, $repository, '/path/to/config.yml');
         $result = $sut->requiresSetup();
         $this->assertTrue($result);
     }
@@ -52,23 +52,22 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('password')
             ->willThrowException(new \RuntimeException());
-        $sut = new SetupDiagnostics($db, $repository);
+        $sut = new SetupDiagnostics($db, $repository, '/path/to/config.yml');
         $result = $sut->requiresSetup();
         $this->assertTrue($result);
     }
 
-    public function testCheckDatabaseShouldExecuteQuery()
+    public function testIsFileWritableShouldReturnFalseForNonExistingFile()
     {
         $db = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $db
-            ->expects($this->once())
-            ->method('fetchAll');
         $repository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
             ->disableOriginalConstructor()
             ->getMock();
-        $sut = new SetupDiagnostics($db, $repository);
-        $sut->checkDatabase();
+
+        $sut = new SetupDiagnostics($db, $repository, 'thisfileshouldnotexist.yml');
+        $result = $sut->isConfigWritable();
+        $this->assertfalse($result);
     }
 }
