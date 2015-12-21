@@ -39,8 +39,8 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInsertQuery()
     {
+        $self = $this;
         $recipient = new Recipient();
-        $recipient->setId(1);
         $recipient->setAddress('addr1');
         $recipient->setEarning(100);
         $recipient->setReferralEarning(10);
@@ -60,21 +60,88 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb->method('values')
             ->willReturn($qb);
         $qb->method('setParameter')
-            ->will(
-                $this->returnValueMap(array(
-                        array('address', $recipient->getAddress()),
-                        array('earning'), $recipient->getEarning(),
-                        array('referral_earning', $recipient->getReferralEarning()),
-                        array('created_at', $recipient->getCreatedAt()),
-                        array('updated_at', $recipient->getUpdatedAt())
-                ))
-            )
-            ->willReturn($qb);
+            ->willReturnCallback(function($field, $value) use ($self, $qb, $recipient) {
+                switch($field)
+                {
+                    case 'address':
+                        $self->assertEquals($value, $recipient->getAddress());
+                        break;
+                    case 'earning':
+                        $self->assertEquals($value, $recipient->getEarning());
+                        break;
+                    case 'referral_earning':
+                        $self->assertEquals($value, $recipient->getReferralEarning());
+                        break;
+                    case 'updated_at':
+                        $self->assertEquals($value, $recipient->getUpdatedAt());
+                        break;
+                    case 'created_at':
+                        $self->assertEquals($value, $recipient->getCreatedAt());
+                        break;
+                    default:
+                        $self->fail('Invalid field');
+                        break;
+                }
+                return $qb;
+            });
         $db->method('createQueryBuilder')
             ->willReturn($qb);
 
         $sut = new RecipientQueryBuilder($db);
         $result = $sut->getInsertQuery($recipient);
+        $this->assertInstanceOf('\Doctrine\DBAL\Query\QueryBuilder', $result);
+    }
+
+    public function testGetUpdateQuery()
+    {
+        $self = $this;
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $db = $this->getMockBuilder('Doctrine\DBAL\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $qb->method('update')
+            ->with('paytoshi_recipients')
+            ->willReturn($qb);
+        $qb->method('set')
+            ->willReturn($qb);
+        $qb->method('setParameter')
+            ->willReturnCallback(function($field, $value) use ($self, $qb, $recipient) {
+                switch($field)
+                {
+                    case 'address':
+                        $self->assertEquals($value, $recipient->getAddress());
+                        break;
+                    case 'earning':
+                        $self->assertEquals($value, $recipient->getEarning());
+                        break;
+                    case 'referral_earning':
+                        $self->assertEquals($value, $recipient->getReferralEarning());
+                        break;
+                    case 'updated_at':
+                        $self->assertEquals($value, $recipient->getUpdatedAt());
+                        break;
+                    default:
+                        $self->fail('Invalid field');
+                        break;
+                }
+                return $qb;
+            });
+        $db->method('createQueryBuilder')
+            ->willReturn($qb);
+
+        $sut = new RecipientQueryBuilder($db);
+        $result = $sut->getUpdateQuery($recipient);
         $this->assertInstanceOf('\Doctrine\DBAL\Query\QueryBuilder', $result);
     }
 }

@@ -47,4 +47,18 @@ class RecipientQueryBuilder
 
         return $qb;
     }
+
+    public function getUpdateQuery(Recipient $recipient)
+    {
+        $qb = $this->database->createQueryBuilder();
+        $qb->update(self::TABLE_NAME)
+            ->set('earning', ':earning')
+            ->set('referral_earning', ':referral_earning')
+            ->set('updated_at', ':updated_at')
+            ->setParameter('earning', $recipient->getEarning())
+            ->setParameter('referral_earning', $recipient->getReferralEarning())
+            ->setParameter('updated_at', $recipient->getUpdatedAt());
+
+        return $qb;
+    }
 }
