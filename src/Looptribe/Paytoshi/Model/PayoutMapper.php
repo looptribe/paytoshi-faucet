@@ -9,6 +9,7 @@ class PayoutMapper
     {
         $data = array();
         $data['id'] = $model->getId();
+        $data['ip'] = $model->getIp();
         $data['recipient_address'] = $model->getRecipientAddress();
         $data['referral_recipient_address'] = $model->getReferralRecipientAddress();
         $data['earning'] = $model->getEarning();
@@ -22,6 +23,8 @@ class PayoutMapper
         $payout = new Payout();
         if (array_key_exists('id', $data))
             $payout->setId($data['id']);
+        if (array_key_exists('ip', $data))
+            $payout->setIp($data['ip']);
         if (array_key_exists('recipient_address', $data))
             $payout->setRecipientAddress($data['recipient_address']);
         if (array_key_exists('referral_recipient_address', $data))
