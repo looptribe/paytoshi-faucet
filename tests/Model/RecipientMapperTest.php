@@ -19,10 +19,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
         );
         $sut = new RecipientMapper();
         $model = $sut->toModel($data);
-        $this->assertEquals(1, $model->getId());
-        $this->assertEquals('addr1', $model->getAddress());
-        $this->assertEquals(100, $model->getEarning());
-        $this->assertEquals(10, $model->getReferralEarning());
+        $this->assertSame(1, $model->getId());
+        $this->assertSame('addr1', $model->getAddress());
+        $this->assertSame(100, $model->getEarning());
+        $this->assertSame(10, $model->getReferralEarning());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
         $this->assertInstanceOf('DateTime', $model->getUpdatedAt());
     }
@@ -39,9 +39,9 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
         $sut = new RecipientMapper();
         $model = $sut->toModel($data);
         $this->assertNull($model->getId());
-        $this->assertEquals('addr1', $model->getAddress());
-        $this->assertEquals(100, $model->getEarning());
-        $this->assertEquals(10, $model->getReferralEarning());
+        $this->assertSame('addr1', $model->getAddress());
+        $this->assertSame(100, $model->getEarning());
+        $this->assertSame(10, $model->getReferralEarning());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
         $this->assertInstanceOf('DateTime', $model->getUpdatedAt());
     }
@@ -57,10 +57,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
         );
         $sut = new RecipientMapper();
         $model = $sut->toModel($data);
-        $this->assertEquals(1, $model->getId());
+        $this->assertSame(1, $model->getId());
         $this->assertNull($model->getAddress());
-        $this->assertEquals(100, $model->getEarning());
-        $this->assertEquals(10, $model->getReferralEarning());
+        $this->assertSame(100, $model->getEarning());
+        $this->assertSame(10, $model->getReferralEarning());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
         $this->assertInstanceOf('DateTime', $model->getUpdatedAt());
     }
@@ -76,10 +76,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
         );
         $sut = new RecipientMapper();
         $model = $sut->toModel($data);
-        $this->assertEquals(1, $model->getId());
-        $this->assertEquals('addr1', $model->getAddress());
-        $this->assertEquals(0, $model->getEarning());
-        $this->assertEquals(10, $model->getReferralEarning());
+        $this->assertSame(1, $model->getId());
+        $this->assertSame('addr1', $model->getAddress());
+        $this->assertSame(0, $model->getEarning());
+        $this->assertSame(10, $model->getReferralEarning());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
         $this->assertInstanceOf('DateTime', $model->getUpdatedAt());
     }
@@ -95,10 +95,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
         );
         $sut = new RecipientMapper();
         $model = $sut->toModel($data);
-        $this->assertEquals(1, $model->getId());
-        $this->assertEquals('addr1', $model->getAddress());
-        $this->assertEquals(100, $model->getEarning());
-        $this->assertEquals(0, $model->getReferralEarning());
+        $this->assertSame(1, $model->getId());
+        $this->assertSame('addr1', $model->getAddress());
+        $this->assertSame(100, $model->getEarning());
+        $this->assertSame(0, $model->getReferralEarning());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
         $this->assertInstanceOf('DateTime', $model->getUpdatedAt());
     }
@@ -114,10 +114,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
         );
         $sut = new RecipientMapper();
         $model = $sut->toModel($data);
-        $this->assertEquals(1, $model->getId());
-        $this->assertEquals('addr1', $model->getAddress());
-        $this->assertEquals(100, $model->getEarning());
-        $this->assertEquals(10, $model->getReferralEarning());
+        $this->assertSame(1, $model->getId());
+        $this->assertSame('addr1', $model->getAddress());
+        $this->assertSame(100, $model->getEarning());
+        $this->assertSame(10, $model->getReferralEarning());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
         $this->assertInstanceOf('DateTime', $model->getUpdatedAt());
     }
@@ -133,10 +133,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
         );
         $sut = new RecipientMapper();
         $model = $sut->toModel($data);
-        $this->assertEquals(1, $model->getId());
-        $this->assertEquals('addr1', $model->getAddress());
-        $this->assertEquals(100, $model->getEarning());
-        $this->assertEquals(10, $model->getReferralEarning());
+        $this->assertSame(1, $model->getId());
+        $this->assertSame('addr1', $model->getAddress());
+        $this->assertSame(100, $model->getEarning());
+        $this->assertSame(10, $model->getReferralEarning());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
         $this->assertInstanceOf('DateTime', $model->getUpdatedAt());
     }
@@ -153,10 +153,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecipientMapper();
         $data = $sut->toArray($recipient);
-        $this->assertEquals(1, $data['id']);
-        $this->assertEquals('addr1', $data['address']);
-        $this->assertEquals(100, $data['earning']);
-        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertSame(1, $data['id']);
+        $this->assertSame('addr1', $data['address']);
+        $this->assertSame(100, $data['earning']);
+        $this->assertSame(10, $data['referral_earning']);
         $this->assertInstanceOf('DateTime', $data['created_at']);
         $this->assertInstanceOf('DateTime', $data['updated_at']);
     }
@@ -172,10 +172,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecipientMapper();
         $data = $sut->toArray($recipient);
-        $this->assertEquals(1, $data['id']);
+        $this->assertSame(1, $data['id']);
         $this->assertNull($data['address']);
-        $this->assertEquals(100, $data['earning']);
-        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertSame(100, $data['earning']);
+        $this->assertSame(10, $data['referral_earning']);
         $this->assertInstanceOf('DateTime', $data['created_at']);
         $this->assertInstanceOf('DateTime', $data['updated_at']);
     }
@@ -191,10 +191,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecipientMapper();
         $data = $sut->toArray($recipient);
-        $this->assertEquals(1, $data['id']);
-        $this->assertEquals('addr1', $data['address']);
-        $this->assertEquals(0, $data['earning']);
-        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertSame(1, $data['id']);
+        $this->assertSame('addr1', $data['address']);
+        $this->assertSame(0, $data['earning']);
+        $this->assertSame(10, $data['referral_earning']);
         $this->assertInstanceOf('DateTime', $data['created_at']);
         $this->assertInstanceOf('DateTime', $data['updated_at']);
     }
@@ -210,10 +210,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecipientMapper();
         $data = $sut->toArray($recipient);
-        $this->assertEquals(1, $data['id']);
-        $this->assertEquals('addr1', $data['address']);
-        $this->assertEquals(100, $data['earning']);
-        $this->assertEquals(0, $data['referral_earning']);
+        $this->assertSame(1, $data['id']);
+        $this->assertSame('addr1', $data['address']);
+        $this->assertSame(100, $data['earning']);
+        $this->assertSame(0, $data['referral_earning']);
         $this->assertInstanceOf('DateTime', $data['created_at']);
         $this->assertInstanceOf('DateTime', $data['updated_at']);
     }
@@ -229,10 +229,10 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecipientMapper();
         $data = $sut->toArray($recipient);
-        $this->assertEquals(1, $data['id']);
-        $this->assertEquals('addr1', $data['address']);
-        $this->assertEquals(100, $data['earning']);
-        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertSame(1, $data['id']);
+        $this->assertSame('addr1', $data['address']);
+        $this->assertSame(100, $data['earning']);
+        $this->assertSame(10, $data['referral_earning']);
         $this->assertInstanceOf('DateTime', $data['created_at']);
         $this->assertInstanceOf('DateTime', $data['updated_at']);
     }
@@ -248,10 +248,29 @@ class RecipientMapperTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecipientMapper();
         $data = $sut->toArray($recipient);
-        $this->assertEquals(1, $data['id']);
-        $this->assertEquals('addr1', $data['address']);
-        $this->assertEquals(100, $data['earning']);
-        $this->assertEquals(10, $data['referral_earning']);
+        $this->assertSame(1, $data['id']);
+        $this->assertSame('addr1', $data['address']);
+        $this->assertSame(100, $data['earning']);
+        $this->assertSame(10, $data['referral_earning']);
+        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertInstanceOf('DateTime', $data['updated_at']);
+    }
+
+    public function testToArray7()
+    {
+        $recipient = new Recipient();
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime());
+        $recipient->setUpdatedAt(new \DateTime());
+
+        $sut = new RecipientMapper();
+        $data = $sut->toArray($recipient);
+        $this->assertNull($data['id']);
+        $this->assertSame('addr1', $data['address']);
+        $this->assertSame(100, $data['earning']);
+        $this->assertSame(10, $data['referral_earning']);
         $this->assertInstanceOf('DateTime', $data['created_at']);
         $this->assertInstanceOf('DateTime', $data['updated_at']);
     }
