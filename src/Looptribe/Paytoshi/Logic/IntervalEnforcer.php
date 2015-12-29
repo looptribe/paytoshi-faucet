@@ -38,16 +38,18 @@ class IntervalEnforcer
         }
 
         $now = new \DateTime();
-        $nextPayoutTime = $lastPayout->getCreatedAt()->add(new \DateInterval('PT'.$this->waitingInterval.'S'));
+        try {
+            $interval = new \DateInterval('PT'.$this->waitingInterval.'S');
+        }
+        catch (\Exception $e) {
+            throw new \Exception('Invalid waiting interval format');
+        }
+
+        $nextPayoutTime = $lastPayout->getCreatedAt()->add($interval);
         if ($nextPayoutTime <= $now) {
             return null;
         }
 
-        $interval = $nextPayoutTime->diff($now);
-        if (!$interval) {
-            throw new \Exception('Wrong interval format');
-        }
-
-        return $interval;
+        return $nextPayoutTime->diff($now);
     }
 }

@@ -74,4 +74,25 @@ class IntervalEnforcerTest extends \PHPUnit_Framework_TestCase
         $result = $sut->check('10.10.10.10', new Recipient());
     }
 
+    public function testInterval5()
+    {
+        $payoutRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\PayoutRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $interval = 'A';
+        $this->setExpectedException('Exception', 'Invalid waiting interval format');
+
+        $tenMinuteAgo = new \DateTime();
+        $tenMinuteAgo->sub(new \DateInterval('PT600S'));
+
+        $payout = new Payout();
+        $payout->setCreatedAt($tenMinuteAgo);
+
+        $payoutRepository->method('findLastByRecipientAndIp')
+            ->willReturn($payout);
+
+        $sut = new IntervalEnforcer($payoutRepository, $interval);
+        $result = $sut->check('10.10.10.10', new Recipient());
+    }
+
 }
