@@ -23,7 +23,7 @@ class RewardLogic
     /** @var PaytoshiApiInterface */
     private $api;
 
-    /** @var IntervalEnforcer */
+    /** @var IntervalEnforcerInterface */
     private $intervalEnforcer;
 
     public function __construct(
@@ -31,7 +31,7 @@ class RewardLogic
         RecipientRepository $recipientRepository,
         RewardProviderInterface $rewardProvider,
         PaytoshiApiInterface $api,
-        IntervalEnforcer $intervalEnforcer
+        IntervalEnforcerInterface $intervalEnforcer
     ) {
         $this->connection = $connection;
         $this->recipientRepository = $recipientRepository;
@@ -66,7 +66,6 @@ class RewardLogic
             // Waiting interval check
             $interval = $this->intervalEnforcer->check($ip, $recipient);
             if ($interval) {
-                $this->connection->rollBack();
                 throw new \Exception(
                     sprintf('You can get a reward again in %s.', $interval->format('%Hh, %Im, %Ss'))
                 );
