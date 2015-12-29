@@ -20,7 +20,7 @@ class SetupTest extends WebTestCase
      */
     public function testStart()
     {
-        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
             ->disableOriginalConstructor()
             ->getMock();
         $setupDiagnostics->expects($this->any())
@@ -49,7 +49,7 @@ class SetupTest extends WebTestCase
             ->willReturn('fakepwd');
         $this->app['repository.settings'] = $settingsRepository;
 
-        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
             ->disableOriginalConstructor()
             ->getMock();
         $setupDiagnostics->expects($this->any())
@@ -68,7 +68,7 @@ class SetupTest extends WebTestCase
      */
     public function testCheck()
     {
-        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
             ->disableOriginalConstructor()
             ->getMock();
         $setupDiagnostics->expects($this->once())
@@ -96,7 +96,7 @@ class SetupTest extends WebTestCase
      */
     public function testCheckDbFail()
     {
-        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
             ->disableOriginalConstructor()
             ->getMock();
         $setupDiagnostics->expects($this->once())
@@ -122,7 +122,7 @@ class SetupTest extends WebTestCase
 
     public function testComplete()
     {
-        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Model\SetupDiagnostics')
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
             ->disableOriginalConstructor()
             ->getMock();
         $setupDiagnostics->expects($this->any())
@@ -130,7 +130,7 @@ class SetupTest extends WebTestCase
             ->willReturn(true);
         $this->app['setup.diagnostics'] = $setupDiagnostics;
 
-        $configurator = $this->getMockBuilder('Looptribe\Paytoshi\Model\Configurator')
+        $configurator = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Configurator')
             ->disableOriginalConstructor()
             ->getMock();
         $configurator->expects($this->any())

@@ -1,6 +1,6 @@
 <?php
 
-namespace Looptribe\Paytoshi\Model;
+namespace Looptribe\Paytoshi\Setup;
 
 use Doctrine\DBAL\Connection;
 use Looptribe\Paytoshi\Security\PasswordGeneratorInterface;

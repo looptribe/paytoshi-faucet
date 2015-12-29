@@ -1,10 +1,10 @@
 <?php
 
-namespace Looptribe\Paytoshi\Tests\Model;
+namespace Looptribe\Paytoshi\Tests\Setup;
 
-use Looptribe\Paytoshi\Model\SetupDiagnostics;
+use Looptribe\Paytoshi\Setup\Diagnostics;
 
-class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
+class DiagnosticsTest extends \PHPUnit_Framework_TestCase
 {
     public function testRequiresSetupShouldReturnFalse()
     {
@@ -16,7 +16,7 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('password')
             ->willReturn('fakepasswordhash');
-        $sut = new SetupDiagnostics($repository, $connectionFactory, '/path/to/config.yml');
+        $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
         $result = $sut->requiresSetup();
         $this->assertFalse($result);
     }
@@ -31,7 +31,7 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('password')
             ->willReturn(null);
-        $sut = new SetupDiagnostics($repository, $connectionFactory, '/path/to/config.yml');
+        $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
         $result = $sut->requiresSetup();
         $this->assertTrue($result);
     }
@@ -46,7 +46,7 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('password')
             ->willThrowException(new \RuntimeException());
-        $sut = new SetupDiagnostics($repository, $connectionFactory, '/path/to/config.yml');
+        $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
         $result = $sut->requiresSetup();
         $this->assertTrue($result);
     }
@@ -58,7 +58,7 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $sut = new SetupDiagnostics($repository, $connectionFactory, 'thisfileshouldnotexist.yml');
+        $sut = new Diagnostics($repository, $connectionFactory, 'thisfileshouldnotexist.yml');
         $result = $sut->isConfigWritable();
         $this->assertfalse($result);
     }
@@ -91,7 +91,7 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->method('listTables')
             ->willReturn(array());
 
-        $sut = new SetupDiagnostics($repository, $connectionFactory, '/path/to/config.yml');
+        $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
         $sut->checkDatabase(array());
     }
 
@@ -123,7 +123,7 @@ class SetupDiagnosticsTest extends \PHPUnit_Framework_TestCase
             ->method('listTables')
             ->willThrowException(new \Doctrine\DBAL\ConnectionException());
 
-        $sut = new SetupDiagnostics($repository, $connectionFactory, '/path/to/config.yml');
+        $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
 
         $this->setExpectedException('Doctrine\DBAL\ConnectionException');
 

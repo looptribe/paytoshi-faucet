@@ -1,8 +1,8 @@
 <?php
 
-namespace Looptribe\Paytoshi\Tests\Model;
+namespace Looptribe\Paytoshi\Tests\Setup;
 
-use Looptribe\Paytoshi\Model\Configurator;
+use Looptribe\Paytoshi\Setup\Configurator;
 
 class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 {

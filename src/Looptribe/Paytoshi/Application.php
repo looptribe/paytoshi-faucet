@@ -4,10 +4,10 @@ namespace Looptribe\Paytoshi;
 
 use Looptribe\Paytoshi\Api\PaytoshiApi;
 use Looptribe\Paytoshi\Controller;
-use Looptribe\Paytoshi\Model\Configurator;
+use Looptribe\Paytoshi\Setup\Configurator;
 use Looptribe\Paytoshi\Model\ConnectionFactory;
 use Looptribe\Paytoshi\Model\SettingsRepository;
-use Looptribe\Paytoshi\Model\SetupDiagnostics;
+use Looptribe\Paytoshi\Setup\Diagnostics;
 use Looptribe\Paytoshi\Security\AlphaNumericPasswordGenerator;
 use Looptribe\Paytoshi\Security\BCryptSaltGenerator;
 use Looptribe\Paytoshi\Security\CryptPasswordEncoder;
@@ -128,7 +128,7 @@ class Application extends \Silex\Application
         });
 
         $app['setup.diagnostics'] = $app->share(function () use ($app) {
-            return new SetupDiagnostics($app['repository.settings'], $app['connectionFactory'], $app['configPath']);
+            return new Diagnostics($app['repository.settings'], $app['connectionFactory'], $app['configPath']);
         });
         $app['setup.configurator'] = $app->share(function () use ($app) {
             return new Configurator($app['db'], $app['security.passwordGenerator'], $app['security.saltGenerator'],

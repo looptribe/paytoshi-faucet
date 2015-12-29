@@ -1,8 +1,11 @@
 <?php
 
-namespace Looptribe\Paytoshi\Model;
+namespace Looptribe\Paytoshi\Setup;
 
-class SetupDiagnostics
+use Looptribe\Paytoshi\Model\ConnectionFactory;
+use Looptribe\Paytoshi\Model\SettingsRepository;
+
+class Diagnostics
 {
     /** @var SettingsRepository */
     private $settingsRepository;

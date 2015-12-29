@@ -2,8 +2,8 @@
 
 namespace Looptribe\Paytoshi\Controller;
 
-use Looptribe\Paytoshi\Model\Configurator;
-use Looptribe\Paytoshi\Model\SetupDiagnostics;
+use Looptribe\Paytoshi\Setup\Configurator;
+use Looptribe\Paytoshi\Setup\Diagnostics;
 use Looptribe\Paytoshi\Templating\TemplatingEngineInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,7 +19,7 @@ class SetupController
     /** @var UrlGeneratorInterface */
     private $urlGenerator;
 
-    /** @var SetupDiagnostics */
+    /** @var Diagnostics */
     private $diagnostics;
 
     /** @var Configurator */
@@ -33,7 +33,7 @@ class SetupController
     public function __construct(
         TemplatingEngineInterface $templating,
         UrlGeneratorInterface $urlGenerator,
-        SetupDiagnostics $diagnostics,
+        Diagnostics $diagnostics,
         Configurator $configurator,
         $dbConfig,
         $configPath
