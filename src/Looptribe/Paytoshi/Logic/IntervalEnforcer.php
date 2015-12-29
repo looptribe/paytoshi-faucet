@@ -5,7 +5,7 @@ namespace Looptribe\Paytoshi\Logic;
 use Looptribe\Paytoshi\Model\PayoutRepository;
 use Looptribe\Paytoshi\Model\Recipient;
 
-class IntervalEnforcer
+class IntervalEnforcer implements IntervalEnforcerInterface
 {
     /** @var PayoutRepository */
     private $payoutRepository;
