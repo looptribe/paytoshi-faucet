@@ -62,4 +62,16 @@ class IntervalEnforcerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('DateInterval', $result);
     }
 
+    public function testInterval4()
+    {
+        $payoutRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\PayoutRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $interval = -3600;
+        $this->setExpectedException('Exception', 'Invalid waiting interval');
+
+        $sut = new IntervalEnforcer($payoutRepository, $interval);
+        $result = $sut->check('10.10.10.10', new Recipient());
+    }
+
 }

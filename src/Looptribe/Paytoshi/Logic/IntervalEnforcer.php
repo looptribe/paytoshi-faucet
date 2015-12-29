@@ -27,6 +27,10 @@ class IntervalEnforcer
      */
     public function check($ip, Recipient $recipient)
     {
+        if ($this->waitingInterval < 0) {
+            throw new \Exception('Invalid waiting interval');
+        }
+
         $lastPayout = $this->payoutRepository->findLastByRecipientAndIp($ip, $recipient);
         $now = new \DateTime();
         if (!$lastPayout) {
