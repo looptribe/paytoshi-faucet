@@ -54,16 +54,18 @@ class SetupController
 
     public function saveAction(Request $request)
     {
-        $config = array(
-            'database' => array(
-                'name' => $request->request->get('dbName'),
-                'host' => $request->request->get('dbHost'),
-                'username' => $request->request->get('dbUser'),
-                'password' => $request->request->get('dbPass'),
-            )
-        );
+        if ($this->diagnostics->isConfigWritable() === true) {
+            $config = array(
+                'database' => array(
+                    'name' => $request->request->get('dbName'),
+                    'host' => $request->request->get('dbHost'),
+                    'username' => $request->request->get('dbUser'),
+                    'password' => $request->request->get('dbPass'),
+                )
+            );
 
-        $this->configurator->saveConfig($config);
+            $this->configurator->saveConfig($config);
+        }
 
         return new RedirectResponse($this->urlGenerator->generate('setup_complete'));
     }
