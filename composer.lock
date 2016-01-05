@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "963fab81ed5c86087d36d29ef074384b",
-    "content-hash": "23717ce150391f9eb4c428fd60bf6644",
+    "hash": "e6bf37c5aa7ab14a19ee228b90c472bf",
+    "content-hash": "d7fa2834d7d59cfda7130c8e89185941",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -565,6 +565,42 @@
                 "http client"
             ],
             "time": "2015-06-25 17:26:56"
+        },
+        {
+            "name": "looptribe/paytoshi-library-php",
+            "version": "dev-package",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/looptribe/paytoshi-library-php.git",
+                "reference": "f74274f24657a741182255b71c7d602eb2867f17"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/looptribe/paytoshi-library-php/zipball/f74274f24657a741182255b71c7d602eb2867f17",
+                "reference": "f74274f24657a741182255b71c7d602eb2867f17",
+                "shasum": ""
+            },
+            "require": {
+                "kriswallsmith/buzz": "0.15",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "symfony/yaml": "~2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Looptribe\\Paytoshi\\Api\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "PHP Library for Paytoshi's API.",
+            "homepage": "https://paytoshi.org/",
+            "time": "2016-01-05 14:15:19"
         },
         {
             "name": "paragonie/random_compat",
@@ -2948,7 +2984,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "looptribe/paytoshi-library-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
