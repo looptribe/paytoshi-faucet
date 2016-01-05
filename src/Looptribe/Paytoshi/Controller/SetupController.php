@@ -28,22 +28,18 @@ class SetupController
     /** @var array */
     private $dbConfig;
 
-    private $configPath;
-
     public function __construct(
         TemplatingEngineInterface $templating,
         UrlGeneratorInterface $urlGenerator,
         Diagnostics $diagnostics,
         Configurator $configurator,
-        $dbConfig,
-        $configPath
+        $dbConfig
     ) {
         $this->templating = $templating;
         $this->urlGenerator = $urlGenerator;
         $this->diagnostics = $diagnostics;
         $this->configurator = $configurator;
         $this->dbConfig = $dbConfig;
-        $this->configPath = $configPath;
     }
 
     public function startAction()
@@ -67,11 +63,7 @@ class SetupController
             )
         );
 
-        $yml = Yaml::dump($config);
-
-        if (file_put_contents($this->configPath, $yml) === false) {
-            throw new \RuntimeException(sprintf('Cannot write configuration file "%s".', $this->configPath));
-        }
+        $this->configurator->saveConfig($config);
 
         return new RedirectResponse($this->urlGenerator->generate('setup_complete'));
     }

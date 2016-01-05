@@ -114,7 +114,7 @@ class Application extends \Silex\Application
             return new Controller\FaqController($app['templating'], $app['themeProvider'], $app['repository.settings']);
         });
         $app['controller.setup'] = $app->share(function () use ($app) {
-            return new Controller\SetupController($app['templating'], $app['url_generator'], $app['setup.diagnostics'], $app['setup.configurator'], $app['db.options'], $app['configPath']);
+            return new Controller\SetupController($app['templating'], $app['url_generator'], $app['setup.diagnostics'], $app['setup.configurator'], $app['db.options']);
         });
         $app['controller.admin'] = $app->share(function () use ($app) {
             return new Controller\AdminController($app['templating'], $app['url_generator'], $app['repository.settings'], $app['themeProvider']);
@@ -132,7 +132,7 @@ class Application extends \Silex\Application
         });
         $app['setup.configurator'] = $app->share(function () use ($app) {
             return new Configurator($app['db'], $app['security.passwordGenerator'], $app['security.saltGenerator'],
-                $app['security.encoder.digest'], $app['rootPath'] . '/data/setup.sql');
+                $app['security.encoder.digest'], $app['rootPath'] . '/data/setup.sql', $app['configPath']);
         });
 
         $requireSetup = function (Request $request, Application $app) {
