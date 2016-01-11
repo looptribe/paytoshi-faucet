@@ -2,7 +2,6 @@
 
 namespace Looptribe\Paytoshi\Tests\Controller;
 
-
 use Looptribe\Paytoshi\Controller\AdminController;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +23,9 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $themeProvider;
 
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    private $paytoshi;
+
     public function setUp()
     {
         $this->templating = $this->getMock('Looptribe\Paytoshi\Templating\TemplatingEngineInterface');
@@ -32,8 +34,9 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->themeProvider = $this->getMock('Looptribe\Paytoshi\Templating\ThemeProviderInterface');
+        $this->paytoshi = $this->getMock('Looptribe\Paytoshi\Api\PaytoshiApiInterface');
 
-        $this->sut = new AdminController($this->templating, $this->urlGenerator, $this->settingsRepository, $this->themeProvider);
+        $this->sut = new AdminController($this->templating, $this->urlGenerator, $this->settingsRepository, $this->themeProvider, $this->paytoshi);
     }
 
     public function testAction1()
@@ -81,6 +84,14 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                 )
             )
             ->willReturn(new Response());
+
+        $balanceResponse = $this->getMockBuilder('Looptribe\Paytoshi\Api\Response\FaucetBalanceResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $balanceResponse->method('isSuccessful')
+            ->willReturn(false);
+        $this->paytoshi->method('getBalance')
+            ->willReturn($balanceResponse);
 
         $response = $this->sut->action();
 
@@ -134,6 +145,14 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                 )
             )
             ->willReturn(new Response());
+
+        $balanceResponse = $this->getMockBuilder('Looptribe\Paytoshi\Api\Response\FaucetBalanceResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $balanceResponse->method('isSuccessful')
+            ->willReturn(false);
+        $this->paytoshi->method('getBalance')
+            ->willReturn($balanceResponse);
 
         $response = $this->sut->action();
 
@@ -189,6 +208,14 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             )
             ->willReturn(new Response());
 
+        $balanceResponse = $this->getMockBuilder('Looptribe\Paytoshi\Api\Response\FaucetBalanceResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $balanceResponse->method('isSuccessful')
+            ->willReturn(false);
+        $this->paytoshi->method('getBalance')
+            ->willReturn($balanceResponse);
+
         $response = $this->sut->action();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -242,6 +269,14 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                 )
             )
             ->willReturn(new Response());
+
+        $balanceResponse = $this->getMockBuilder('Looptribe\Paytoshi\Api\Response\FaucetBalanceResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $balanceResponse->method('isSuccessful')
+            ->willReturn(false);
+        $this->paytoshi->method('getBalance')
+            ->willReturn($balanceResponse);
 
         $response = $this->sut->action();
 
