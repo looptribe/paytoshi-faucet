@@ -17,7 +17,7 @@
         "twig/twig": "^1.23",
         "doctrine/dbal": "~2.2",
         "kriswallsmith/buzz": "0.15",
-        "looptribe/paytoshi-library-php": "dev-master",
+        "looptribe/paytoshi-library-php": "~1.0",
         "webmozart/glob": "^4.1"
     },
     "require-dev": {

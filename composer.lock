@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6ead3da5f7c76e4c6933219faa5e3359",
-    "content-hash": "c6a0c91ffcb42105e94acda462dbfe68",
+    "hash": "a454eda5d71845fc774badfc8374a463",
+    "content-hash": "37bb686ad98686b55fe5739145c6d09d",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -568,7 +568,7 @@
         },
         {
             "name": "looptribe/paytoshi-library-php",
-            "version": "dev-master",
+            "version": "v1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/looptribe/paytoshi-library-php.git",
@@ -3130,9 +3130,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "looptribe/paytoshi-library-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
