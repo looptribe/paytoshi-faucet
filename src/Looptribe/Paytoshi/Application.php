@@ -13,6 +13,7 @@ use Looptribe\Paytoshi\Security\BCryptSaltGenerator;
 use Looptribe\Paytoshi\Security\CryptPasswordEncoder;
 use Looptribe\Paytoshi\Templating\LocalThemeProvider;
 use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
+use Looptribe\Paytoshi\Twig\PaytoshiTwigExtension;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -96,6 +97,11 @@ class Application extends \Silex\Application
             return new PaytoshiApi($app['buzz'], $app['apiUrl']);
         });
 
+        $app['twig'] = $app->share($app->extend('twig', function ($twig, $app) {
+            $twig->addExtension(new PaytoshiTwigExtension($app['request']));
+            return $twig;
+        }));
+
         $app['templating'] = $app->share(function () use ($app) {
             return new TwigTemplatingEngine($app['twig']);
         });
@@ -154,7 +160,7 @@ class Application extends \Silex\Application
         $app->get('/login', function (Request $request) use ($app) {
             /** @var \Closure $lastError */
             $lastError = $app['security.last_error'];
-            return $app['twig']->render('admin/login.html.twig', array(
+            return $app['templating']->render('admin/login.html.twig', array(
                 'error' => $lastError($request),
             ));
         })->bind('login');

@@ -7,8 +7,8 @@
         <meta name="description" content="{% block description %}Paytoshi Faucet{% endblock %}">
         <meta name="keywords" content="{% block keywords %}bitcoin,free bitcoin,faucet,bitcoin faucet,free satoshi,get free bitcoin{% endblock %}">
         <meta name="author" content="Paytoshi">
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
+        <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
         
         <title>{{ name|default('Paytoshi Faucet') }}</title>
         {% block stylesheets %}
