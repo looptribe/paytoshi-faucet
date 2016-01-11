@@ -18,7 +18,9 @@
         "doctrine/dbal": "~2.2",
         "kriswallsmith/buzz": "0.15",
         "looptribe/paytoshi-library-php": "~1.0",
-        "webmozart/glob": "^4.1"
+        "webmozart/glob": "^4.1",
+        "doctrine/common": "~2.5.3",
+        "doctrine/cache": "~1.5.4"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
