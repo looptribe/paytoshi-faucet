@@ -2,6 +2,7 @@
 
 namespace Looptribe\Paytoshi\Controller;
 
+use Looptribe\Paytoshi\Api\PaytoshiApiInterface;
 use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Templating\TemplatingEngineInterface;
 use Looptribe\Paytoshi\Templating\ThemeProviderInterface;
@@ -23,23 +24,38 @@ class AdminController
     /** @var ThemeProviderInterface */
     private $themeProvider;
 
+    /** @var PaytoshiApiInterface */
+    private $api;
+
     public function __construct(
         TemplatingEngineInterface $templating,
         UrlGeneratorInterface $urlGenerator,
         SettingsRepository $settingsRepository,
-        ThemeProviderInterface $themeProvider
+        ThemeProviderInterface $themeProvider,
+        PaytoshiApiInterface $paytoshi
     ) {
         $this->templating = $templating;
         $this->settingsRepository = $settingsRepository;
         $this->urlGenerator = $urlGenerator;
         $this->themeProvider = $themeProvider;
+        $this->paytoshi = $paytoshi;
     }
 
     public function action()
     {
         $params = array_merge($this->getView(), array(
             'themes' => $this->themeProvider->getList(),
+            'api_key_ok' => false,
+            'available_balance' => 0,
         ));
+        try {
+            $balance = $this->paytoshi->getBalance($this->settingsRepository->get('api_key'));
+            $params['api_key_ok'] = $balance->isSuccessful();
+            $params['available_balance'] = $balance->getAvailableBalance();
+        }
+        catch (\Exception $ex) {
+        }
+
         return $this->templating->render('admin/admin.html.twig', $params);
     }
 

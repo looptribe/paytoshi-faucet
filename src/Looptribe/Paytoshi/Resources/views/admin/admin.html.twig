@@ -38,6 +38,20 @@
 
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane fade in active" id="settings">
+                        {% if api_key %}
+                        <div class="form-group">
+                            <label class="control-label">Faucet balance:</label>
+                            {% if api_key_ok %}
+                                <div class="alert alert-info" role="alert">
+                                    <p>{{ available_balance }} satoshi</p>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-danger" role="alert">
+                                    <p>The API key is not valid or there was an error contacting Paytoshi. Please check your API key in the field below.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
                         <div class="form-group">
                             <label for="api_key" class="control-label">Paytoshi Api Key:</label>
                             <input type="text" class="form-control" name="api_key" placeholder="Api Key" required
