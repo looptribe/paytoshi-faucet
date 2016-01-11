@@ -3,6 +3,7 @@
 namespace Looptribe\Paytoshi\Templating;
 
 use Looptribe\Paytoshi\Model\SettingsRepository;
+use Webmozart\Glob\Glob;
 
 class LocalThemeProvider implements ThemeProviderInterface
 {
@@ -29,8 +30,11 @@ class LocalThemeProvider implements ThemeProviderInterface
     public function getList()
     {
         $themes = array();
-        foreach (glob($this->getTemplatePath().'*', GLOB_ONLYDIR) as $dir) {
-            $themes[] = str_replace($this->getTemplatePath(), '', $dir);
+
+        foreach (Glob::glob($this->getTemplatePath().'*') as $dir) {
+            if (is_dir($dir)) {
+                $themes[] = str_replace($this->getTemplatePath(), '', $dir);
+            }
         }
         return $themes;
     }
@@ -44,14 +48,16 @@ class LocalThemeProvider implements ThemeProviderInterface
      */
     public function getTemplate($templateName)
     {
-        $templateString = sprintf('%s%s%s',
+        $templateString = sprintf(
+            '%s%s%s',
             $this->getCurrent(),
             DIRECTORY_SEPARATOR,
             $templateName
         );
         $filePath = sprintf('%s%s', $this->getTemplatePath(), $templateString);
-        if (!(is_file($filePath) && is_readable($filePath)))
+        if (!(is_file($filePath) && is_readable($filePath))) {
             throw new \Exception('Unable to load template (not a file or not readable)');
+        }
 
         return $templateString;
     }
