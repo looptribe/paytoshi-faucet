@@ -37,6 +37,14 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
         $challenge = '';
         $response = '';
 
+        /*$this->connection
+            ->expects($this->once())
+            ->method('commit');*/
+
+        $this->connection
+            ->expects($this->never())
+            ->method('rollback');
+
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer);
         $payout = $sut->create($address, $ip, $challenge, $response);
         $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $payout);
@@ -51,6 +59,14 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
 
         $this->intervalEnforcer->method('check')
             ->willReturn(new \DateInterval('P1D'));
+
+        $this->connection
+            ->expects($this->never())
+            ->method('commit');
+
+        $this->connection
+            ->expects($this->once())
+            ->method('rollback');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer);
         $this->setExpectedException('Exception');

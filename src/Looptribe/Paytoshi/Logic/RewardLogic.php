@@ -82,7 +82,6 @@ class RewardLogic
 
             // TODO: payment process
 
-
             //$this->connection->commit();
             return $payout;
 
