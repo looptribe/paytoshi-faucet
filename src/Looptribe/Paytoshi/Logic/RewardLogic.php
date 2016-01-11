@@ -82,7 +82,10 @@ class RewardLogic
 
             // TODO: payment process
 
+
             //$this->connection->commit();
+            return $payout;
+
         } catch (\Exception $e) {
             $this->connection->rollBack();
             throw $e;

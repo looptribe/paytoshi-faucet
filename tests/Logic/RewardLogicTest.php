@@ -2,24 +2,19 @@
 
 namespace Looptribe\Paytoshi\Tests\Logic;
 
-use Doctrine\DBAL\Connection;
-use Looptribe\Paytoshi\Api\PaytoshiApiInterface;
-use Looptribe\Paytoshi\Logic\IntervalEnforcerInterface;
 use Looptribe\Paytoshi\Logic\RewardLogic;
-use Looptribe\Paytoshi\Logic\RewardProviderInterface;
-use Looptribe\Paytoshi\Model\RecipientRepository;
 
 class RewardLogicTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var Connection */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $connection;
-    /** @var RecipientRepository */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $recipientRepository;
-    /** @var  RewardProviderInterface */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $rewardProvider;
-    /** @var PaytoshiApiInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $api;
-    /** @var IntervalEnforcerInterface */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $intervalEnforcer;
 
     public function setUp()
@@ -43,6 +38,22 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
         $response = '';
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer);
-        $sut->create($address, $ip, $challenge, $response);
+        $payout = $sut->create($address, $ip, $challenge, $response);
+        $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $payout);
+    }
+
+    public function testCreate2()
+    {
+        $address = 'addr1';
+        $ip = '10.10.10.10';
+        $challenge = '';
+        $response = '';
+
+        $this->intervalEnforcer->method('check')
+            ->willReturn(new \DateInterval('P1D'));
+
+        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer);
+        $this->setExpectedException('Exception');
+        $payout = $sut->create($address, $ip, $challenge, $response);
     }
 }
