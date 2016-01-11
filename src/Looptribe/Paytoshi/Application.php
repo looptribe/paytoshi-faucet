@@ -97,8 +97,12 @@ class Application extends \Silex\Application
             return new PaytoshiApi($app['buzz'], $app['apiUrl']);
         });
 
+        $app['twig.extension'] = $app->share(function () use ($app) {
+            return new PaytoshiTwigExtension($app['request']);
+        });
+
         $app['twig'] = $app->share($app->extend('twig', function ($twig, $app) {
-            $twig->addExtension(new PaytoshiTwigExtension($app['request']));
+            $twig->addExtension($app['twig.extension']);
             return $twig;
         }));
 
