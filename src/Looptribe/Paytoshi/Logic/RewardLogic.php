@@ -46,6 +46,7 @@ class RewardLogic
      * @param string $challenge
      * @param string $response
      * @param string|null $referralAddress
+     * @return Payout
      * @throws ConnectionException
      * @throws \Exception
      */
