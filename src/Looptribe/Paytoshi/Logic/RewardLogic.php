@@ -5,6 +5,7 @@ namespace Looptribe\Paytoshi\Logic;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ConnectionException;
 use Looptribe\Paytoshi\Api\PaytoshiApiInterface;
+use Looptribe\Paytoshi\Captcha\CaptchaProviderInterface;
 use Looptribe\Paytoshi\Model\Payout;
 use Looptribe\Paytoshi\Model\Recipient;
 use Looptribe\Paytoshi\Model\RecipientRepository;
@@ -26,18 +27,23 @@ class RewardLogic
     /** @var IntervalEnforcerInterface */
     private $intervalEnforcer;
 
+    /** @var CaptchaProviderInterface */
+    private $captchaProvider;
+
     public function __construct(
         Connection $connection,
         RecipientRepository $recipientRepository,
         RewardProviderInterface $rewardProvider,
         PaytoshiApiInterface $api,
-        IntervalEnforcerInterface $intervalEnforcer
+        IntervalEnforcerInterface $intervalEnforcer,
+        CaptchaProviderInterface $captchaProvider
     ) {
         $this->connection = $connection;
         $this->recipientRepository = $recipientRepository;
         $this->rewardProvider = $rewardProvider;
         $this->api = $api;
         $this->intervalEnforcer = $intervalEnforcer;
+        $this->captchaProvider = $captchaProvider;
     }
 
     /**

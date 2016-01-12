@@ -16,6 +16,8 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
     private $api;
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $intervalEnforcer;
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    private $captchaProvider;
 
     public function setUp()
     {
@@ -28,6 +30,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
         $this->rewardProvider = $this->getMock('Looptribe\Paytoshi\Logic\RewardProviderInterface');
         $this->api = $this->getMock('Looptribe\Paytoshi\Api\PaytoshiApiInterface');
         $this->intervalEnforcer = $this->getMock('Looptribe\Paytoshi\Logic\IntervalEnforcerInterface');
+        $this->captchaProvider = $this->getMock('Looptribe\Paytoshi\Captcha\CaptchaProviderInterface');
     }
 
     public function testCreate1()
@@ -45,7 +48,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->never())
             ->method('rollback');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer);
+        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
         $payout = $sut->create($address, $ip, $challenge, $response);
         $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $payout);
     }
@@ -68,7 +71,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('rollback');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer);
+        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
         $this->setExpectedException('Exception');
         $payout = $sut->create($address, $ip, $challenge, $response);
     }
