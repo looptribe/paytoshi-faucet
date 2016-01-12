@@ -46,8 +46,6 @@ class FuncaptchaProvider implements CaptchaProviderInterface
             )
         );
 
-        $this->browser->getClient()->setVerifyPeer(false);
-
         try {
             /** @var Response $response */
             $response = $this->browser->post(self::VERIFY_URL, $headers, $data);

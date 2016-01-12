@@ -43,11 +43,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
         $resp = 'resp';
         $data = sprintf('private_key=%s&session_token=%s&simple_mode=1', $privkey, $resp);
 
-        $client = $this->getMock('Buzz\Client\AbstractClient');
-
-        $this->buzz->method('getClient')
-            ->willReturn($client);
-
         $this->buzz->method('post')
             ->with(
                 'https://funcaptcha.com/fc/v/',
@@ -55,10 +50,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
                 $data
             )
             ->willThrowException(new Exception('message'));
-
-        $client->expects($this->once())
-            ->method('setVerifyPeer')
-            ->with(false);
 
         $sut = new FuncaptchaProvider($this->buzz, $pubkey, $privkey);
 
@@ -76,11 +67,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
         $resp = 'resp';
         $data = sprintf('private_key=%s&session_token=%s&simple_mode=1', $privkey, $resp);
 
-        $client = $this->getMock('Buzz\Client\AbstractClient');
-
-        $this->buzz->method('getClient')
-            ->willReturn($client);
-
         $response = $this->getMock('Buzz\Message\Response');
 
         $response->expects($this->once())
@@ -94,10 +80,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
                 $data
             )
             ->willReturn($response);
-
-        $client->expects($this->once())
-            ->method('setVerifyPeer')
-            ->with(false);
 
         $sut = new FuncaptchaProvider($this->buzz, $pubkey, $privkey);
 
@@ -114,11 +96,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
         $pubkey = 'pubkey';
         $resp = 'resp';
         $data = sprintf('private_key=%s&session_token=%s&simple_mode=1', $privkey, $resp);
-
-        $client = $this->getMock('Buzz\Client\AbstractClient');
-
-        $this->buzz->method('getClient')
-            ->willReturn($client);
 
         $response = $this->getMock('Buzz\Message\Response');
 
@@ -138,10 +115,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
             )
             ->willReturn($response);
 
-        $client->expects($this->once())
-            ->method('setVerifyPeer')
-            ->with(false);
-
         $sut = new FuncaptchaProvider($this->buzz, $pubkey, $privkey);
 
         $this->setExpectedException('Looptribe\Paytoshi\Captcha\CaptchaProviderException', 'Invalid captcha response error');
@@ -157,11 +130,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
         $pubkey = 'pubkey';
         $resp = 'resp';
         $data = sprintf('private_key=%s&session_token=%s&simple_mode=1', $privkey, $resp);
-
-        $client = $this->getMock('Buzz\Client\AbstractClient');
-
-        $this->buzz->method('getClient')
-            ->willReturn($client);
 
         $response = $this->getMock('Buzz\Message\Response');
 
@@ -180,10 +148,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
                 $data
             )
             ->willReturn($response);
-
-        $client->expects($this->once())
-            ->method('setVerifyPeer')
-            ->with(false);
 
         $sut = new FuncaptchaProvider($this->buzz, $pubkey, $privkey);
 
@@ -204,11 +168,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
         $resp = 'resp';
         $data = sprintf('private_key=%s&session_token=%s&simple_mode=1', $privkey, $resp);
 
-        $client = $this->getMock('Buzz\Client\AbstractClient');
-
-        $this->buzz->method('getClient')
-            ->willReturn($client);
-
         $response = $this->getMock('Buzz\Message\Response');
 
         $response->expects($this->once())
@@ -226,10 +185,6 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
                 $data
             )
             ->willReturn($response);
-
-        $client->expects($this->once())
-            ->method('setVerifyPeer')
-            ->with(false);
 
         $sut = new FuncaptchaProvider($this->buzz, $pubkey, $privkey);
 
