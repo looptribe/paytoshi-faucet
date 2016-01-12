@@ -4,9 +4,9 @@ Paytoshi Faucet
 [![Build Status](https://img.shields.io/travis/looptribe/paytoshi-faucet/silex.svg)](https://travis-ci.org/looptribe/paytoshi-faucet)
 [![Coverage Status](https://img.shields.io/coveralls/looptribe/paytoshi-faucet/silex.svg)](https://coveralls.io/github/looptribe/paytoshi-faucet)
 
-Faucet Script for [Paytoshi](https://paytoshi.org): the Bitcoin micropayment wallet. 
-Create a Paytoshi account, get an apikey and start using your Bitcoin faucet website.
+Faucet Script for [Paytoshi](https://paytoshi.org): the Bitcoin micropayment wallet. It integrates the [Paytoshi API library](https://github.com/looptribe/paytoshi-library-php) with the faucet frontend and the admin area.
 
+Create a Paytoshi account, get an apikey and start using your Bitcoin faucet website.
 
 Based on [Silex](http://silex.sensiolabs.org/) and [Twig](https://github.com/fabpot/Twig).
 
