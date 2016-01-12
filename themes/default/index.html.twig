@@ -40,7 +40,7 @@
 
                         <div class="form-group captcha">
                             <center>
-                                {% include "default/" ~ captcha.name ~ ".html.twig" with { server: captcha.server, public_key: captcha.public_key } %}
+                                {% include "default/" ~ captcha.provider ~ ".html.twig" with { public_key: captcha.public_key } %}
                             </center>
                         </div>
 

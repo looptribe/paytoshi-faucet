@@ -46,9 +46,10 @@ class IndexController
             'rewards_max' => 0,//$this->rewardService->getMax(),
             'waiting_interval' => $this->settingsRepository->get('waiting_interval'),
             'captcha' => array(
-                'name' => 'funcaptcha',//$this->captchaService->getName(),
-                'server' => '',//$this->captchaService->getServer(),
-                'public_key' => ''//$this->captchaService->getPublicKey()
+                'provider' => $this->settingsRepository->get('captcha_provider'),
+                'public_key' => $this->settingsRepository->get(
+                    $this->settingsRepository->get('captcha_provider') . '_public_key'
+                ),
             ),
             'content' => array(
                 'header_box' => $this->settingsRepository->get('header_box'),

@@ -31,6 +31,8 @@ class IndexTest extends WebTestCase
                         return 'fakepasswordhash';
                     case 'theme':
                         return 'default';
+                    case 'captcha_provider':
+                        return 'funcaptcha';
                 }
             });
         $this->app['repository.settings'] = $mock;
