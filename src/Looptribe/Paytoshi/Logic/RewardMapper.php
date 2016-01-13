@@ -5,6 +5,10 @@ namespace Looptribe\Paytoshi\Logic;
 
 class RewardMapper
 {
+    /**
+     * @param $rewardString
+     * @return array
+     */
     public function stringToArray($rewardString)
     {
         if (empty($rewardString))
@@ -23,5 +27,24 @@ class RewardMapper
             });
         }
         return $sortedRewards;
+    }
+
+    public function arrayToString(array $rewards)
+    {
+        if (empty($rewards))
+            return '';
+
+        //Unpack amount-probability couples
+        $rewardArray = array_map(function ($i) {
+            if (!isset($i['amount']) || !isset($i['probability'])) {
+                return '';
+            }
+            return sprintf("%s*%s", $i['amount'], $i['probability']);
+        }, $rewards);
+
+        //Remove empty values
+        $rewardArray = array_filter($rewardArray);
+
+        return implode(',', $rewardArray);
     }
 }

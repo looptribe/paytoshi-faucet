@@ -58,4 +58,34 @@ class RewardMapperTest extends \PHPUnit_Framework_TestCase
             $results
         );
     }
+
+    public function testArrayToString1()
+    {
+        $rewards = array(
+            array('probability' => 5, 'amount' => 10),
+            array('probability' => 5, 'amount' => 20),
+        );
+        $sut = new RewardMapper();
+        $results = $sut->arrayToString($rewards);
+        $this->assertEquals('10*5,20*5', $results);
+    }
+
+    public function testArrayToString3()
+    {
+        $rewards = array(
+        );
+        $sut = new RewardMapper();
+        $results = $sut->arrayToString($rewards);
+        $this->assertEquals('', $results);
+    }
+
+    public function testArrayToString4()
+    {
+        $rewards = array(
+            array('probability' => 5, 'amount' => 10),
+        );
+        $sut = new RewardMapper();
+        $results = $sut->arrayToString($rewards);
+        $this->assertEquals('10*5', $results);
+    }
 }
