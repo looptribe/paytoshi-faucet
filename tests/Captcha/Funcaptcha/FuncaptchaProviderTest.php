@@ -194,4 +194,18 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($answer->isSuccessful());
         $this->assertNull($answer->getMessage());
     }
+
+    public function testGetChallengeName()
+    {
+        $sut = new FuncaptchaProvider($this->buzz, 'pubkey', 'privkey');
+        $challenge = $sut->getChallengeName();
+        $this->assertEquals('', $challenge);
+    }
+
+    public function testGetResponseName()
+    {
+        $sut = new FuncaptchaProvider($this->buzz, 'pubkey', 'privkey');
+        $response = $sut->getResponseName();
+        $this->assertEquals('fc-token', $response);
+    }
 }

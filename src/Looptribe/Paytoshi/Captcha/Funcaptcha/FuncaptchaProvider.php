@@ -73,4 +73,20 @@ class FuncaptchaProvider implements CaptchaProviderInterface
 
         return new CaptchaProviderResponse($success, $success ? null : 'Invalid Captcha');
     }
+
+    /**
+     * @return string
+     */
+    function getChallengeName()
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    function getResponseName()
+    {
+        return 'fc-token';
+    }
 }
