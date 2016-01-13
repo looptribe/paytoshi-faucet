@@ -82,7 +82,7 @@ class RewardMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('10*5,20*5', $results);
     }
 
-    public function testArrayToString3()
+    public function testArrayToString2()
     {
         $rewards = array(
         );
@@ -91,7 +91,7 @@ class RewardMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $results);
     }
 
-    public function testArrayToString4()
+    public function testArrayToString3()
     {
         $rewards = array(
             array('probability' => 5, 'amount' => 10),
@@ -99,5 +99,27 @@ class RewardMapperTest extends \PHPUnit_Framework_TestCase
         $sut = new RewardMapper();
         $results = $sut->arrayToString($rewards);
         $this->assertEquals('10*5', $results);
+    }
+
+    public function testArrayToString4()
+    {
+        $rewards = array(
+            array('amount' => 10),
+            array('probability' => 5, 'amount' => 20),
+        );
+        $sut = new RewardMapper();
+        $results = $sut->arrayToString($rewards);
+        $this->assertEquals('20*5', $results);
+    }
+
+    public function testArrayToString5()
+    {
+        $rewards = array(
+            array('probability' => 5),
+            array('probability' => 5, 'amount' => 20),
+        );
+        $sut = new RewardMapper();
+        $results = $sut->arrayToString($rewards);
+        $this->assertEquals('20*5', $results);
     }
 }
