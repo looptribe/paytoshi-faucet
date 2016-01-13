@@ -10,4 +10,14 @@ interface CaptchaProviderInterface
      * @throws CaptchaProviderException
      */
     function checkAnswer(array $options);
+
+    /**
+     * @return string
+     */
+    function getChallengeName();
+
+    /**
+     * @return string
+     */
+    function getResponseName();
 }
