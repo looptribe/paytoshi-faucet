@@ -26,6 +26,9 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $paytoshi;
 
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    private $rewardMapper;
+
     public function setUp()
     {
         $this->templating = $this->getMock('Looptribe\Paytoshi\Templating\TemplatingEngineInterface');
@@ -35,8 +38,11 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->themeProvider = $this->getMock('Looptribe\Paytoshi\Templating\ThemeProviderInterface');
         $this->paytoshi = $this->getMock('Looptribe\Paytoshi\Api\PaytoshiApiInterface');
+        $this->rewardMapper = $this->getMockBuilder('Looptribe\Paytoshi\Logic\RewardMapper')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->sut = new AdminController($this->templating, $this->urlGenerator, $this->settingsRepository, $this->themeProvider, $this->paytoshi);
+        $this->sut = new AdminController($this->templating, $this->urlGenerator, $this->settingsRepository, $this->themeProvider, $this->paytoshi, $this->rewardMapper);
     }
 
     public function testAction1()
@@ -47,6 +53,9 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                         echo '';
                 }
             );
+
+        $this->rewardMapper->method('stringToArray')
+            ->willReturn(array());
 
         $this->templating->expects($this->once())
             ->method('render')
@@ -106,6 +115,11 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                     return '10*100';
                 }
             );
+
+        $this->rewardMapper->method('stringToArray')
+            ->willReturn(array(
+                array('amount' => 10, 'probability' => 100)
+            ));
 
         $this->templating->expects($this->once())
             ->method('render')
@@ -167,6 +181,12 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                     return '10*100,20*200';
                 }
             );
+
+        $this->rewardMapper->method('stringToArray')
+            ->willReturn(array(
+                array('amount' => 10, 'probability' => 100),
+                array('amount' => 20, 'probability' => 200)
+            ));
 
         $this->templating->expects($this->once())
             ->method('render')
@@ -230,6 +250,12 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                 }
             );
 
+        $this->rewardMapper->method('stringToArray')
+            ->willReturn(array(
+                array('amount' => 10, 'probability' => 100),
+                array('amount' => 20, 'probability' => 200)
+            ));
+
         $this->templating->expects($this->once())
             ->method('render')
             ->with(
@@ -289,8 +315,12 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $parameterBag = new ParameterBag(array('rewards' => array()));
+        $parameterBag = $this->getMock('Symfony\Component\HttpFoundation\ParameterBag');
         $request->request = $parameterBag;
+
+        $this->rewardMapper->method('arrayToString')
+            ->with(array())
+            ->willReturn('');
 
         $this->settingsRepository->expects($this->once())
             ->method('setAll')
@@ -322,8 +352,12 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $parameterBag = new ParameterBag(array('rewards' => null));
+        $parameterBag = $this->getMock('Symfony\Component\HttpFoundation\ParameterBag');
         $request->request = $parameterBag;
+
+        $this->rewardMapper->method('arrayToString')
+            ->with(array())
+            ->willReturn('');
 
         $this->settingsRepository->expects($this->once())
             ->method('setAll')
@@ -355,12 +389,21 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $parameterBag = new ParameterBag(array(
-            'rewards' => array(
-                array ('amount' => 10, 'probability' => 100)
-            )
-        ));
+        $parameterBag = $this->getMock('Symfony\Component\HttpFoundation\ParameterBag');
+        $parameterBag->expects($this->once())
+            ->method('all')
+            ->willReturn(array(
+                'rewards' => array(
+                    array ('amount' => 10, 'probability' => 100)
+                )
+            ));
         $request->request = $parameterBag;
+
+        $this->rewardMapper->method('arrayToString')
+            ->with(array(
+                array ('amount' => 10, 'probability' => 100)
+            ))
+            ->willReturn('10*100');
 
         $this->settingsRepository->expects($this->once())
             ->method('setAll')
@@ -391,13 +434,23 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $parameterBag = new ParameterBag(array(
-            'rewards' => array(
+        $parameterBag = $this->getMock('Symfony\Component\HttpFoundation\ParameterBag');
+        $parameterBag->expects($this->once())
+            ->method('all')
+            ->willReturn(array(
+                'rewards' => array(
+                    array ('amount' => 10, 'probability' => 100),
+                    array ('amount' => 20, 'probability' => 200)
+                )
+            ));
+        $request->request = $parameterBag;
+
+        $this->rewardMapper->method('arrayToString')
+            ->with(array(
                 array ('amount' => 10, 'probability' => 100),
                 array ('amount' => 20, 'probability' => 200)
-            )
-        ));
-        $request->request = $parameterBag;
+            ))
+            ->willReturn('10*100,20*200');
 
         $this->settingsRepository->expects($this->once())
             ->method('setAll')
@@ -428,13 +481,23 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $parameterBag = new ParameterBag(array(
-            'rewards' => array(
+        $parameterBag = $this->getMock('Symfony\Component\HttpFoundation\ParameterBag');
+        $parameterBag->expects($this->once())
+            ->method('all')
+            ->willReturn(array(
+                'rewards' => array(
+                    array ('probability' => 100),
+                    array ('amount' => 20, 'probability' => 200)
+                )
+            ));
+        $request->request = $parameterBag;
+
+        $this->rewardMapper->method('arrayToString')
+            ->with(array(
                 array ('probability' => 100),
                 array ('amount' => 20, 'probability' => 200)
-            )
-        ));
-        $request->request = $parameterBag;
+            ))
+            ->willReturn('20*200');
 
         $this->settingsRepository->expects($this->once())
             ->method('setAll')
@@ -465,13 +528,23 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $parameterBag = new ParameterBag(array(
-            'rewards' => array(
+        $parameterBag = $this->getMock('Symfony\Component\HttpFoundation\ParameterBag');
+        $parameterBag->expects($this->once())
+            ->method('all')
+            ->willReturn(array(
+                'rewards' => array(
+                    array ('amount' => 10),
+                    array ('amount' => 20, 'probability' => 200)
+                )
+            ));
+        $request->request = $parameterBag;
+
+        $this->rewardMapper->method('arrayToString')
+            ->with(array(
                 array ('amount' => 10),
                 array ('amount' => 20, 'probability' => 200)
-            )
-        ));
-        $request->request = $parameterBag;
+            ))
+            ->willReturn('20*200');
 
         $this->settingsRepository->expects($this->once())
             ->method('setAll')
