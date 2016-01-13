@@ -6,7 +6,8 @@ interface CaptchaProviderInterface
 {
     /**
      * @param array $options
-     * @return mixed
+     * @return CaptchaProviderInterface
+     * @throws CaptchaProviderException
      */
     function checkAnswer(array $options);
 }

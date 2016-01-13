@@ -27,6 +27,11 @@ class FuncaptchaProvider implements CaptchaProviderInterface
         $this->browser = $browser;
     }
 
+    /**
+     * @param array $options
+     * @return CaptchaProviderResponse
+     * @throws CaptchaProviderException
+     */
     function checkAnswer(array $options)
     {
         if (!isset($options['response']) || empty($options['response'])) {
