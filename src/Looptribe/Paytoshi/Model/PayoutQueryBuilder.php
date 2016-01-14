@@ -2,7 +2,6 @@
 
 namespace Looptribe\Paytoshi\Model;
 
-
 use Doctrine\DBAL\Connection;
 
 class PayoutQueryBuilder
@@ -31,6 +30,28 @@ class PayoutQueryBuilder
             $qb->orWhere('recipient_address', ':address')
                 ->setParameter('address', $address);
         }
+
+        return $qb;
+    }
+
+    public function getInsertQuery(Payout $payout)
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->insert(self::TABLE_NAME)
+            ->values(array(
+                'recipient_address' => ':recipient_address',
+                'earning' => ':earning',
+                'referral_recipient_address' => ':referral_recipient_address',
+                'referral_earning' => ':referral_earning',
+                'ip' => ':ip',
+                'created_at' => ':created_at'
+            ))
+            ->setParameter('recipient_address', $payout->getRecipientAddress())
+            ->setParameter('earning', $payout->getEarning())
+            ->setParameter('referral_recipient_address', $payout->getReferralRecipientAddress())
+            ->setParameter('referral_earning', $payout->getReferralEarning())
+            ->setParameter('ip', $payout->getIp())
+            ->setParameter('created_at', $payout->getCreatedAt());
 
         return $qb;
     }
