@@ -181,7 +181,7 @@ class Application extends \Silex\Application
         });
 
         $app['logic.reward'] = $app->share(function () use ($app) {
-            return new RewardLogic($app['db'], $app['repository.recipient'], $app['repository.payout'], $app['logic.reward_provider'], $app['api'], $app['logic.interval_enforcer'], $app['captcha.provider']);
+            return new RewardLogic($app['db'], $app['repository.recipient'], $app['repository.payout'], $app['logic.reward_provider'], $app['api'], $app['logic.interval_enforcer'], $app['captcha.provider'], $app['repository.settings']->get('api_key'));
         });
 
         $app['logic.reward_provider'] = $app->share(function () use ($app) {
