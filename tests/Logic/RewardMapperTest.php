@@ -71,6 +71,48 @@ class RewardMapperTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testStringToArray6()
+    {
+        $rewardString = '-10*5,20*5';
+        $sut = new RewardMapper();
+        $results = $sut->stringToArray($rewardString);
+        $this->assertEquals(
+            array(
+                array('probability' => 5, 'amount' => -10),
+                array('probability' => 5, 'amount' => 20),
+            ),
+            $results
+        );
+    }
+
+    public function testStringToArray7()
+    {
+        $rewardString = '10*-5,20*5';
+        $sut = new RewardMapper();
+        $results = $sut->stringToArray($rewardString);
+        $this->assertEquals(
+            array(
+                array('probability' => -5, 'amount' => 10),
+                array('probability' => 5, 'amount' => 20),
+            ),
+            $results
+        );
+    }
+
+    public function testStringToArray8()
+    {
+        $rewardString = '10*5,15,20*5';
+        $sut = new RewardMapper();
+        $results = $sut->stringToArray($rewardString);
+        $this->assertEquals(
+            array(
+                array('probability' => 5, 'amount' => 10),
+                array('probability' => 5, 'amount' => 20),
+            ),
+            $results
+        );
+    }
+
     public function testArrayToString1()
     {
         $rewards = array(
@@ -121,5 +163,27 @@ class RewardMapperTest extends \PHPUnit_Framework_TestCase
         $sut = new RewardMapper();
         $results = $sut->arrayToString($rewards);
         $this->assertEquals('20*5', $results);
+    }
+
+    public function testArrayToString6()
+    {
+        $rewards = array(
+            array('probability' => 5, 'amount' => -10),
+            array('probability' => 5, 'amount' => 20),
+        );
+        $sut = new RewardMapper();
+        $results = $sut->arrayToString($rewards);
+        $this->assertEquals('-10*5,20*5', $results);
+    }
+
+    public function testArrayToString7()
+    {
+        $rewards = array(
+            array('probability' => -5, 'amount' => 10),
+            array('probability' => 5, 'amount' => 20),
+        );
+        $sut = new RewardMapper();
+        $results = $sut->arrayToString($rewards);
+        $this->assertEquals('10*-5,20*5', $results);
     }
 }

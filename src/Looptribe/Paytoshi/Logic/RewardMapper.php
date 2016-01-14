@@ -18,14 +18,17 @@ class RewardMapper
         $sortedRewards = array();
         foreach ($rewards as $reward) {
             $data = explode('*', $reward);
+            if (count($data) != 2)
+                continue;
+
             $sortedRewards[] = array(
                 'amount' => intval($data[0]),
                 'probability' => isset($data[1]) ? round(floatval($data[1]), 2) : 1
             );
-            usort($sortedRewards, function ($a, $b) {
-                return $a['amount'] < $b['amount'] ? -1 : 1;
-            });
         }
+        usort($sortedRewards, function ($a, $b) {
+            return $a['amount'] < $b['amount'] ? -1 : 1;
+        });
         return $sortedRewards;
     }
 
