@@ -50,7 +50,7 @@ class RecipientRepository
             throw new \Exception('Invalid Recipient');
 
         $qb = $this->queryBuilder->getInsertQuery($recipient);
-        $result = $qb->execute()->fetch();
+        $result = $qb->execute();
         if (!$result)
             return null;
 

@@ -49,7 +49,7 @@ class PayoutRepository
     public function insert(Payout $payout)
     {
         $qb = $this->queryBuilder->getInsertQuery($payout);
-        $result = $qb->execute()->fetch();
+        $result = $qb->execute();
         if (!$result)
             return null;
 

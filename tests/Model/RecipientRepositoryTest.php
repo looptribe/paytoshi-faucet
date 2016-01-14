@@ -140,11 +140,8 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $statement->method('fetch')
-            ->willReturn(true);
-
         $qb->method('execute')
-            ->willReturn($statement);
+            ->willReturn(1);
 
         $this->connection->method('lastInsertId')
             ->willReturn(1);
@@ -183,11 +180,8 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $statement->method('fetch')
-            ->willReturn(false);
-
         $qb->method('execute')
-            ->willReturn($statement);
+            ->willReturn(0);
 
         $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
         $result = $sut->insert($recipient);

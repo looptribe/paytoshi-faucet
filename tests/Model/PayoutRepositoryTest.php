@@ -244,11 +244,8 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $statement->method('fetch')
-            ->willReturn(true);
-
         $qb->method('execute')
-            ->willReturn($statement);
+            ->willReturn(1);
 
         $this->connection->method('lastInsertId')
             ->willReturn(1);
@@ -288,11 +285,8 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $statement->method('fetch')
-            ->willReturn(true);
-
         $qb->method('execute')
-            ->willReturn($statement);
+            ->willReturn(1);
 
         $this->connection->method('lastInsertId')
             ->willReturn(1);
@@ -330,11 +324,8 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $statement->method('fetch')
-            ->willReturn(false);
-
         $qb->method('execute')
-            ->willReturn($statement);
+            ->willReturn(0);
 
         $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
         $result = $sut->insert($payout);
