@@ -3,7 +3,18 @@
 namespace Looptribe\Paytoshi;
 
 use Looptribe\Paytoshi\Api\PaytoshiApi;
+use Looptribe\Paytoshi\Captcha\CaptchaProviderFactory;
 use Looptribe\Paytoshi\Controller;
+use Looptribe\Paytoshi\Logic\IntervalEnforcer;
+use Looptribe\Paytoshi\Logic\RewardLogic;
+use Looptribe\Paytoshi\Logic\RewardMapper;
+use Looptribe\Paytoshi\Logic\RewardProvider;
+use Looptribe\Paytoshi\Model\PayoutMapper;
+use Looptribe\Paytoshi\Model\PayoutQueryBuilder;
+use Looptribe\Paytoshi\Model\PayoutRepository;
+use Looptribe\Paytoshi\Model\RecipientMapper;
+use Looptribe\Paytoshi\Model\RecipientQueryBuilder;
+use Looptribe\Paytoshi\Model\RecipientRepository;
 use Looptribe\Paytoshi\Setup\Configurator;
 use Looptribe\Paytoshi\Model\ConnectionFactory;
 use Looptribe\Paytoshi\Model\SettingsRepository;
@@ -93,6 +104,14 @@ class Application extends \Silex\Application
             return $browser;
         });
 
+        $app['captcha.provider'] = $app->share(function () use ($app) {
+            return $app['captcha.factory']->create($app['repository.settings']->get('captcha_provider'));
+        });
+
+        $app['captcha.factory'] = $app->share(function () use($app) {
+            return new CaptchaProviderFactory($app['buzz'], $app['repository.settings']);
+        });
+
         $app['api'] = $app->share(function () use ($app) {
             return new PaytoshiApi($app['buzz'], $app['apiUrl']);
         });
@@ -113,12 +132,43 @@ class Application extends \Silex\Application
             return new LocalThemeProvider($app['repository.settings'], $app['themes.path'], $app['themes.default']);
         });
 
+        $app['mapper.payout'] = $app->share(function () use ($app) {
+            return new PayoutMapper();
+        });
+
+        $app['mapper.recipient'] = $app->share(function () use ($app) {
+            return new RecipientMapper();
+        });
+
+        $app['mapper.reward'] = $app->share(function () use ($app) {
+            return new RewardMapper();
+        });
+
+        $app['querybuilder.payout'] = $app->share(function () use ($app) {
+            return new PayoutQueryBuilder($app['db']);
+        });
+
+        $app['querybuilder.recipient'] = $app->share(function () use ($app) {
+            return new RecipientQueryBuilder($app['db']);
+        });
+
+        $app['repository.payout'] = $app->share(function () use ($app) {
+            return new PayoutRepository($app['db'], $app['mapper.payout'], $app['querybuilder.payout']);
+        });
+
+        $app['repository.recipient'] = $app->share(function () use ($app) {
+            return new RecipientRepository($app['db'], $app['mapper.recipient'], $app['querybuilder.recipient']);
+        });
+
         $app['repository.settings'] = $app->share(function () use ($app) {
             return new SettingsRepository($app['db']);
         });
 
         $app['controller.index'] = $app->share(function () use ($app) {
             return new Controller\IndexController($app['templating'], $app['themeProvider'], $app['repository.settings']);
+        });
+        $app['controller.reward'] = $app->share(function () use ($app) {
+            return new Controller\RewardController($app['repository.settings'], $app['captcha.provider'], $app['url_generator'], $app['logic.reward'], $app['session']->getFlashBag());
         });
         $app['controller.faq'] = $app->share(function () use ($app) {
             return new Controller\FaqController($app['templating'], $app['themeProvider'], $app['repository.settings']);
@@ -127,7 +177,19 @@ class Application extends \Silex\Application
             return new Controller\SetupController($app['templating'], $app['url_generator'], $app['setup.diagnostics'], $app['setup.configurator'], $app['db.options']);
         });
         $app['controller.admin'] = $app->share(function () use ($app) {
-            return new Controller\AdminController($app['templating'], $app['url_generator'], $app['repository.settings'], $app['themeProvider'], $app['api']);
+            return new Controller\AdminController($app['templating'], $app['url_generator'], $app['repository.settings'], $app['themeProvider'], $app['api'], $app['mapper.reward']);
+        });
+
+        $app['logic.reward'] = $app->share(function () use ($app) {
+            return new RewardLogic($app['db'], $app['repository.recipient'], $app['logic.reward_provider'], $app['api'], $app['logic.interval_enforcer'], $app['captcha.provider']);
+        });
+
+        $app['logic.reward_provider'] = $app->share(function () use ($app) {
+            return new RewardProvider($app['mapper.reward'], $app['repository.settings']->get('rewards'));
+        });
+
+        $app['logic.interval_enforcer'] = $app->share(function () use ($app) {
+            return new IntervalEnforcer($app['repository.payout'], $app['repository.settings']->get('waiting_interval'));
         });
 
         $app['security.passwordGenerator'] = $app->share(function () use ($app) {
