@@ -3,6 +3,7 @@
 namespace Looptribe\Paytoshi\Model;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 
 class PayoutQueryBuilder
 {
@@ -34,6 +35,10 @@ class PayoutQueryBuilder
         return $qb;
     }
 
+    /**
+     * @param Payout $payout
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
     public function getInsertQuery(Payout $payout)
     {
         $qb = $this->connection->createQueryBuilder();
@@ -51,7 +56,7 @@ class PayoutQueryBuilder
             ->setParameter('referral_recipient_address', $payout->getReferralRecipientAddress())
             ->setParameter('referral_earning', $payout->getReferralEarning())
             ->setParameter('ip', $payout->getIp())
-            ->setParameter('created_at', $payout->getCreatedAt());
+            ->setParameter('created_at', $payout->getCreatedAt(), Type::DATETIME);
 
         return $qb;
     }

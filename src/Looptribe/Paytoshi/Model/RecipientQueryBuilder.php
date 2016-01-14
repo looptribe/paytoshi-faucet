@@ -2,8 +2,8 @@
 
 namespace Looptribe\Paytoshi\Model;
 
-
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 
 class RecipientQueryBuilder
 {
@@ -42,8 +42,8 @@ class RecipientQueryBuilder
             ->setParameter('address', $recipient->getAddress())
             ->setParameter('earning', $recipient->getEarning())
             ->setParameter('referral_earning', $recipient->getReferralEarning())
-            ->setParameter('created_at', $recipient->getCreatedAt())
-            ->setParameter('updated_at', $recipient->getUpdatedAt());
+            ->setParameter('created_at', $recipient->getCreatedAt(), Type::DATETIME)
+            ->setParameter('updated_at', $recipient->getUpdatedAt(), Type::DATETIME);
 
         return $qb;
     }
@@ -57,7 +57,7 @@ class RecipientQueryBuilder
             ->set('updated_at', ':updated_at')
             ->setParameter('earning', $recipient->getEarning())
             ->setParameter('referral_earning', $recipient->getReferralEarning())
-            ->setParameter('updated_at', $recipient->getUpdatedAt());
+            ->setParameter('updated_at', $recipient->getUpdatedAt(), Type::DATETIME);
 
         return $qb;
     }
