@@ -287,7 +287,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
         $payout = $sut->create($address, $ip, $challenge, $response);
-        
+
         $this->assertSame($ip, $payout->getIp());
         $this->assertSame($address, $payout->getRecipientAddress());
         $this->assertSame(10, $payout->getEarning());
