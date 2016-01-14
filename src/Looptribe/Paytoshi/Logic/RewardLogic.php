@@ -35,6 +35,9 @@ class RewardLogic
     /** @var PayoutRepository */
     private $payoutRepository;
 
+    /** @var string */
+    private $apikey;
+
     public function __construct(
         Connection $connection,
         RecipientRepository $recipientRepository,
@@ -42,7 +45,8 @@ class RewardLogic
         RewardProviderInterface $rewardProvider,
         PaytoshiApiInterface $api,
         IntervalEnforcerInterface $intervalEnforcer,
-        CaptchaProviderInterface $captchaProvider
+        CaptchaProviderInterface $captchaProvider,
+        $apikey
     ) {
         $this->connection = $connection;
         $this->recipientRepository = $recipientRepository;
@@ -51,6 +55,7 @@ class RewardLogic
         $this->intervalEnforcer = $intervalEnforcer;
         $this->captchaProvider = $captchaProvider;
         $this->payoutRepository = $payoutRepository;
+        $this->apikey = $apikey;
     }
 
     /**
@@ -115,7 +120,14 @@ class RewardLogic
             $payout->setRecipientAddress($recipient->getAddress());
             $payout->setEarning($earning);
 
-            // TODO: payment process
+            try {
+                $this->api->send($this->apikey, $payout->getRecipientAddress(), $payout->getEarning(), $ip);
+            }
+            catch (\Exception $e) {
+                throw new \Exception(
+                    sprintf('Unable to create reward: %s', $e->getMessage())
+                );
+            }
 
             $this->payoutRepository->insert($payout);
 
