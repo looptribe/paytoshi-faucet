@@ -8,6 +8,7 @@ use Looptribe\Paytoshi\Api\PaytoshiApiInterface;
 use Looptribe\Paytoshi\Captcha\CaptchaProviderException;
 use Looptribe\Paytoshi\Captcha\CaptchaProviderInterface;
 use Looptribe\Paytoshi\Model\Payout;
+use Looptribe\Paytoshi\Model\PayoutRepository;
 use Looptribe\Paytoshi\Model\Recipient;
 use Looptribe\Paytoshi\Model\RecipientRepository;
 
@@ -31,9 +32,13 @@ class RewardLogic
     /** @var CaptchaProviderInterface */
     private $captchaProvider;
 
+    /** @var PayoutRepository */
+    private $payoutRepository;
+
     public function __construct(
         Connection $connection,
         RecipientRepository $recipientRepository,
+        PayoutRepository $payoutRepository,
         RewardProviderInterface $rewardProvider,
         PaytoshiApiInterface $api,
         IntervalEnforcerInterface $intervalEnforcer,
@@ -45,6 +50,7 @@ class RewardLogic
         $this->api = $api;
         $this->intervalEnforcer = $intervalEnforcer;
         $this->captchaProvider = $captchaProvider;
+        $this->payoutRepository = $payoutRepository;
     }
 
     /**
@@ -110,6 +116,8 @@ class RewardLogic
             $payout->setEarning($earning);
 
             // TODO: payment process
+
+            $this->payoutRepository->insert($payout);
 
             $this->connection->commit();
             return $payout;
