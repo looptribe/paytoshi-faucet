@@ -11,8 +11,8 @@ class RecipientMapper
         $data['address'] = $model->getAddress();
         $data['earning'] = $model->getEarning();
         $data['referral_earning'] = $model->getReferralEarning();
-        $data['created_at'] = $model->getCreatedAt();
-        $data['updated_at'] = $model->getUpdatedAt();
+        $data['created_at'] = $model->getCreatedAt()->format('Y-m-d H:i:s');
+        $data['updated_at'] = $model->getUpdatedAt()->format('Y-m-d H:i:s');
         return $data;
     }
 
@@ -28,9 +28,13 @@ class RecipientMapper
         if (array_key_exists('referral_earning', $data))
             $recipient->setReferralEarning($data['referral_earning']);
         if (array_key_exists('created_at', $data))
-            $recipient->setCreatedAt($data['created_at']);
+            $recipient->setCreatedAt(new \DateTime($data['created_at']));
+        else
+            $recipient->setCreatedAt(new \DateTime());
         if (array_key_exists('updated_at', $data))
-            $recipient->setUpdatedAt($data['updated_at']);
+            $recipient->setUpdatedAt(new \DateTime($data['updated_at']));
+        else
+            $recipient->setUpdatedAt(new \DateTime());
         return $recipient;
     }
 }
