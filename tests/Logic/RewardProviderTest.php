@@ -14,13 +14,13 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
     }
     public function testGetAsArray1()
     {
-        $rewards = array();
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
-            ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
-        $rewards = $sut->getAsArray();
-        $this->assertEquals(array(), $rewards);
+            ->with('')
+            ->willReturn(array());
+        $sut = new RewardProvider($this->rewardMapper, '');
+        $rewardArray = $sut->getAsArray();
+        $this->assertEquals(array(), $rewardArray);
     }
 
     public function testGetAsArray2()
@@ -31,19 +31,20 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*5');
         $rewardArray = $sut->getAsArray();
         $this->assertEquals($rewards, $rewardArray);
     }
 
     public function testGetReward1()
     {
-        $rewards = array();
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
-            ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+            ->with('')
+            ->willReturn(array());
+        $sut = new RewardProvider($this->rewardMapper, '');
         $reward = $sut->getReward();
         $this->assertEquals(0, $reward);
     }
@@ -55,8 +56,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*0')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*0');
         $reward = $sut->getReward();
         $this->assertEquals(0, $reward);
     }
@@ -68,8 +70,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5');
         $reward = $sut->getReward();
         $this->assertEquals(10, $reward);
     }
@@ -83,8 +86,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*15,30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*15,30*5');
         $reward = $sut->getReward();
         $this->assertEquals(10 || 20 || 30, $reward);
     }
@@ -96,8 +100,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*-5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*-5');
         $reward = $sut->getReward();
         $this->assertEquals(0, $reward);
     }
@@ -109,24 +114,11 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('-10*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '-10*5');
         $reward = $sut->getReward();
         $this->assertEquals(0, $reward);
-    }
-
-    public function testGetReward7()
-    {
-        $rewards = array(
-            array('probability' => 5, 'amount' => -10),
-            array('probability' => 15, 'amount' => 20),
-        );
-        $this->rewardMapper->expects($this->once())
-            ->method('stringToArray')
-            ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
-        $reward = $sut->getReward();
-        $this->assertEquals(20, $reward);
     }
 
     public function testGetAverage1()
@@ -135,8 +127,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '');
         $avg = $sut->getAverage();
         $this->assertEquals(0, $avg);
     }
@@ -150,8 +143,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*15,30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*15,30*5');
         $avg = $sut->getAverage();
         $this->assertEquals(20, $avg);
     }
@@ -165,8 +159,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*-15,30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*-15,30*5');
         $avg = $sut->getAverage();
         $this->assertEquals(20, $avg);
     }
@@ -180,8 +175,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,-20*15,30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,-20*15,30*5');
         $avg = $sut->getAverage();
         $this->assertEquals(20, $avg);
     }
@@ -194,8 +190,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('1*1.25,2*1')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '1*1.25,2*1');
         $avg = $sut->getAverage();
         $this->assertEquals(1.44, $avg);
     }
@@ -207,8 +204,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '');
         $max = $sut->getMax();
         $this->assertEquals(0, $max);
     }
@@ -222,8 +220,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*15,30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*15,30*5');
         $max = $sut->getMax();
         $this->assertEquals(30, $max);
     }
@@ -237,8 +236,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*15,30*-5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*15,30*-5');
         $max = $sut->getMax();
         $this->assertEquals(20, $max);
     }
@@ -252,8 +252,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*15,-30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*15,-30*5');
         $max = $sut->getMax();
         $this->assertEquals(20, $max);
     }
@@ -264,8 +265,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '');
         $normalized = $sut->getNormalized();
         $this->assertEquals(array(), $normalized);
     }
@@ -279,8 +281,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*15,30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*15,30*5');
         $normalized = $sut->getNormalized();
         $this->assertEquals(array(
             array('probability' => 20, 'amount' => 10),
@@ -298,8 +301,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,20*-15,30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,20*-15,30*5');
         $normalized = $sut->getNormalized();
         $this->assertEquals(array(
             array('probability' => 50, 'amount' => 10),
@@ -316,8 +320,9 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         );
         $this->rewardMapper->expects($this->once())
             ->method('stringToArray')
+            ->with('10*5,-20*15,30*5')
             ->willReturn($rewards);
-        $sut = new RewardProvider($this->rewardMapper, $rewards);
+        $sut = new RewardProvider($this->rewardMapper, '10*5,-20*15,30*5');
         $normalized = $sut->getNormalized();
         $this->assertEquals(array(
             array('probability' => 50, 'amount' => 10),

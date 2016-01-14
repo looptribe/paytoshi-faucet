@@ -8,7 +8,7 @@ class RewardProvider implements RewardProviderInterface
     /** @var array */
     private $rewards;
 
-    public function __construct(RewardMapper $rewardMapper, array $rewards = array())
+    public function __construct(RewardMapper $rewardMapper, $rewards)
     {
         $this->rewards = $rewardMapper->stringToArray($rewards);
     }
