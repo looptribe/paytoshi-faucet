@@ -64,19 +64,19 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
                 switch($field)
                 {
                     case 'address':
-                        $self->assertEquals($recipient->getAddress(), $value);
+                        $self->assertSame($recipient->getAddress(), $value);
                         break;
                     case 'earning':
-                        $self->assertEquals($recipient->getEarning(), $value);
+                        $self->assertSame($recipient->getEarning(), $value);
                         break;
                     case 'referral_earning':
-                        $self->assertEquals($recipient->getReferralEarning(), $value);
+                        $self->assertSame($recipient->getReferralEarning(), $value);
                         break;
                     case 'updated_at':
-                        $self->assertEquals($recipient->getUpdatedAt(), $value);
+                        $self->assertSame($recipient->getUpdatedAt(), $value);
                         break;
                     case 'created_at':
-                        $self->assertEquals($recipient->getCreatedAt(), $value);
+                        $self->assertSame($recipient->getCreatedAt(), $value);
                         break;
                     default:
                         $self->fail('Invalid field');
@@ -120,16 +120,16 @@ class RecipientQueryBuilderTest extends \PHPUnit_Framework_TestCase
                 switch($field)
                 {
                     case 'address':
-                        $self->assertEquals($recipient->getAddress(), $value);
+                        $self->assertSame($recipient->getAddress(), $value);
                         break;
                     case 'earning':
-                        $self->assertEquals($recipient->getEarning(), $value);
+                        $self->assertSame($recipient->getEarning(), $value);
                         break;
                     case 'referral_earning':
-                        $self->assertEquals($recipient->getReferralEarning(), $value);
+                        $self->assertSame($recipient->getReferralEarning(), $value);
                         break;
                     case 'updated_at':
-                        $self->assertEquals($recipient->getUpdatedAt(), $value);
+                        $self->assertSame($recipient->getUpdatedAt(), $value);
                         break;
                     default:
                         $self->fail('Invalid field');
