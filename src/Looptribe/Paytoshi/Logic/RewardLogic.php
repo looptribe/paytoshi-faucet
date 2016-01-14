@@ -87,7 +87,13 @@ class RewardLogic
             }
 
             // Waiting interval check
-            $interval = $this->intervalEnforcer->check($ip, $recipient);
+            try {
+                $interval = $this->intervalEnforcer->check($ip, $recipient);
+            }
+            catch (\Exception $e) {
+                throw new \Exception('Invalid waiting interval');
+            }
+
             if ($interval) {
                 throw new \Exception(
                     sprintf('You can get a reward again in %s.', $interval->format('%Hh, %Im, %Ss'))
@@ -105,7 +111,7 @@ class RewardLogic
 
             // TODO: payment process
 
-            //$this->connection->commit();
+            $this->connection->commit();
             return $payout;
 
         } catch (\Exception $e) {

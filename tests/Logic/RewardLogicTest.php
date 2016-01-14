@@ -175,4 +175,121 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('\Exception', 'You can get a reward again in');
         $payout = $sut->create($address, $ip, $challenge, $response);
     }
+
+    public function testCreate5()
+    {
+        $address = 'addr1';
+        $ip = '10.10.10.10';
+        $challenge = 'challenge';
+        $response = 'response';
+
+        $captchaResponse = $this->getMockBuilder('Looptribe\Paytoshi\Captcha\CaptchaProviderResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->captchaProvider->expects($this->once())
+            ->method('checkAnswer')
+            ->with(array(
+                'challenge' => $challenge,
+                'response' => $response,
+                'ip' => $ip
+            ))
+            ->willReturn($captchaResponse);
+
+        $captchaResponse->expects($this->once())
+            ->method('isSuccessful')
+            ->willReturn(true);
+
+        $this->connection
+            ->expects($this->once())
+            ->method('beginTransaction');
+
+        $recipient = new Recipient();
+        $recipient->setId('1');
+        $recipient->setAddress($address);
+
+        $this->recipientRepository->expects($this->once())
+            ->method('findOneByAddress')
+            ->with($address)
+            ->willReturn($recipient);
+
+        $this->intervalEnforcer->expects($this->once())
+            ->method('check')
+            ->with($ip, $recipient)
+            ->willThrowException(new \Exception('Invalid waiting interval'));
+
+        $this->connection
+            ->expects($this->once())
+            ->method('rollBack');
+
+        $this->connection
+            ->expects($this->never())
+            ->method('commit');
+
+        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
+        $this->setExpectedException('\Exception', 'Invalid waiting interval');
+        $payout = $sut->create($address, $ip, $challenge, $response);
+    }
+
+    public function testCreate6()
+    {
+        $address = 'addr1';
+        $ip = '10.10.10.10';
+        $challenge = 'challenge';
+        $response = 'response';
+
+        $captchaResponse = $this->getMockBuilder('Looptribe\Paytoshi\Captcha\CaptchaProviderResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->captchaProvider->expects($this->once())
+            ->method('checkAnswer')
+            ->with(array(
+                'challenge' => $challenge,
+                'response' => $response,
+                'ip' => $ip
+            ))
+            ->willReturn($captchaResponse);
+
+        $captchaResponse->expects($this->once())
+            ->method('isSuccessful')
+            ->willReturn(true);
+
+        $this->connection
+            ->expects($this->once())
+            ->method('beginTransaction');
+
+        $recipient = new Recipient();
+        $recipient->setId('1');
+        $recipient->setAddress($address);
+
+        $this->recipientRepository->expects($this->once())
+            ->method('findOneByAddress')
+            ->with($address)
+            ->willReturn($recipient);
+
+        $this->intervalEnforcer->expects($this->once())
+            ->method('check')
+            ->with($ip, $recipient)
+            ->willReturn(null);
+
+        $this->rewardProvider->expects($this->once())
+            ->method('getReward')
+            ->willReturn(10);
+
+        $this->connection
+            ->expects($this->never())
+            ->method('rollBack');
+
+        $this->connection
+            ->expects($this->once())
+            ->method('commit');
+
+        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
+        $payout = $sut->create($address, $ip, $challenge, $response);
+        
+        $this->assertSame($ip, $payout->getIp());
+        $this->assertSame($address, $payout->getRecipientAddress());
+        $this->assertSame(10, $payout->getEarning());
+    }
 }
