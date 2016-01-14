@@ -5,6 +5,7 @@ namespace Looptribe\Paytoshi\Logic;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ConnectionException;
 use Looptribe\Paytoshi\Api\PaytoshiApiInterface;
+use Looptribe\Paytoshi\Captcha\CaptchaProviderException;
 use Looptribe\Paytoshi\Captcha\CaptchaProviderInterface;
 use Looptribe\Paytoshi\Model\Payout;
 use Looptribe\Paytoshi\Model\Recipient;
@@ -58,8 +59,23 @@ class RewardLogic
      */
     public function create($address, $ip, $challenge, $response, $referralAddress = null)
     {
-        // TODO: Captcha Check
-        //
+        try {
+            $options = array (
+                'challenge' => $challenge,
+                'response' => $response,
+                'ip' => $ip
+            );
+            $captchaResponse = $this->captchaProvider->checkAnswer($options);
+        }
+        catch (CaptchaProviderException $e) {
+            throw new \Exception(
+                sprintf('Captcha error: %s', $e->getMessage())
+            );
+        }
+
+        if (!$captchaResponse->isSuccessful()) {
+            throw new \Exception($captchaResponse->getMessage());
+        }
 
         $this->connection->beginTransaction();
         try {
