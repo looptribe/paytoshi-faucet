@@ -2,7 +2,9 @@
 
 namespace Looptribe\Paytoshi\Tests\Logic;
 
+use Looptribe\Paytoshi\Captcha\CaptchaProviderException;
 use Looptribe\Paytoshi\Logic\RewardLogic;
+use Looptribe\Paytoshi\Model\Recipient;
 
 class RewardLogicTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,42 +39,140 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
     {
         $address = 'addr1';
         $ip = '10.10.10.10';
-        $challenge = '';
-        $response = '';
+        $challenge = 'challenge';
+        $response = 'response';
 
-        /*$this->connection
-            ->expects($this->once())
-            ->method('commit');*/
+        $this->captchaProvider->expects($this->once())
+            ->method('checkAnswer')
+            ->with(array(
+                'challenge' => $challenge,
+                'response' => $response,
+                'ip' => $ip
+            ))
+            ->willThrowException(new CaptchaProviderException('Missing captcha response'));
 
         $this->connection
             ->expects($this->never())
-            ->method('rollback');
+            ->method('commit');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
+        $this->setExpectedException('\Exception', 'Captcha error: Missing captcha response');
         $payout = $sut->create($address, $ip, $challenge, $response);
-        $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $payout);
     }
 
     public function testCreate2()
     {
         $address = 'addr1';
         $ip = '10.10.10.10';
-        $challenge = '';
-        $response = '';
+        $challenge = 'challenge';
+        $response = 'response';
 
-        $this->intervalEnforcer->method('check')
-            ->willReturn(new \DateInterval('P1D'));
+        $this->captchaProvider->expects($this->once())
+            ->method('checkAnswer')
+            ->with(array(
+                'challenge' => $challenge,
+                'response' => $response,
+                'ip' => $ip
+            ))
+            ->willThrowException(new CaptchaProviderException('Failed to send captcha'));
 
         $this->connection
             ->expects($this->never())
             ->method('commit');
 
+        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
+        $this->setExpectedException('\Exception', 'Captcha error: Failed to send captcha');
+        $payout = $sut->create($address, $ip, $challenge, $response);
+    }
+
+    public function testCreate3()
+    {
+        $address = 'addr1';
+        $ip = '10.10.10.10';
+        $challenge = 'challenge';
+        $response = 'response';
+
+        $captchaResponse = $this->getMockBuilder('Looptribe\Paytoshi\Captcha\CaptchaProviderResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->captchaProvider->expects($this->once())
+            ->method('checkAnswer')
+            ->with(array(
+                'challenge' => $challenge,
+                'response' => $response,
+                'ip' => $ip
+            ))
+            ->willReturn($captchaResponse);
+
+        $captchaResponse->expects($this->once())
+            ->method('isSuccessful')
+            ->willReturn(false);
+
+        $captchaResponse->expects($this->once())
+            ->method('getMessage')
+            ->willReturn('Invalid Captcha');
+
         $this->connection
-            ->expects($this->once())
-            ->method('rollback');
+            ->expects($this->never())
+            ->method('commit');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
-        $this->setExpectedException('Exception');
+        $this->setExpectedException('\Exception', 'Invalid Captcha');
+        $payout = $sut->create($address, $ip, $challenge, $response);
+    }
+
+    public function testCreate4()
+    {
+        $address = 'addr1';
+        $ip = '10.10.10.10';
+        $challenge = 'challenge';
+        $response = 'response';
+
+        $captchaResponse = $this->getMockBuilder('Looptribe\Paytoshi\Captcha\CaptchaProviderResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->captchaProvider->expects($this->once())
+            ->method('checkAnswer')
+            ->with(array(
+                'challenge' => $challenge,
+                'response' => $response,
+                'ip' => $ip
+            ))
+            ->willReturn($captchaResponse);
+
+        $captchaResponse->expects($this->once())
+            ->method('isSuccessful')
+            ->willReturn(true);
+
+        $this->connection
+            ->expects($this->once())
+            ->method('beginTransaction');
+
+        $this->recipientRepository->expects($this->once())
+            ->method('findOneByAddress')
+            ->with($address)
+            ->willReturn(null);
+
+        $recipient = new Recipient();
+        $recipient->setAddress($address);
+
+        $this->intervalEnforcer->expects($this->once())
+            ->method('check')
+            ->with($ip, $recipient)
+            ->willReturn(new \DateInterval('PT60S'));
+
+        $this->connection
+            ->expects($this->once())
+            ->method('rollBack');
+
+        $this->connection
+            ->expects($this->never())
+            ->method('commit');
+
+        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider);
+        $this->setExpectedException('\Exception', 'You can get a reward again in');
         $payout = $sut->create($address, $ip, $challenge, $response);
     }
 }
