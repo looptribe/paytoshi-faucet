@@ -40,7 +40,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             'earning' => 100,
             'referral_earning' => 10,
             'recipient_referral_address' => 'addr2',
-            'created_at' => new \DateTime()
+            'created_at' => '2016-01-01 10:00:00'
         );
 
         $ip = '10.10.10.10';
@@ -101,7 +101,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             'earning' => 100,
             'referral_earning' => 10,
             'recipient_referral_address' => 'addr2',
-            'created_at' => new \DateTime()
+            'created_at' => '2016-01-01 10:00:00'
         );
 
         $ip = '10.10.10.10';
@@ -139,7 +139,6 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
         $qb->method('execute')
             ->willReturn($statement);
 
-
         $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
         $result = $sut->findLastByRecipientAndIp($ip, $recipient);
         $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $result);
@@ -166,15 +165,6 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $ip = '10.10.10.10';
 
-        $payout = new Payout();
-        $payout->setId(1);
-        $payout->setIp($ip);
-        $payout->setRecipientAddress('addr1');
-        $payout->setReferralRecipientAddress('addr2');
-        $payout->setEarning(100);
-        $payout->setReferralEarning(10);
-        $payout->setCreatedAt(new \DateTime());
-
         $recipient = new Recipient();
         $recipient->setAddress('addr1');
 
@@ -193,8 +183,37 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
         $statement->method('fetch')
             ->willReturn(false);
 
-        $this->mapper->method('toModel')
-            ->willReturn($payout);
+        $qb->method('execute')
+            ->willReturn($statement);
+
+
+        $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
+        $result = $sut->findLastByRecipientAndIp($ip, $recipient);
+        $this->assertNull($result);
+    }
+
+    public function testFindLastByRecipientAndIp5()
+    {
+        $ip = '10.10.10.10';
+
+        $recipient = new Recipient();
+        $recipient->setAddress('addr1');
+        $recipient->setId('1');
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->queryBuilder->method('getLastByRecipientAndIp')
+            ->with($ip, $recipient->getAddress())
+            ->willReturn($qb);
+
+        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $statement->method('fetch')
+            ->willReturn(false);
 
         $qb->method('execute')
             ->willReturn($statement);
