@@ -223,4 +223,121 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
         $result = $sut->findLastByRecipientAndIp($ip, $recipient);
         $this->assertNull($result);
     }
+
+    public function testInsert1()
+    {
+        $payout = new Payout();
+        $payout->setRecipientAddress('addr1');
+        $payout->setEarning(100);
+        $payout->setIp('10.10.10.10');
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->queryBuilder->method('getInsertQuery')
+            ->with($payout)
+            ->willReturn($qb);
+
+        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $statement->method('fetch')
+            ->willReturn(true);
+
+        $qb->method('execute')
+            ->willReturn($statement);
+
+        $this->connection->method('lastInsertId')
+            ->willReturn(1);
+
+        $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
+        $result = $sut->insert($payout);
+        $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $result);
+        $this->assertSame(1, $result->getId());
+        $this->assertSame('addr1', $result->getRecipientAddress());
+        $this->assertSame(100, $result->getEarning());
+        $this->assertSame(null, $result->getReferralRecipientAddress());
+        $this->assertSame(0, $result->getReferralEarning());
+        $this->assertSame('10.10.10.10', $result->getIp());
+        $this->assertInstanceOf('DateTime', $result->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $result->getCreatedAt()->format('Y-m-d H:i:s'));
+    }
+
+    public function testInsert2()
+    {
+        $payout = new Payout();
+        $payout->setRecipientAddress('addr1');
+        $payout->setEarning(100);
+        $payout->setReferralRecipientAddress('refaddr1');
+        $payout->setReferralEarning(10);
+        $payout->setIp('10.10.10.10');
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->queryBuilder->method('getInsertQuery')
+            ->with($payout)
+            ->willReturn($qb);
+
+        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $statement->method('fetch')
+            ->willReturn(true);
+
+        $qb->method('execute')
+            ->willReturn($statement);
+
+        $this->connection->method('lastInsertId')
+            ->willReturn(1);
+
+        $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
+        $result = $sut->insert($payout);
+        $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $result);
+        $this->assertSame(1, $result->getId());
+        $this->assertSame('addr1', $result->getRecipientAddress());
+        $this->assertSame(100, $result->getEarning());
+        $this->assertSame('refaddr1', $result->getReferralRecipientAddress());
+        $this->assertSame(10, $result->getReferralEarning());
+        $this->assertSame('10.10.10.10', $result->getIp());
+        $this->assertInstanceOf('DateTime', $result->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $result->getCreatedAt()->format('Y-m-d H:i:s'));
+    }
+
+    public function testInsert3()
+    {
+        $payout = new Payout();
+        $payout->setRecipientAddress('addr1');
+        $payout->setEarning(100);
+        $payout->setIp('10.10.10.10');
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->queryBuilder->method('getInsertQuery')
+            ->with($payout)
+            ->willReturn($qb);
+
+        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $statement->method('fetch')
+            ->willReturn(false);
+
+        $qb->method('execute')
+            ->willReturn($statement);
+
+        $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
+        $result = $sut->insert($payout);
+        $this->assertNull($result);
+    }
 }

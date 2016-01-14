@@ -22,6 +22,11 @@ class PayoutRepository
         $this->queryBuilder = $queryBuilder;
     }
 
+    /**
+     * @param $ip
+     * @param Recipient $recipient
+     * @return Payout|null
+     */
     public function findLastByRecipientAndIp($ip, Recipient $recipient)
     {
         if (!$ip)
@@ -35,5 +40,20 @@ class PayoutRepository
             return null;
 
         return $this->payoutMapper->toModel($result);
+    }
+
+    /**
+     * @param Payout $payout
+     * @return Payout|null
+     */
+    public function insert(Payout $payout)
+    {
+        $qb = $this->queryBuilder->getInsertQuery($payout);
+        $result = $qb->execute()->fetch();
+        if (!$result)
+            return null;
+
+        $payout->setId($this->connection->lastInsertId());
+        return $payout;
     }
 }
