@@ -17,7 +17,7 @@ class PayoutQueryBuilder
         $this->connection = $connection;
     }
 
-    public function getLastByRecipientAndIp($ip, $address = null)
+    public function getLastByRecipientAndIpQuery($ip, $address = null)
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')

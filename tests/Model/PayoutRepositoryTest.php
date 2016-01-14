@@ -62,7 +62,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->queryBuilder->method('getLastByRecipientAndIp')
+        $this->queryBuilder->method('getLastByRecipientAndIpQuery')
             ->with($ip, 'addr1')
             ->willReturn($qb);
 
@@ -122,7 +122,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->queryBuilder->method('getLastByRecipientAndIp')
+        $this->queryBuilder->method('getLastByRecipientAndIpQuery')
             ->with($ip)
             ->willReturn($qb);
 
@@ -172,7 +172,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->queryBuilder->method('getLastByRecipientAndIp')
+        $this->queryBuilder->method('getLastByRecipientAndIpQuery')
             ->with($ip)
             ->willReturn($qb);
 
@@ -204,7 +204,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->queryBuilder->method('getLastByRecipientAndIp')
+        $this->queryBuilder->method('getLastByRecipientAndIpQuery')
             ->with($ip, $recipient->getAddress())
             ->willReturn($qb);
 

@@ -29,7 +29,7 @@ class PayoutRepository
 
         $address = $recipient->isNew() ? null : $recipient->getAddress();
 
-        $qb = $this->queryBuilder->getLastByRecipientAndIp($ip, $address);
+        $qb = $this->queryBuilder->getLastByRecipientAndIpQuery($ip, $address);
         $result = $qb->execute()->fetch();
         if(!$result)
             return null;

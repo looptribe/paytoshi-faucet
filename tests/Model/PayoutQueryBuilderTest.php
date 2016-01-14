@@ -52,7 +52,7 @@ class PayoutQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ->willReturn($qb);
 
         $sut = new PayoutQueryBuilder($connection);
-        $result = $sut->getLastByRecipientAndIp($ip, $address);
+        $result = $sut->getLastByRecipientAndIpQuery($ip, $address);
         $this->assertInstanceOf('\Doctrine\DBAL\Query\QueryBuilder', $result);
     }
 
@@ -86,7 +86,7 @@ class PayoutQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ->willReturn($qb);
 
         $sut = new PayoutQueryBuilder($connection);
-        $result = $sut->getLastByRecipientAndIp($ip);
+        $result = $sut->getLastByRecipientAndIpQuery($ip);
         $this->assertInstanceOf('\Doctrine\DBAL\Query\QueryBuilder', $result);
     }
 }
