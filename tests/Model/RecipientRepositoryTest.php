@@ -37,8 +37,8 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
             'address' => 'addr1',
             'earning' => 100,
             'referral_earning' => 10,
-            'created_at' => new \DateTime(),
-            'updated_at' => new \DateTime()
+            'created_at' => '2016-01-01 10:00:00',
+            'updated_at' => '2016-01-01 10:00:00'
         );
 
         $recipient = new Recipient();
@@ -46,8 +46,8 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $recipient->setAddress('addr1');
         $recipient->setEarning(100);
         $recipient->setReferralEarning(10);
-        $recipient->setCreatedAt(new \DateTime());
-        $recipient->setUpdatedAt(new \DateTime());
+        $recipient->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+        $recipient->setUpdatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
             ->disableOriginalConstructor()
@@ -79,7 +79,9 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(100, $result->getEarning());
         $this->assertEquals(10, $result->getReferralEarning());
         $this->assertInstanceOf('DateTime', $result->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $result->getCreatedAt()->format('Y-m-d H:i:s'));
         $this->assertInstanceOf('DateTime', $result->getUpdatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $result->getUpdatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testFindOneByAddress2()
@@ -123,8 +125,8 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $recipient->setAddress('addr1');
         $recipient->setEarning(100);
         $recipient->setReferralEarning(10);
-        $recipient->setCreatedAt(new \DateTime());
-        $recipient->setUpdatedAt(new \DateTime());
+        $recipient->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+        $recipient->setUpdatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
             ->disableOriginalConstructor()
@@ -155,7 +157,9 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(100, $result->getEarning());
         $this->assertEquals(10, $result->getReferralEarning());
         $this->assertInstanceOf('DateTime', $result->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $result->getCreatedAt()->format('Y-m-d H:i:s'));
         $this->assertInstanceOf('DateTime', $result->getUpdatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $result->getUpdatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testInsert2()
@@ -164,8 +168,8 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $recipient->setAddress('addr1');
         $recipient->setEarning(100);
         $recipient->setReferralEarning(10);
-        $recipient->setCreatedAt(new \DateTime());
-        $recipient->setUpdatedAt(new \DateTime());
+        $recipient->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+        $recipient->setUpdatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
             ->disableOriginalConstructor()
@@ -195,17 +199,12 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $recipient = new Recipient();
         $recipient->setEarning(100);
         $recipient->setReferralEarning(10);
-        $recipient->setCreatedAt(new \DateTime());
-        $recipient->setUpdatedAt(new \DateTime());
+        $recipient->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+        $recipient->setUpdatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
-        try {
-            $result = $sut->insert($recipient);
-        }
-        catch (\Exception $e) {
-            $this->assertInstanceOf('Exception', $e);
-            $this->assertSame('Invalid Recipient', $e->getMessage());
-        }
+        $this->setExpectedException('\Exception', 'Invalid Recipient');
+        $result = $sut->insert($recipient);
     }
 
 }
