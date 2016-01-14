@@ -49,7 +49,7 @@ class RewardController
         $challenge = null;
         if ($this->captchaProvider->getChallengeName()) {
             $challenge = $request->get($this->captchaProvider->getChallengeName());
-            if (empty($address)) {
+            if (empty($challenge)) {
                 $this->flashBag->add('warning', 'Missing captcha');
 
                 return new RedirectResponse($this->urlGenerator->generate('homepage'));
