@@ -14,7 +14,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
             'ip' => '10.10.10.10',
             'recipient_address' => 'addr1',
             'earning' => 100,
-            'created_at' => new \DateTime(),
+            'created_at' => '2016-01-01 10:00:00',
             'referral_recipient_address' => 'addr2',
             'referral_earning' => 10
 
@@ -28,6 +28,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(10, $model->getReferralEarning());
         $this->assertSame('addr2', $model->getReferralRecipientAddress());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $model->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testToModel2()
@@ -36,7 +37,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
             'ip' => '10.10.10.10',
             'recipient_address' => 'addr1',
             'earning' => 100,
-            'created_at' => new \DateTime(),
+            'created_at' => '2016-01-01 10:00:00',
             'referral_recipient_address' => 'addr2',
             'referral_earning' => 10
         );
@@ -49,6 +50,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(10, $model->getReferralEarning());
         $this->assertSame('addr2', $model->getReferralRecipientAddress());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $model->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testToModel3()
@@ -57,7 +59,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
             'id' => 1,
             'ip' => '10.10.10.10',
             'earning' => 100,
-            'created_at' => new \DateTime(),
+            'created_at' => '2016-01-01 10:00:00',
             'referral_recipient_address' => 'addr2',
             'referral_earning' => 10
         );
@@ -70,6 +72,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(10, $model->getReferralEarning());
         $this->assertSame('addr2', $model->getReferralRecipientAddress());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $model->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testToModel4()
@@ -78,7 +81,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
             'id' => 1,
             'ip' => '10.10.10.10',
             'recipient_address' => 'addr1',
-            'created_at' => new \DateTime(),
+            'created_at' => '2016-01-01 10:00:00',
             'referral_recipient_address' => 'addr2',
             'referral_earning' => 10
         );
@@ -91,6 +94,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(10, $model->getReferralEarning());
         $this->assertSame('addr2', $model->getReferralRecipientAddress());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $model->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testToModel5()
@@ -100,7 +104,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
             'ip' => '10.10.10.10',
             'recipient_address' => 'addr1',
             'earning' => 100,
-            'created_at' => new \DateTime(),
+            'created_at' => '2016-01-01 10:00:00',
             'referral_recipient_address' => 'addr2'
         );
         $sut = new PayoutMapper();
@@ -112,6 +116,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(0, $model->getReferralEarning());
         $this->assertSame('addr2', $model->getReferralRecipientAddress());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $model->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testToModel6()
@@ -121,7 +126,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
             'ip' => '10.10.10.10',
             'recipient_address' => 'addr1',
             'earning' => 100,
-            'created_at' => new \DateTime(),
+            'created_at' => '2016-01-01 10:00:00',
             'referral_earning' => 10
         );
         $sut = new PayoutMapper();
@@ -133,6 +138,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(10, $model->getReferralEarning());
         $this->assertNull($model->getReferralRecipientAddress());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $model->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testToModel7()
@@ -162,10 +168,9 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
             'id' => 1,
             'recipient_address' => 'addr1',
             'earning' => 100,
-            'created_at' => new \DateTime(),
+            'created_at' => '2016-01-01 10:00:00',
             'referral_recipient_address' => 'addr2',
             'referral_earning' => 10
-
         );
         $sut = new PayoutMapper();
         $model = $sut->toModel($data);
@@ -176,6 +181,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('addr2', $model->getReferralRecipientAddress());
         $this->assertNull($model->getIp());
         $this->assertInstanceOf('DateTime', $model->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $model->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
     public function testToArray1()
@@ -187,7 +193,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $payout->setEarning(100);
         $payout->setReferralEarning(10);
         $payout->setReferralRecipientAddress('addr2');
-        $payout->setCreatedAt(new \DateTime());
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $sut = new PayoutMapper();
         $data = $sut->toArray($payout);
@@ -197,7 +203,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $data['earning']);
         $this->assertSame(10, $data['referral_earning']);
         $this->assertSame('addr2', $data['referral_recipient_address']);
-        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertSame('2016-01-01 10:00:00', $data['created_at']);
     }
 
     public function testToArray2()
@@ -208,7 +214,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $payout->setEarning(100);
         $payout->setReferralEarning(10);
         $payout->setReferralRecipientAddress('addr2');
-        $payout->setCreatedAt(new \DateTime());
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $sut = new PayoutMapper();
         $data = $sut->toArray($payout);
@@ -218,7 +224,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $data['earning']);
         $this->assertSame(10, $data['referral_earning']);
         $this->assertSame('addr2', $data['referral_recipient_address']);
-        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertSame('2016-01-01 10:00:00', $data['created_at']);
     }
 
     public function testToArray3()
@@ -229,7 +235,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $payout->setEarning(100);
         $payout->setReferralEarning(10);
         $payout->setReferralRecipientAddress('addr2');
-        $payout->setCreatedAt(new \DateTime());
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $sut = new PayoutMapper();
         $data = $sut->toArray($payout);
@@ -239,7 +245,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $data['earning']);
         $this->assertSame(10, $data['referral_earning']);
         $this->assertSame('addr2', $data['referral_recipient_address']);
-        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertSame('2016-01-01 10:00:00', $data['created_at']);
     }
 
     public function testToArray4()
@@ -250,7 +256,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $payout->setRecipientAddress('addr1');
         $payout->setReferralEarning(10);
         $payout->setReferralRecipientAddress('addr2');
-        $payout->setCreatedAt(new \DateTime());
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $sut = new PayoutMapper();
         $data = $sut->toArray($payout);
@@ -260,7 +266,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(0, $data['earning']);
         $this->assertSame(10, $data['referral_earning']);
         $this->assertSame('addr2', $data['referral_recipient_address']);
-        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertSame('2016-01-01 10:00:00', $data['created_at']);
     }
 
     public function testToArray5()
@@ -271,7 +277,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $payout->setRecipientAddress('addr1');
         $payout->setEarning(100);
         $payout->setReferralRecipientAddress('addr2');
-        $payout->setCreatedAt(new \DateTime());
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $sut = new PayoutMapper();
         $data = $sut->toArray($payout);
@@ -281,7 +287,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $data['earning']);
         $this->assertSame(0, $data['referral_earning']);
         $this->assertSame('addr2', $data['referral_recipient_address']);
-        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertSame('2016-01-01 10:00:00', $data['created_at']);
     }
 
     public function testToArray6()
@@ -292,7 +298,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $payout->setRecipientAddress('addr1');
         $payout->setEarning(100);
         $payout->setReferralEarning(10);
-        $payout->setCreatedAt(new \DateTime());
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $sut = new PayoutMapper();
         $data = $sut->toArray($payout);
@@ -302,7 +308,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $data['earning']);
         $this->assertSame(10, $data['referral_earning']);
         $this->assertNull($data['referral_recipient_address']);
-        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertSame('2016-01-01 10:00:00', $data['created_at']);
     }
 
     public function testToArray7()
@@ -323,7 +329,6 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $data['earning']);
         $this->assertSame(10, $data['referral_earning']);
         $this->assertSame('addr2', $data['referral_recipient_address']);
-        $this->assertInstanceOf('DateTime', $data['created_at']);
     }
 
     public function testToArray8()
@@ -334,7 +339,7 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $payout->setEarning(100);
         $payout->setReferralEarning(10);
         $payout->setReferralRecipientAddress('addr2');
-        $payout->setCreatedAt(new \DateTime());
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $sut = new PayoutMapper();
         $data = $sut->toArray($payout);
@@ -344,6 +349,6 @@ class PayoutMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $data['earning']);
         $this->assertSame(10, $data['referral_earning']);
         $this->assertSame('addr2', $data['referral_recipient_address']);
-        $this->assertInstanceOf('DateTime', $data['created_at']);
+        $this->assertSame('2016-01-01 10:00:00', $data['created_at']);
     }
 }

@@ -14,7 +14,7 @@ class PayoutMapper
         $data['referral_recipient_address'] = $model->getReferralRecipientAddress();
         $data['earning'] = $model->getEarning();
         $data['referral_earning'] = $model->getReferralEarning();
-        $data['created_at'] = $model->getCreatedAt();
+        $data['created_at'] = $model->getCreatedAt()->format('Y-m-d H:i:s');
         return $data;
     }
 
@@ -34,7 +34,9 @@ class PayoutMapper
         if (array_key_exists('referral_earning', $data))
             $payout->setReferralEarning($data['referral_earning']);
         if (array_key_exists('created_at', $data))
-            $payout->setCreatedAt($data['created_at']);
+            $payout->setCreatedAt(new \DateTime($data['created_at']));
+        else
+            $payout->setCreatedAt(new \DateTime());
         return $payout;
     }
 }
