@@ -13,6 +13,9 @@ class RewardProvider implements RewardProviderInterface
         $this->rewards = $rewardMapper->stringToArray($rewards);
     }
 
+    /**
+     * @return int
+     */
     public function getReward()
     {
         $total = $this->getTotalProbability();
@@ -41,11 +44,17 @@ class RewardProvider implements RewardProviderInterface
         return $reward;
     }
 
+    /**
+     * @return array
+     */
     public function getAsArray()
     {
         return $this->rewards;
     }
 
+    /**
+     * @return float|int
+     */
     public function getAverage()
     {
         $totalProbability = $this->getTotalProbability();
@@ -59,9 +68,13 @@ class RewardProvider implements RewardProviderInterface
                 $average += $r['amount'] * $r['probability'];
             }
         }
+
         return round($average / $totalProbability, 2);
     }
 
+    /**
+     * @return int
+     */
     public function getMax()
     {
         $max = 0;
@@ -74,11 +87,13 @@ class RewardProvider implements RewardProviderInterface
         return $max;
     }
 
+    /**
+     * @return int
+     */
     private function getTotalProbability()
     {
         $sum = 0;
-
-        $self = $this;
+        
         foreach ($this->rewards as $r) {
             if ($this->isValid($r)) {
                 $sum += $r['probability'];
@@ -88,6 +103,9 @@ class RewardProvider implements RewardProviderInterface
         return $sum;
     }
 
+    /**
+     * @return array
+     */
     public function getNormalized()
     {
         $total = $this->getTotalProbability();
@@ -111,6 +129,10 @@ class RewardProvider implements RewardProviderInterface
         return $rewards;
     }
 
+    /**
+     * @param $reward
+     * @return bool
+     */
     private function isValid($reward)
     {
         return $reward &&
