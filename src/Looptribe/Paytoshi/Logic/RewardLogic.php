@@ -82,13 +82,13 @@ class RewardLogic
         }
         catch (CaptchaProviderException $e) {
             $result->setSeverity(RewardLogicResult::SEVERITY_DANGER);
-            $result->setMessage($e->getMessage());
+            $result->setError($e->getMessage());
             return $result;
         }
 
         if (!$captchaResponse->isSuccessful()) {
             $result->setSeverity(RewardLogicResult::SEVERITY_WARNING);
-            $result->setMessage($captchaResponse->getMessage());
+            $result->setError($captchaResponse->getMessage());
             return $result;
         }
 
@@ -107,13 +107,13 @@ class RewardLogic
                 $interval = $this->intervalEnforcer->check($ip, $recipient);
             } catch (\Exception $e) {
                 $result->setSeverity(RewardLogicResult::SEVERITY_DANGER);
-                $result->setMessage($e->getMessage());
+                $result->setError($e->getMessage());
                 throw $e;
             }
 
             if ($interval) {
                 $result->setSeverity(RewardLogicResult::SEVERITY_WARNING);
-                $result->setMessage(sprintf('You can get a reward again in %s.', $interval->format('%Hh, %Im, %Ss')));
+                $result->setError(sprintf('You can get a reward again in %s.', $interval->format('%Hh, %Im, %Ss')));
                 throw new Exception('Waiting interval not satisfied');
             }
 
@@ -130,8 +130,14 @@ class RewardLogic
                 $response = $this->api->send($this->apikey, $payout->getRecipientAddress(), $payout->getEarning(), $ip);
             } catch (\Exception $e) {
                 $result->setSeverity(RewardLogicResult::SEVERITY_DANGER);
-                $result->setMessage(sprintf('Unable to create reward: %s', $e->getMessage()));
+                $result->setError(sprintf('Unable to create reward: %s', $e->getMessage()));
                 throw $e;
+            }
+
+            if (!$response->isSuccessful()) {
+                $result->setSeverity(RewardLogicResult::SEVERITY_DANGER);
+                $result->setError(sprintf('Unable to create reward: %s', $response->getError()));
+                throw new Exception('Reward creation failed');
             }
 
             $this->payoutRepository->insert($payout);
@@ -139,7 +145,6 @@ class RewardLogic
             $this->connection->commit();
 
             $result->setSuccessful(true);
-            $result->setSeverity(RewardLogicResult::SEVERITY_SUCCESS);
             $result->setResponse($response);
         } catch (\Exception $e) {
             $this->connection->rollBack();
