@@ -6,6 +6,7 @@ use Looptribe\Paytoshi\Logic\RewardProvider;
 
 class RewardProviderTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $rewardMapper;
 
     public function setUp()
@@ -119,6 +120,21 @@ class RewardProviderTest extends \PHPUnit_Framework_TestCase
         $sut = new RewardProvider($this->rewardMapper, '-10*5');
         $reward = $sut->getReward();
         $this->assertEquals(0, $reward);
+    }
+
+    public function testGetReward7()
+    {
+        $rewards = array(
+            array('probability' => 5, 'amount' => -10),
+            array('probability' => 15, 'amount' => 20)
+        );
+        $this->rewardMapper->expects($this->once())
+            ->method('stringToArray')
+            ->with('-10*5,20*15')
+            ->willReturn($rewards);
+        $sut = new RewardProvider($this->rewardMapper, '-10*5,20*15');
+        $reward = $sut->getReward();
+        $this->assertEquals(20, $reward);
     }
 
     public function testGetAverage1()
