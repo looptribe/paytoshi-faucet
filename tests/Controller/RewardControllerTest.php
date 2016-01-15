@@ -114,6 +114,10 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testAction4()
     {
+        $result = $this->getMockBuilder('Looptribe\Paytoshi\Logic\RewardLogicResult')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $this->request->method('get')
             ->willReturnCallback(function ($param) {
                 switch($param) {
@@ -142,7 +146,24 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->rewardLogic->expects($this->once())
             ->method('create')
-            ->with('addr1', '10.10.10.10', null, 'response', null);
+            ->with('addr1', '10.10.10.10', null, 'response', null)
+            ->willReturn($result);
+
+        $result->expects($this->once())
+            ->method('isSuccessful')
+            ->willReturn(false);
+
+        $result->expects($this->once())
+            ->method('getSeverity')
+            ->willReturn('danger');
+
+        $result->expects($this->once())
+            ->method('getError')
+            ->willReturn('Error');
+
+        $this->flashBag->expects($this->once())
+            ->method('add')
+            ->with('danger', 'Error');
 
         $sut = new RewardController($this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
         $response = $sut->action($this->request);
@@ -152,6 +173,10 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testAction5()
     {
+        $result = $this->getMockBuilder('Looptribe\Paytoshi\Logic\RewardLogicResult')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $this->request->method('get')
             ->willReturnCallback(function ($param) {
                 switch($param) {
@@ -181,7 +206,16 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->rewardLogic->expects($this->once())
             ->method('create')
-            ->with('addr1', '10.10.10.10', 'challenge', 'response', null);
+            ->with('addr1', '10.10.10.10', 'challenge', 'response', null)
+            ->willReturn($result);
+
+        $result->expects($this->once())
+            ->method('isSuccessful')
+            ->willReturn(true);
+
+        $this->flashBag->expects($this->once())
+            ->method('add')
+            ->with('success', 'Success');
 
         $sut = new RewardController($this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
         $response = $sut->action($this->request);

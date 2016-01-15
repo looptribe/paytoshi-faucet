@@ -42,7 +42,6 @@ class RewardController
         $address = $request->get('address');
         if (empty($address)) {
             $this->flashBag->add('warning', 'Missing address');
-
             return new RedirectResponse($this->urlGenerator->generate('homepage'));
         }
 
@@ -51,16 +50,15 @@ class RewardController
             $challenge = $request->get($this->captchaProvider->getChallengeName());
             if (empty($challenge)) {
                 $this->flashBag->add('warning', 'Missing captcha');
-
                 return new RedirectResponse($this->urlGenerator->generate('homepage'));
             }
         }
 
+        $response = null;
         if ($this->captchaProvider->getResponseName()) {
             $response = $request->get($this->captchaProvider->getResponseName());
             if (empty($response)) {
                 $this->flashBag->add('warning', 'Missing captcha');
-
                 return new RedirectResponse($this->urlGenerator->generate('homepage'));
             }
         }
@@ -69,7 +67,13 @@ class RewardController
         $ip = $request->getClientIp();
         $referralAddress = $request->get('r');
 
-        $this->rewardLogic->create($address, $ip, $challenge, $response, $referralAddress);
+        $result = $this->rewardLogic->create($address, $ip, $challenge, $response, $referralAddress);
+        if ($result->isSuccessful()) {
+            $this->flashBag->add('success', 'Success');
+        }
+        else {
+            $this->flashBag->add($result->getSeverity(), $result->getError());
+        }
 
         return new RedirectResponse($this->urlGenerator->generate('homepage'));
     }
