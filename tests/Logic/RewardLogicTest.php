@@ -13,7 +13,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $recipientRepository;
     /** @var \PHPUnit_Framework_MockObject_MockObject */
-    private $payoutRepository;
+    private $resultRepository;
     /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $rewardProvider;
     /** @var \PHPUnit_Framework_MockObject_MockObject */
@@ -64,33 +64,12 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->method('commit');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
-        $this->setExpectedException('\Exception', 'Captcha error: Missing captcha response');
-        $payout = $sut->create($address, $ip, $challenge, $response);
-    }
-
-    public function testCreate2()
-    {
-        $address = 'addr1';
-        $ip = '10.10.10.10';
-        $challenge = 'challenge';
-        $response = 'response';
-
-        $this->captchaProvider->expects($this->once())
-            ->method('checkAnswer')
-            ->with(array(
-                'challenge' => $challenge,
-                'response' => $response,
-                'ip' => $ip
-            ))
-            ->willThrowException(new CaptchaProviderException('Failed to send captcha'));
-
-        $this->connection
-            ->expects($this->never())
-            ->method('commit');
-
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
-        $this->setExpectedException('\Exception', 'Captcha error: Failed to send captcha');
-        $payout = $sut->create($address, $ip, $challenge, $response);
+        $result = $sut->create($address, $ip, $challenge, $response);
+        $this->assertInstanceOf('Looptribe\Paytoshi\Logic\RewardLogicResult', $result);
+        $this->assertSame(false, $result->isSuccessful());
+        $this->assertSame('danger', $result->getSeverity());
+        $this->assertSame('Missing captcha response', $result->getMessage());
+        $this->assertSame(null, $result->getResponse());
     }
 
     public function testCreate3()
@@ -126,8 +105,11 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->method('commit');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
-        $this->setExpectedException('\Exception', 'Invalid Captcha');
-        $payout = $sut->create($address, $ip, $challenge, $response);
+        $result = $sut->create($address, $ip, $challenge, $response);$this->assertInstanceOf('Looptribe\Paytoshi\Logic\RewardLogicResult', $result);
+        $this->assertSame(false, $result->isSuccessful());
+        $this->assertSame('warning', $result->getSeverity());
+        $this->assertSame('Invalid Captcha', $result->getMessage());
+        $this->assertSame(null, $result->getResponse());
     }
 
     public function testCreate4()
@@ -180,8 +162,11 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->method('commit');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
-        $this->setExpectedException('\Exception', 'You can get a reward again in');
-        $payout = $sut->create($address, $ip, $challenge, $response);
+        $result = $sut->create($address, $ip, $challenge, $response);
+        $this->assertSame(false, $result->isSuccessful());
+        $this->assertSame('warning', $result->getSeverity());
+        $this->assertSame('You can get a reward again in 00h, 00m, 60s.', $result->getMessage());
+        $this->assertSame(null, $result->getResponse());
     }
 
     public function testCreate5()
@@ -235,8 +220,11 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->method('commit');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
-        $this->setExpectedException('\Exception', 'Invalid waiting interval');
-        $payout = $sut->create($address, $ip, $challenge, $response);
+        $result = $sut->create($address, $ip, $challenge, $response);
+        $this->assertSame(false, $result->isSuccessful());
+        $this->assertSame('danger', $result->getSeverity());
+        $this->assertSame('Invalid waiting interval', $result->getMessage());
+        $this->assertSame(null, $result->getResponse());
     }
 
     public function testCreate6()
@@ -299,8 +287,11 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->method('commit');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
-        $this->setExpectedException('\Exception', 'Unable to create reward: message');
-        $payout = $sut->create($address, $ip, $challenge, $response);
+        $result = $sut->create($address, $ip, $challenge, $response);
+        $this->assertSame(false, $result->isSuccessful());
+        $this->assertSame('danger', $result->getSeverity());
+        $this->assertSame('Unable to create reward: message', $result->getMessage());
+        $this->assertSame(null, $result->getResponse());
     }
 
     public function testCreate7()
@@ -311,6 +302,10 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
         $response = 'response';
 
         $captchaResponse = $this->getMockBuilder('Looptribe\Paytoshi\Captcha\CaptchaProviderResponse')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $response = $this->getMockBuilder('Looptribe\Paytoshi\Api\Response\FaucetSendResponse')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -351,7 +346,8 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
 
         $this->api->expects($this->once())
             ->method('send')
-            ->with($this->apikey, $address, 10, $ip);
+            ->with($this->apikey, $address, 10, $ip)
+            ->willReturn($response);
 
         $this->payoutRepository->expects($this->once())
             ->method('insert');
@@ -365,9 +361,10 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->method('commit');
 
         $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
-        $payout = $sut->create($address, $ip, $challenge, $response);
-        $this->assertSame($ip, $payout->getIp());
-        $this->assertSame($address, $payout->getRecipientAddress());
-        $this->assertSame(10, $payout->getEarning());
+        $result = $sut->create($address, $ip, $challenge, $response);
+        $this->assertSame(true, $result->isSuccessful());
+        $this->assertSame('success', $result->getSeverity());
+        $this->assertSame(null, $result->getMessage());
+        $this->assertInstanceOf('Looptribe\Paytoshi\Api\Response\FaucetSendResponse', $result->getResponse());
     }
 }

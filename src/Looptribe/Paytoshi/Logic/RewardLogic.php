@@ -11,6 +11,7 @@ use Looptribe\Paytoshi\Model\Payout;
 use Looptribe\Paytoshi\Model\PayoutRepository;
 use Looptribe\Paytoshi\Model\Recipient;
 use Looptribe\Paytoshi\Model\RecipientRepository;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 class RewardLogic
 {
@@ -64,12 +65,13 @@ class RewardLogic
      * @param string $challenge
      * @param string $response
      * @param string|null $referralAddress
-     * @return Payout
-     * @throws ConnectionException
-     * @throws \Exception
+     * @return RewardLogicResult
      */
     public function create($address, $ip, $challenge, $response, $referralAddress = null)
     {
+        $result = new RewardLogicResult();
+        $result->setSuccessful(false);
+
         try {
             $options = array (
                 'challenge' => $challenge,
@@ -79,13 +81,15 @@ class RewardLogic
             $captchaResponse = $this->captchaProvider->checkAnswer($options);
         }
         catch (CaptchaProviderException $e) {
-            throw new \Exception(
-                sprintf('Captcha error: %s', $e->getMessage())
-            );
+            $result->setSeverity(RewardLogicResult::SEVERITY_DANGER);
+            $result->setMessage($e->getMessage());
+            return $result;
         }
 
         if (!$captchaResponse->isSuccessful()) {
-            throw new \Exception($captchaResponse->getMessage());
+            $result->setSeverity(RewardLogicResult::SEVERITY_WARNING);
+            $result->setMessage($captchaResponse->getMessage());
+            return $result;
         }
 
         $this->connection->beginTransaction();
@@ -98,17 +102,19 @@ class RewardLogic
             }
 
             // Waiting interval check
+            $interval = null;
             try {
                 $interval = $this->intervalEnforcer->check($ip, $recipient);
-            }
-            catch (\Exception $e) {
-                throw new \Exception('Invalid waiting interval');
+            } catch (\Exception $e) {
+                $result->setSeverity(RewardLogicResult::SEVERITY_DANGER);
+                $result->setMessage($e->getMessage());
+                throw $e;
             }
 
             if ($interval) {
-                throw new \Exception(
-                    sprintf('You can get a reward again in %s.', $interval->format('%Hh, %Im, %Ss'))
-                );
+                $result->setSeverity(RewardLogicResult::SEVERITY_WARNING);
+                $result->setMessage(sprintf('You can get a reward again in %s.', $interval->format('%Hh, %Im, %Ss')));
+                throw new Exception('Waiting interval not satisfied');
             }
 
             // Reward generation
@@ -121,22 +127,24 @@ class RewardLogic
             $payout->setEarning($earning);
 
             try {
-                $this->api->send($this->apikey, $payout->getRecipientAddress(), $payout->getEarning(), $ip);
-            }
-            catch (\Exception $e) {
-                throw new \Exception(
-                    sprintf('Unable to create reward: %s', $e->getMessage())
-                );
+                $response = $this->api->send($this->apikey, $payout->getRecipientAddress(), $payout->getEarning(), $ip);
+            } catch (\Exception $e) {
+                $result->setSeverity(RewardLogicResult::SEVERITY_DANGER);
+                $result->setMessage(sprintf('Unable to create reward: %s', $e->getMessage()));
+                throw $e;
             }
 
             $this->payoutRepository->insert($payout);
 
             $this->connection->commit();
-            return $payout;
 
+            $result->setSuccessful(true);
+            $result->setSeverity(RewardLogicResult::SEVERITY_SUCCESS);
+            $result->setResponse($response);
         } catch (\Exception $e) {
             $this->connection->rollBack();
-            throw $e;
         }
+
+        return $result;
     }
 }
