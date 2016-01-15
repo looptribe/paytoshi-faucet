@@ -31,7 +31,7 @@ class IntervalEnforcerTest extends \PHPUnit_Framework_TestCase
         $interval = 3600;
 
         $payout = new Payout();
-        $payout->setCreatedAt(new \DateTime('first day of this year'));
+        $payout->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
 
         $payoutRepository->method('findLastByRecipientAndIp')
             ->willReturn($payout);
@@ -60,6 +60,7 @@ class IntervalEnforcerTest extends \PHPUnit_Framework_TestCase
         $sut = new IntervalEnforcer($payoutRepository, $interval);
         $result = $sut->check('10.10.10.10', new Recipient());
         $this->assertInstanceOf('DateInterval', $result);
+        $this->assertSame(50, $result->i);
     }
 
     public function testInterval4()
@@ -68,9 +69,9 @@ class IntervalEnforcerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $interval = -3600;
-        $this->setExpectedException('Exception', 'Invalid waiting interval');
 
         $sut = new IntervalEnforcer($payoutRepository, $interval);
+        $this->setExpectedException('Exception', 'Invalid waiting interval');
         $result = $sut->check('10.10.10.10', new Recipient());
     }
 

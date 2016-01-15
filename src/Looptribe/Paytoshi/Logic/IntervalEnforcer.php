@@ -32,7 +32,6 @@ class IntervalEnforcer implements IntervalEnforcerInterface
         }
 
         $lastPayout = $this->payoutRepository->findLastByRecipientAndIp($ip, $recipient);
-        $now = new \DateTime();
         if (!$lastPayout) {
             return null;
         }
