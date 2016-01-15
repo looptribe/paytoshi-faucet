@@ -6,7 +6,6 @@ use Looptribe\Paytoshi\Api\Response\FaucetSendResponse;
 
 class RewardLogicResult
 {
-    const SEVERITY_SUCCESS = 'success';
     const SEVERITY_WARNING = 'warning';
     const SEVERITY_DANGER = 'danger';
 
@@ -15,7 +14,7 @@ class RewardLogicResult
     /** @var string */
     private $severity;
     /** @var string */
-    private $message;
+    private $error;
     /** @var FaucetSendResponse */
     private $response;
 
@@ -65,18 +64,18 @@ class RewardLogicResult
     /**
      * @return string
      */
-    public function getMessage()
+    public function getError()
     {
-        return $this->message;
+        return $this->error;
     }
 
     /**
-     * @param string $message
+     * @param string $error
      * @return RewardLogicResult
      */
-    public function setMessage($message)
+    public function setError($error)
     {
-        $this->message = $message;
+        $this->error = $error;
 
         return $this;
     }
