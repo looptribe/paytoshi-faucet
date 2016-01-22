@@ -84,7 +84,5 @@ class IndexTest extends WebTestCase
         $client = $this->createClient();
         $this->setExpectedException('Symfony\Component\Yaml\Exception\ParseException', 'Unable to parse "vfs://config/config.yml" as the file is not readable.');
         $crawler = $client->request('GET', '/');
-
-        echo $client->getResponse()->getContent();
     }
 }
