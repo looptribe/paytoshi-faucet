@@ -7,6 +7,10 @@ use Looptribe\Paytoshi\Controller\RewardController;
 class RewardControllerTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \PHPUnit_Framework_MockObject_MockObject */
+    private $templating;
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    private $themeProvider;
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $request;
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $settingsRepository;
@@ -21,6 +25,8 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->templating = $this->getMock('Looptribe\Paytoshi\Templating\TemplatingEngineInterface');
+        $this->themeProvider = $this->getMock('Looptribe\Paytoshi\Templating\ThemeProviderInterface');
         $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
             ->disableOriginalConstructor()
             ->getMock();
@@ -46,7 +52,7 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
             ->method('add')
             ->with('warning', 'Missing address');
 
-        $sut = new RewardController($this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
+        $sut = new RewardController($this->templating, $this->themeProvider, $this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
         $response = $sut->action($this->request);
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertEquals('/', $response->getTargetUrl());
@@ -74,7 +80,7 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
             ->method('add')
             ->with('warning', 'Missing captcha');
 
-        $sut = new RewardController($this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
+        $sut = new RewardController($this->templating, $this->themeProvider, $this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
         $response = $sut->action($this->request);
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertEquals('/', $response->getTargetUrl());
@@ -106,7 +112,7 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
             ->method('add')
             ->with('warning', 'Missing captcha');
 
-        $sut = new RewardController($this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
+        $sut = new RewardController($this->templating, $this->themeProvider, $this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
         $response = $sut->action($this->request);
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertEquals('/', $response->getTargetUrl());
@@ -165,7 +171,7 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
             ->method('add')
             ->with('danger', 'Error');
 
-        $sut = new RewardController($this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
+        $sut = new RewardController($this->templating, $this->themeProvider, $this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
         $response = $sut->action($this->request);
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertEquals('/', $response->getTargetUrl());
@@ -174,6 +180,10 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
     public function testAction5()
     {
         $result = $this->getMockBuilder('Looptribe\Paytoshi\Logic\RewardLogicResult')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $ApiResponse = $this->getMockBuilder('Looptribe\Paytoshi\Api\Response\FaucetSendResponse')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -213,11 +223,33 @@ class RewardControllerTest extends \PHPUnit_Framework_TestCase
             ->method('isSuccessful')
             ->willReturn(true);
 
+        $result->expects($this->exactly(2))
+            ->method('getResponse')
+            ->willReturn($ApiResponse);
+
+        $ApiResponse->expects($this->once())
+            ->method('getAmount')
+            ->willReturn(10);
+
+        $ApiResponse->expects($this->once())
+            ->method('getRecipient')
+            ->willReturn('addr1');
+
+        $this->themeProvider->expects($this->once())
+            ->method('getTemplate')
+            ->with('balance.html.twig')
+            ->willReturn('template');
+
+        $this->templating->expects($this->once())
+            ->method('renderView')
+            ->with('template', array('amount' => 10, 'address' => 'addr1'))
+            ->willReturn('balance_template');
+
         $this->flashBag->expects($this->once())
             ->method('add')
-            ->with('success', 'Success');
+            ->with('success', 'balance_template');
 
-        $sut = new RewardController($this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
+        $sut = new RewardController($this->templating, $this->themeProvider, $this->settingsRepository, $this->captchaProvider, $this->urlGenerator, $this->rewardLogic, $this->flashBag);
         $response = $sut->action($this->request);
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertEquals('/', $response->getTargetUrl());
