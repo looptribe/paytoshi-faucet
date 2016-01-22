@@ -136,10 +136,6 @@ class Application extends \Silex\Application
             return new PayoutMapper();
         });
 
-        $app['mapper.recipient'] = $app->share(function () use ($app) {
-            return new RecipientMapper();
-        });
-
         $app['mapper.reward'] = $app->share(function () use ($app) {
             return new RewardMapper();
         });
@@ -148,16 +144,8 @@ class Application extends \Silex\Application
             return new PayoutQueryBuilder($app['db']);
         });
 
-        $app['querybuilder.recipient'] = $app->share(function () use ($app) {
-            return new RecipientQueryBuilder($app['db']);
-        });
-
         $app['repository.payout'] = $app->share(function () use ($app) {
             return new PayoutRepository($app['db'], $app['mapper.payout'], $app['querybuilder.payout']);
-        });
-
-        $app['repository.recipient'] = $app->share(function () use ($app) {
-            return new RecipientRepository($app['db'], $app['mapper.recipient'], $app['querybuilder.recipient']);
         });
 
         $app['repository.settings'] = $app->share(function () use ($app) {
@@ -181,7 +169,7 @@ class Application extends \Silex\Application
         });
 
         $app['logic.reward'] = $app->share(function () use ($app) {
-            return new RewardLogic($app['db'], $app['repository.recipient'], $app['repository.payout'], $app['logic.reward_provider'], $app['api'], $app['logic.interval_enforcer'], $app['captcha.provider'], $app['repository.settings']->get('api_key'));
+            return new RewardLogic($app['db'], $app['repository.payout'], $app['logic.reward_provider'], $app['api'], $app['logic.interval_enforcer'], $app['captcha.provider'], $app['repository.settings']->get('api_key'));
         });
 
         $app['logic.reward_provider'] = $app->share(function () use ($app) {
