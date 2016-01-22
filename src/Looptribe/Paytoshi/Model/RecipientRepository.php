@@ -57,4 +57,17 @@ class RecipientRepository
         $recipient->setId($this->connection->lastInsertId());
         return $recipient;
     }
+
+    public function update(Recipient $recipient)
+    {
+        if (!$recipient || !$recipient->getAddress())
+            throw new \Exception('Invalid Recipient');
+
+        $qb = $this->queryBuilder->getUpdateQuery($recipient);
+        $result = $qb->execute();
+        if (!$result)
+            return null;
+
+        return $recipient;
+    }
 }

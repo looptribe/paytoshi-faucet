@@ -136,10 +136,6 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
             ->with($recipient)
             ->willReturn($qb);
 
-        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $qb->method('execute')
             ->willReturn(1);
 
@@ -176,10 +172,6 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
             ->with($recipient)
             ->willReturn($qb);
 
-        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $qb->method('execute')
             ->willReturn(0);
 
@@ -199,6 +191,80 @@ class RecipientRepositoryTest extends \PHPUnit_Framework_TestCase
         $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
         $this->setExpectedException('\Exception', 'Invalid Recipient');
         $result = $sut->insert($recipient);
+    }
+
+    public function testUpdate1()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+        $recipient->setUpdatedAt(new \DateTime('2016-01-01 10:00:00'));
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->queryBuilder->method('getUpdateQuery')
+            ->with($recipient)
+            ->willReturn($qb);
+
+        $qb->method('execute')
+            ->willReturn(1);
+
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
+        $result = $sut->update($recipient);
+        $this->assertInstanceOf('Looptribe\Paytoshi\Model\Recipient', $result);
+        $this->assertSame(1, $result->getId());
+        $this->assertSame('addr1', $result->getAddress());
+        $this->assertSame(100, $result->getEarning());
+        $this->assertSame(10, $result->getReferralEarning());
+        $this->assertInstanceOf('DateTime', $result->getCreatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $result->getCreatedAt()->format('Y-m-d H:i:s'));
+        $this->assertInstanceOf('DateTime', $result->getUpdatedAt());
+        $this->assertSame('2016-01-01 10:00:00', $result->getUpdatedAt()->format('Y-m-d H:i:s'));
+    }
+
+    public function testUpdate2()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setAddress('addr1');
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+        $recipient->setUpdatedAt(new \DateTime('2016-01-01 10:00:00'));
+
+        $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->queryBuilder->method('getUpdateQuery')
+            ->with($recipient)
+            ->willReturn($qb);
+
+        $qb->method('execute')
+            ->willReturn(0);
+
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
+        $result = $sut->update($recipient);
+        $this->assertNull($result);
+    }
+
+    public function testUpdate3()
+    {
+        $recipient = new Recipient();
+        $recipient->setId(1);
+        $recipient->setEarning(100);
+        $recipient->setReferralEarning(10);
+        $recipient->setCreatedAt(new \DateTime('2016-01-01 10:00:00'));
+        $recipient->setUpdatedAt(new \DateTime('2016-01-01 10:00:00'));
+
+        $sut = new RecipientRepository($this->connection, $this->mapper, $this->queryBuilder);
+        $this->setExpectedException('\Exception', 'Invalid Recipient');
+        $result = $sut->update($recipient);
     }
 
 }
