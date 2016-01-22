@@ -6,6 +6,7 @@ use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Templating\TemplatingEngineInterface;
 use Looptribe\Paytoshi\Templating\ThemeProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 class IndexController
 {
@@ -18,18 +19,23 @@ class IndexController
     /** @var SettingsRepository */
     private $settingsRepository;
 
-    public function __construct(TemplatingEngineInterface $templating, ThemeProviderInterface $themeProvider, SettingsRepository $settingsRepository)
+    /** @var FlashBagInterface */
+    private $flashBag;
+
+    public function __construct(TemplatingEngineInterface $templating, ThemeProviderInterface $themeProvider, SettingsRepository $settingsRepository, FlashBagInterface $flashBag)
     {
         $this->templating = $templating;
         $this->themeProvider = $themeProvider;
         $this->settingsRepository = $settingsRepository;
+        $this->flashBag = $flashBag;
     }
 
     public function action(Request $request)
     {
         $data = array(
             'referral' => $request->get('r'),
-            'address' => $request->getSession()->get('address')
+            'address' => $request->getSession()->get('address'),
+            'flashbag' => $this->flashBag
         );
         $data = array_merge($data, $this->getTemplateData());
         return $this->templating->render($this->themeProvider->getTemplate('index.html.twig'), $data);

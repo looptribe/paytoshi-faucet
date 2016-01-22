@@ -1,29 +1,10 @@
-{% if flash is defined %}
-    {% if flash['info'] %}
-        <div class="alert alert-info" role="alert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>{{ flash['info']|raw }}</strong>
-        </div>
-    {% endif %}
-
-    {% if flash['success'] %}
-        <div class="alert alert-success" role="alert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>{{ flash['success']|raw }}</strong>
-        </div>
-    {% endif %}
-
-    {% if flash['warning'] %}
-        <div class="alert alert-warning" role="alert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>{{ flash['warning']|raw }}</strong>
-        </div>
-    {% endif %}
-
-    {% if flash['error'] %}
-        <div class="alert alert-danger" role="alert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>{{ flash['error']|raw }}</strong>
-        </div>
-    {% endif %}
+{% if flashbag.peekAll()|length > 0 %}
+    {% for type, messages in flashbag.all() %}
+        {% for idx, message in messages %}
+            <div class="alert alert-{{ type }}" role="alert">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{{ message|raw|trim }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
 {% endif %}

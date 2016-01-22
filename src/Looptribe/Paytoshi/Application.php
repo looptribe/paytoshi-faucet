@@ -57,6 +57,10 @@ class Application extends \Silex\Application
         $app->register(new Provider\SessionServiceProvider());
         $app->register(new Provider\SecurityServiceProvider());
 
+        $app['flashbag'] = $app->share(function () use($app) {
+            return $app['session']->getFlashBag();
+        });
+
         $app['config'] = $app->share(function () use ($app) {
             return Application::loadConfig($app['configPath']);
         });
@@ -150,10 +154,10 @@ class Application extends \Silex\Application
         });
 
         $app['controller.index'] = $app->share(function () use ($app) {
-            return new Controller\IndexController($app['templating'], $app['themeProvider'], $app['repository.settings']);
+            return new Controller\IndexController($app['templating'], $app['themeProvider'], $app['repository.settings'], $app['flashbag']);
         });
         $app['controller.reward'] = $app->share(function () use ($app) {
-            return new Controller\RewardController($app['repository.settings'], $app['captcha.provider'], $app['url_generator'], $app['logic.reward'], $app['session']->getFlashBag());
+            return new Controller\RewardController($app['repository.settings'], $app['captcha.provider'], $app['url_generator'], $app['logic.reward'], $app['flashbag']);
         });
         $app['controller.faq'] = $app->share(function () use ($app) {
             return new Controller\FaqController($app['templating'], $app['themeProvider'], $app['repository.settings']);
