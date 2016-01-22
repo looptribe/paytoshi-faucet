@@ -3,23 +3,17 @@
 namespace Looptribe\Paytoshi\Logic;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\ConnectionException;
 use Looptribe\Paytoshi\Api\PaytoshiApiInterface;
 use Looptribe\Paytoshi\Captcha\CaptchaProviderException;
 use Looptribe\Paytoshi\Captcha\CaptchaProviderInterface;
 use Looptribe\Paytoshi\Model\Payout;
 use Looptribe\Paytoshi\Model\PayoutRepository;
-use Looptribe\Paytoshi\Model\Recipient;
-use Looptribe\Paytoshi\Model\RecipientRepository;
 use Symfony\Component\Security\Acl\Exception\Exception;
 
 class RewardLogic
 {
     /** @var Connection */
     private $connection;
-
-    /** @var RecipientRepository */
-    private $recipientRepository;
 
     /** @var RewardProviderInterface */
     private $rewardProvider;
@@ -41,7 +35,6 @@ class RewardLogic
 
     public function __construct(
         Connection $connection,
-        RecipientRepository $recipientRepository,
         PayoutRepository $payoutRepository,
         RewardProviderInterface $rewardProvider,
         PaytoshiApiInterface $api,
@@ -50,7 +43,6 @@ class RewardLogic
         $apikey
     ) {
         $this->connection = $connection;
-        $this->recipientRepository = $recipientRepository;
         $this->rewardProvider = $rewardProvider;
         $this->api = $api;
         $this->intervalEnforcer = $intervalEnforcer;
@@ -94,17 +86,10 @@ class RewardLogic
 
         $this->connection->beginTransaction();
         try {
-
-            $recipient = $this->recipientRepository->findOneByAddress($address);
-            if (!$recipient) {
-                $recipient = new Recipient();
-                $recipient->setAddress($address);
-            }
-
             // Waiting interval check
             $interval = null;
             try {
-                $interval = $this->intervalEnforcer->check($ip, $recipient);
+                $interval = $this->intervalEnforcer->check($ip, $address);
             } catch (\Exception $e) {
                 $result->setSeverity(RewardLogicResult::SEVERITY_DANGER);
                 $result->setError($e->getMessage());
@@ -123,7 +108,7 @@ class RewardLogic
             // Payout creation
             $payout = new Payout();
             $payout->setIp($ip);
-            $payout->setRecipientAddress($recipient->getAddress());
+            $payout->setRecipientAddress($address);
             $payout->setEarning($earning);
 
             try {

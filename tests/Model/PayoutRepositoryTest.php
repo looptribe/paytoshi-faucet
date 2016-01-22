@@ -54,10 +54,6 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
         $payout->setReferralEarning(10);
         $payout->setCreatedAt(new \DateTime());
 
-        $recipient = new Recipient();
-        $recipient->setId(1);
-        $recipient->setAddress('addr1');
-
         $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
             ->disableOriginalConstructor()
             ->getMock();
@@ -81,7 +77,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
 
 
         $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
-        $result = $sut->findLastByRecipientAndIp($ip, $recipient);
+        $result = $sut->findLastByRecipientAndIp($ip,'addr1');
         $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $result);
         $this->assertSame(1, $result->getId());
         $this->assertSame('10.10.10.10', $result->getIp());
@@ -115,9 +111,6 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
         $payout->setReferralEarning(10);
         $payout->setCreatedAt(new \DateTime());
 
-        $recipient = new Recipient();
-        $recipient->setAddress('addr1');
-
         $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
             ->disableOriginalConstructor()
             ->getMock();
@@ -140,7 +133,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->willReturn($statement);
 
         $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
-        $result = $sut->findLastByRecipientAndIp($ip, $recipient);
+        $result = $sut->findLastByRecipientAndIp($ip,'addr1');
         $this->assertInstanceOf('Looptribe\Paytoshi\Model\Payout', $result);
         $this->assertSame(1, $result->getId());
         $this->assertSame('10.10.10.10', $result->getIp());
@@ -153,20 +146,14 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFindLastByRecipientAndIp3()
     {
-        $recipient = new Recipient();
-        $recipient->setAddress('addr1');
-
         $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
-        $result = $sut->findLastByRecipientAndIp(null, $recipient);
+        $result = $sut->findLastByRecipientAndIp(null, 'addr1');
         $this->assertNull($result);
     }
 
     public function testFindLastByRecipientAndIp4()
     {
         $ip = '10.10.10.10';
-
-        $recipient = new Recipient();
-        $recipient->setAddress('addr1');
 
         $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
             ->disableOriginalConstructor()
@@ -188,7 +175,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
 
 
         $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
-        $result = $sut->findLastByRecipientAndIp($ip, $recipient);
+        $result = $sut->findLastByRecipientAndIp($ip,'addr1');
         $this->assertNull($result);
     }
 
@@ -196,16 +183,12 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $ip = '10.10.10.10';
 
-        $recipient = new Recipient();
-        $recipient->setAddress('addr1');
-        $recipient->setId('1');
-
         $qb = $this->getMockBuilder('\Doctrine\DBAL\Query\QueryBuilder')
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->queryBuilder->method('getLastByRecipientAndIpQuery')
-            ->with($ip, $recipient->getAddress())
+            ->with($ip, 'addr1')
             ->willReturn($qb);
 
         $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
@@ -220,7 +203,7 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
 
 
         $sut = new PayoutRepository($this->connection, $this->mapper, $this->queryBuilder);
-        $result = $sut->findLastByRecipientAndIp($ip, $recipient);
+        $result = $sut->findLastByRecipientAndIp($ip, 'addr1');
         $this->assertNull($result);
     }
 
@@ -239,10 +222,6 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->queryBuilder->method('getInsertQuery')
             ->with($payout)
             ->willReturn($qb);
-
-        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
-            ->disableOriginalConstructor()
-            ->getMock();
 
         $qb->method('execute')
             ->willReturn(1);
@@ -281,10 +260,6 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
             ->with($payout)
             ->willReturn($qb);
 
-        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $qb->method('execute')
             ->willReturn(1);
 
@@ -319,10 +294,6 @@ class PayoutRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->queryBuilder->method('getInsertQuery')
             ->with($payout)
             ->willReturn($qb);
-
-        $statement = $this->getMockBuilder('\Doctrine\DBAL\Driver\Statement')
-            ->disableOriginalConstructor()
-            ->getMock();
 
         $qb->method('execute')
             ->willReturn(0);

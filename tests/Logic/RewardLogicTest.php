@@ -11,8 +11,6 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $connection;
     /** @var \PHPUnit_Framework_MockObject_MockObject */
-    private $recipientRepository;
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $resultRepository;
     /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $rewardProvider;
@@ -28,9 +26,6 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->connection = $this->getMockBuilder('Doctrine\DBAL\Connection')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->recipientRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\RecipientRepository')
             ->disableOriginalConstructor()
             ->getMock();
         $this->payoutRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\PayoutRepository')
@@ -63,7 +58,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->never())
             ->method('commit');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
+        $sut = new RewardLogic($this->connection, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
         $result = $sut->create($address, $ip, $challenge, $response);
         $this->assertInstanceOf('Looptribe\Paytoshi\Logic\RewardLogicResult', $result);
         $this->assertSame(false, $result->isSuccessful());
@@ -104,7 +99,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->never())
             ->method('commit');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
+        $sut = new RewardLogic($this->connection, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
         $result = $sut->create($address, $ip, $challenge, $response);$this->assertInstanceOf('Looptribe\Paytoshi\Logic\RewardLogicResult', $result);
         $this->assertSame(false, $result->isSuccessful());
         $this->assertSame('warning', $result->getSeverity());
@@ -140,17 +135,9 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('beginTransaction');
 
-        $this->recipientRepository->expects($this->once())
-            ->method('findOneByAddress')
-            ->with($address)
-            ->willReturn(null);
-
-        $recipient = new Recipient();
-        $recipient->setAddress($address);
-
         $this->intervalEnforcer->expects($this->once())
             ->method('check')
-            ->with($ip, $recipient)
+            ->with($ip, $address)
             ->willReturn(new \DateInterval('PT60S'));
 
         $this->connection
@@ -161,7 +148,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->never())
             ->method('commit');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
+        $sut = new RewardLogic($this->connection, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
         $result = $sut->create($address, $ip, $challenge, $response);
         $this->assertSame(false, $result->isSuccessful());
         $this->assertSame('warning', $result->getSeverity());
@@ -197,18 +184,9 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('beginTransaction');
 
-        $recipient = new Recipient();
-        $recipient->setId('1');
-        $recipient->setAddress($address);
-
-        $this->recipientRepository->expects($this->once())
-            ->method('findOneByAddress')
-            ->with($address)
-            ->willReturn($recipient);
-
         $this->intervalEnforcer->expects($this->once())
             ->method('check')
-            ->with($ip, $recipient)
+            ->with($ip, $address)
             ->willThrowException(new \Exception('Invalid waiting interval'));
 
         $this->connection
@@ -219,7 +197,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->never())
             ->method('commit');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
+        $sut = new RewardLogic($this->connection, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
         $result = $sut->create($address, $ip, $challenge, $response);
         $this->assertSame(false, $result->isSuccessful());
         $this->assertSame('danger', $result->getSeverity());
@@ -255,18 +233,9 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('beginTransaction');
 
-        $recipient = new Recipient();
-        $recipient->setId('1');
-        $recipient->setAddress($address);
-
-        $this->recipientRepository->expects($this->once())
-            ->method('findOneByAddress')
-            ->with($address)
-            ->willReturn($recipient);
-
         $this->intervalEnforcer->expects($this->once())
             ->method('check')
-            ->with($ip, $recipient)
+            ->with($ip, $address)
             ->willReturn(null);
 
         $this->rewardProvider->expects($this->once())
@@ -286,7 +255,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->never())
             ->method('commit');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
+        $sut = new RewardLogic($this->connection, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
         $result = $sut->create($address, $ip, $challenge, $response);
         $this->assertSame(false, $result->isSuccessful());
         $this->assertSame('danger', $result->getSeverity());
@@ -326,18 +295,9 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('beginTransaction');
 
-        $recipient = new Recipient();
-        $recipient->setId('1');
-        $recipient->setAddress($address);
-
-        $this->recipientRepository->expects($this->once())
-            ->method('findOneByAddress')
-            ->with($address)
-            ->willReturn($recipient);
-
         $this->intervalEnforcer->expects($this->once())
             ->method('check')
-            ->with($ip, $recipient)
+            ->with($ip, $address)
             ->willReturn(null);
 
         $this->rewardProvider->expects($this->once())
@@ -365,7 +325,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->never())
             ->method('commit');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
+        $sut = new RewardLogic($this->connection, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
         $result = $sut->create($address, $ip, $challenge, $response);
         $this->assertSame(false, $result->isSuccessful());
         $this->assertSame('danger', $result->getSeverity());
@@ -405,18 +365,9 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('beginTransaction');
 
-        $recipient = new Recipient();
-        $recipient->setId('1');
-        $recipient->setAddress($address);
-
-        $this->recipientRepository->expects($this->once())
-            ->method('findOneByAddress')
-            ->with($address)
-            ->willReturn($recipient);
-
         $this->intervalEnforcer->expects($this->once())
             ->method('check')
-            ->with($ip, $recipient)
+            ->with($ip, $address)
             ->willReturn(null);
 
         $this->rewardProvider->expects($this->once())
@@ -443,7 +394,7 @@ class RewardLogicTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('commit');
 
-        $sut = new RewardLogic($this->connection, $this->recipientRepository, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
+        $sut = new RewardLogic($this->connection, $this->payoutRepository, $this->rewardProvider, $this->api, $this->intervalEnforcer, $this->captchaProvider, $this->apikey);
         $result = $sut->create($address, $ip, $challenge, $response);
         $this->assertSame(true, $result->isSuccessful());
         $this->assertSame(null, $result->getSeverity());

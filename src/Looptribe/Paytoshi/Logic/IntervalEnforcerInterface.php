@@ -2,15 +2,12 @@
 
 namespace Looptribe\Paytoshi\Logic;
 
-use Looptribe\Paytoshi\Model\Recipient;
-
 interface IntervalEnforcerInterface
 {
     /**
      * @param $ip
-     * @param Recipient $recipient
+     * @param string $address
      * @return \DateInterval|null
-     * @throws \Exception
      */
-    function check($ip, Recipient $recipient);
+    function check($ip, $address);
 }

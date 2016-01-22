@@ -21,17 +21,25 @@ class IntervalEnforcer implements IntervalEnforcerInterface
 
     /**
      * @param $ip
-     * @param Recipient $recipient
+     * @param string $address
      * @return \DateInterval|null
      * @throws \Exception
      */
-    public function check($ip, Recipient $recipient)
+    public function check($ip, $address)
     {
         if ($this->waitingInterval < 0) {
             throw new \Exception('Invalid waiting interval');
         }
 
-        $lastPayout = $this->payoutRepository->findLastByRecipientAndIp($ip, $recipient);
+        if (!$ip) {
+            throw new \Exception('Invalid ip');
+        }
+
+        if (!$address) {
+            throw new \Exception('Invalid address');
+        }
+
+        $lastPayout = $this->payoutRepository->findLastByRecipientAndIp($ip, $address);
         if (!$lastPayout) {
             return null;
         }

@@ -24,15 +24,13 @@ class PayoutRepository
 
     /**
      * @param $ip
-     * @param Recipient $recipient
+     * @param string|null $address
      * @return Payout|null
      */
-    public function findLastByRecipientAndIp($ip, Recipient $recipient)
+    public function findLastByRecipientAndIp($ip, $address = null)
     {
         if (!$ip)
             return null;
-
-        $address = $recipient->isNew() ? null : $recipient->getAddress();
 
         $qb = $this->queryBuilder->getLastByRecipientAndIpQuery($ip, $address);
         $result = $qb->execute()->fetch();
