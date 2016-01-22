@@ -33,6 +33,9 @@ class RewardLogic
     /** @var string */
     private $apikey;
 
+    /** @var int|float */
+    private $referralPercentage;
+
     public function __construct(
         Connection $connection,
         PayoutRepository $payoutRepository,
@@ -40,7 +43,8 @@ class RewardLogic
         PaytoshiApiInterface $api,
         IntervalEnforcerInterface $intervalEnforcer,
         CaptchaProviderInterface $captchaProvider,
-        $apikey
+        $apikey,
+        $referralPercentage
     ) {
         $this->connection = $connection;
         $this->rewardProvider = $rewardProvider;
@@ -49,6 +53,7 @@ class RewardLogic
         $this->captchaProvider = $captchaProvider;
         $this->payoutRepository = $payoutRepository;
         $this->apikey = $apikey;
+        $this->referralPercentage = $referralPercentage;
     }
 
     /**
@@ -125,10 +130,21 @@ class RewardLogic
                 throw new Exception('Reward creation failed');
             }
 
+            // Referral Payout creation
+            if ($referralAddress && $referralAddress != $address && $this->referralPercentage > 0) {
+                $payout->setReferralRecipientAddress($referralAddress);
+                $referralEarning = ceil($earning * $this->referralPercentage / 100);
+                $payout->setReferralEarning($referralEarning);
+
+                try {
+                    $this->api->send($this->apikey, $payout->getReferralRecipientAddress(), $payout->getReferralEarning(), $ip);
+                } catch (\Exception $e) {
+                    // Referral send issues should not block the main payout
+                }
+            }
+
             $this->payoutRepository->insert($payout);
-
             $this->connection->commit();
-
             $result->setSuccessful(true);
             $result->setResponse($response);
         } catch (\Exception $e) {
