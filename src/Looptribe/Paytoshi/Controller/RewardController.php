@@ -73,7 +73,6 @@ class RewardController
             }
         }
 
-        // TODO: check ip detection
         $ip = $request->getClientIp();
         $referralAddress = $request->get('r');
 
