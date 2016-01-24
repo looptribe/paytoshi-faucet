@@ -72,7 +72,7 @@ class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
         $sut = new RecaptchaProvider($this->buzz, $pubkey, $privkey);
 
         $this->setExpectedException('Looptribe\Paytoshi\Captcha\CaptchaProviderException', 'Failed to send captcha: message');
-        $sut->checkAnswer(array('ip' => '10.10.10.10', 'response' => $resp));
+        $sut->checkAnswer(array('ip' => $ip, 'response' => $resp));
     }
 
     public function testCheckAnswer6()
@@ -100,10 +100,10 @@ class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
             )
             ->willReturn($response);
 
-        $sut = new RecaptchaProvider ($this->buzz, $pubkey, $privkey);
+        $sut = new RecaptchaProvider($this->buzz, $pubkey, $privkey);
 
         $this->setExpectedException('Looptribe\Paytoshi\Captcha\CaptchaProviderException', 'Captcha response error:');
-        $sut->checkAnswer(array('ip' => '10.10.10.10', 'response' => $resp));
+        $sut->checkAnswer(array('ip' => $ip, 'response' => $resp));
     }
 
     public function testCheckAnswer7()
@@ -138,7 +138,7 @@ class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
         $sut = new RecaptchaProvider($this->buzz, $pubkey, $privkey);
 
         $this->setExpectedException('Looptribe\Paytoshi\Captcha\CaptchaProviderException', 'Invalid captcha response error');
-        $sut->checkAnswer(array('ip' => '10.10.10.10', 'response' => $resp));
+        $sut->checkAnswer(array('ip' => $ip, 'response' => $resp));
     }
 
     public function testCheckAnswer8()
@@ -172,7 +172,7 @@ class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecaptchaProvider($this->buzz, $pubkey, $privkey);
 
-        $answer = $sut->checkAnswer(array('ip' => '10.10.10.10', 'response' => $resp));
+        $answer = $sut->checkAnswer(array('ip' => $ip, 'response' => $resp));
 
         $this->assertInstanceOf('Looptribe\Paytoshi\Captcha\CaptchaProviderResponse', $answer);
         $this->assertFalse($answer->isSuccessful());
@@ -210,7 +210,7 @@ class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecaptchaProvider($this->buzz, $pubkey, $privkey);
 
-        $answer = $sut->checkAnswer(array('ip' => '10.10.10.10', 'response' => $resp));
+        $answer = $sut->checkAnswer(array('ip' => $ip, 'response' => $resp));
 
         $this->assertInstanceOf('Looptribe\Paytoshi\Captcha\CaptchaProviderResponse', $answer);
         $this->assertFalse($answer->isSuccessful());
@@ -247,7 +247,7 @@ class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
 
         $sut = new RecaptchaProvider($this->buzz, $pubkey, $privkey);
 
-        $answer = $sut->checkAnswer(array('ip' => '10.10.10.10', 'response' => $resp));
+        $answer = $sut->checkAnswer(array('ip' => $ip, 'response' => $resp));
 
         $this->assertInstanceOf('Looptribe\Paytoshi\Captcha\CaptchaProviderResponse', $answer);
         $this->assertTrue($answer->isSuccessful());
