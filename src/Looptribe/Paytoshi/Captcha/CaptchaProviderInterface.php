@@ -20,4 +20,9 @@ interface CaptchaProviderInterface
      * @return string
      */
     function getResponseName();
+
+    /**
+     * @return string
+     */
+    function getPublicKeyName();
 }

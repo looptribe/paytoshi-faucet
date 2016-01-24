@@ -118,4 +118,12 @@ class SolveMediaProvider implements CaptchaProviderInterface
     {
         return 'adcopy_response';
     }
+
+    /**
+     * @return string
+     */
+    function getPublicKeyName()
+    {
+        return 'solve_media_verification_key';
+    }
 }

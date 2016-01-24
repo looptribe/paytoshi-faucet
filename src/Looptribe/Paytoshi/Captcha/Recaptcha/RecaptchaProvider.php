@@ -92,4 +92,12 @@ class RecaptchaProvider implements CaptchaProviderInterface
     {
         return 'g-recaptcha-response';
     }
+
+    /**
+     * @return string
+     */
+    function getPublicKeyName()
+    {
+        return 'recaptcha_public_key';
+    }
 }

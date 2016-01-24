@@ -89,4 +89,12 @@ class FuncaptchaProvider implements CaptchaProviderInterface
     {
         return 'fc-token';
     }
+
+    /**
+     * @return string
+     */
+    function getPublicKeyName()
+    {
+        return 'funcaptcha_public_key';
+    }
 }
