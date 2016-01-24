@@ -124,6 +124,6 @@ class SolveMediaProvider implements CaptchaProviderInterface
      */
     function getPublicKeyName()
     {
-        return 'solve_media_verification_key';
+        return 'solve_media_challenge_key';
     }
 }
