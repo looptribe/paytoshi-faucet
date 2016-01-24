@@ -9,6 +9,7 @@ install:
   - composer require satooshi/php-coveralls:~0.7@stable
 before_script:
   - mkdir -p build/logs
+  - composer self-update
 script:
   - php vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 after_success:
