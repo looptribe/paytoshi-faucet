@@ -2,6 +2,7 @@
 
 namespace Looptribe\Paytoshi\Tests\Captcha\Recaptcha;
 
+use Looptribe\Paytoshi\Captcha\CaptchaProviderException;
 use Looptribe\Paytoshi\Captcha\Recaptcha\RecaptchaProvider;
 
 class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
@@ -64,7 +65,7 @@ class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
                 $headers,
                 $data
             )
-            ->willThrowException(new \Exception('message'));
+            ->willThrowException(new CaptchaProviderException('message'));
 
         $sut = new RecaptchaProvider($this->buzz, $pubkey, $privkey);
 

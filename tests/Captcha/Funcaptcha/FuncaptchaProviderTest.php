@@ -2,6 +2,7 @@
 
 namespace Looptribe\Paytoshi\Tests\Captcha\Funcaptcha;
 
+use Looptribe\Paytoshi\Captcha\CaptchaProviderException;
 use Looptribe\Paytoshi\Captcha\Funcaptcha\FuncaptchaProvider;
 
 class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
@@ -47,7 +48,7 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
                 $headers,
                 $data
             )
-            ->willThrowException(new \Exception('message'));
+            ->willThrowException(new CaptchaProviderException('message'));
 
         $sut = new FuncaptchaProvider($this->buzz, $pubkey, $privkey);
 
