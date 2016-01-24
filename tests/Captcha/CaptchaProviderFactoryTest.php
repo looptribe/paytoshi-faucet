@@ -59,4 +59,23 @@ class CaptchaProviderFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Looptribe\Paytoshi\Captcha\Recaptcha\RecaptchaProvider', $captchaProvider);
     }
+
+    public function testCreate4()
+    {
+        $buzz = $this->getMockBuilder('Buzz\Browser')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $service = 'solve_media';
+
+        $sut = new CaptchaProviderFactory($buzz, $settingsRepository);
+        $captchaProvider = $sut->create($service);
+
+        $this->assertInstanceOf('Looptribe\Paytoshi\Captcha\SolveMedia\SolveMediaProvider', $captchaProvider);
+    }
+
 }

@@ -5,6 +5,7 @@ namespace Looptribe\Paytoshi\Captcha;
 use Buzz\Browser;
 use Looptribe\Paytoshi\Captcha\Funcaptcha\FuncaptchaProvider;
 use Looptribe\Paytoshi\Captcha\Recaptcha\RecaptchaProvider;
+use Looptribe\Paytoshi\Captcha\SolveMedia\SolveMediaProvider;
 use Looptribe\Paytoshi\Model\SettingsRepository;
 
 class CaptchaProviderFactory
@@ -27,6 +28,8 @@ class CaptchaProviderFactory
                 return new FuncaptchaProvider($this->browser, $this->settingsRepository->get('funcaptcha_public_key'), $this->settingsRepository->get('funcaptcha_private_key'));
             case 'recaptcha':
                 return new RecaptchaProvider($this->browser, $this->settingsRepository->get('recaptcha_public_key'), $this->settingsRepository->get('recaptcha_private_key'));
+            case 'solve_media':
+                return new SolveMediaProvider($this->browser, $this->settingsRepository->get('solve_media_challenge_key'), $this->settingsRepository->get('solve_media_verification_key'), $this->settingsRepository->get('solve_media_verification_key'));
             default:
                 throw new \RuntimeException('Invalid captcha provider ' . $service);
         }
