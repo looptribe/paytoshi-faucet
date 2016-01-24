@@ -21,7 +21,7 @@
 
     <filter>
         <whitelist>
-            <directory>./src</directory>
+            <directory>./src/Looptribe</directory>
         </whitelist>
     </filter>
 </phpunit>
