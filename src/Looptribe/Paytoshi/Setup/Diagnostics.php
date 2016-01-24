@@ -50,4 +50,9 @@ class Diagnostics
         $connection = $this->connectionFactory->create($connectionParams);
         $connection->getSchemaManager()->listTables();
     }
+
+    public function checkRequirements()
+    {
+        return new RequirementsChecker();
+    }
 }

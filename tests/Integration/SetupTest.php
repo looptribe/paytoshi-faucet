@@ -26,6 +26,12 @@ class SetupTest extends WebTestCase
         $setupDiagnostics->expects($this->any())
             ->method('requiresSetup')
             ->willReturn(true);
+        $requirementsChecker = $this->getMockBuilder('Looptribe\Paytoshi\Setup\RequirementsChecker')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $setupDiagnostics->expects($this->any())
+            ->method('checkRequirements')
+            ->willReturn($requirementsChecker);
         $this->app['setup.diagnostics'] = $setupDiagnostics;
 
         $client = $this->createClient();

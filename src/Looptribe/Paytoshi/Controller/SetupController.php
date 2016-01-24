@@ -44,8 +44,18 @@ class SetupController
 
     public function startAction()
     {
+        $isConfigWritable = $this->diagnostics->isConfigWritable();
+        $requirementsChecker = $this->diagnostics->checkRequirements();
+
+        if ($requirementsChecker->hasFailedRequirements())
+        {
+            return $this->templating->render('admin/setup_requirements_fail.html.twig', array(
+                'checker' => $requirementsChecker,
+            ));
+        }
+
         return $this->templating->render('admin/setup.html.twig', array(
-            'isConfigWritable' => $this->diagnostics->isConfigWritable(),
+            'isConfigWritable' => $isConfigWritable,
             'config' => array(
                 'database' => $this->dbConfig,
             ),
