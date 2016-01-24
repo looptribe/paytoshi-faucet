@@ -34,6 +34,14 @@ class CaptchaProviderFactoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $settingsRepository->expects($this->at(0))
+            ->method('get')
+            ->with('funcaptcha_public_key');
+
+        $settingsRepository->expects($this->at(1))
+            ->method('get')
+            ->with('funcaptcha_private_key');
+
         $service = 'funcaptcha';
 
         $sut = new CaptchaProviderFactory($buzz, $settingsRepository);
@@ -54,6 +62,14 @@ class CaptchaProviderFactoryTest extends \PHPUnit_Framework_TestCase
 
         $service = 'recaptcha';
 
+        $settingsRepository->expects($this->at(0))
+            ->method('get')
+            ->with('recaptcha_public_key');
+
+        $settingsRepository->expects($this->at(1))
+            ->method('get')
+            ->with('recaptcha_private_key');
+
         $sut = new CaptchaProviderFactory($buzz, $settingsRepository);
         $captchaProvider = $sut->create($service);
 
@@ -71,6 +87,18 @@ class CaptchaProviderFactoryTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $service = 'solve_media';
+
+        $settingsRepository->expects($this->at(0))
+            ->method('get')
+            ->with('solve_media_challenge_key');
+
+        $settingsRepository->expects($this->at(1))
+            ->method('get')
+            ->with('solve_media_verification_key');
+
+        $settingsRepository->expects($this->at(2))
+            ->method('get')
+            ->with('solve_media_authentication_key');
 
         $sut = new CaptchaProviderFactory($buzz, $settingsRepository);
         $captchaProvider = $sut->create($service);
