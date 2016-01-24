@@ -176,7 +176,7 @@ class Application extends \Silex\Application
         });
 
         $app['controller.index'] = $app->share(function () use ($app) {
-            return new Controller\IndexController($app['templating'], $app['themeProvider'], $app['repository.settings'], $app['flashbag'], $app['captcha.provider']);
+            return new Controller\IndexController($app['templating'], $app['themeProvider'], $app['repository.settings'], $app['flashbag'], $app['captcha.provider'], $app['logic.reward_provider']);
         });
         $app['controller.reward'] = $app->share(function () use ($app) {
             return new Controller\RewardController($app['templating'], $app['themeProvider'], $app['repository.settings'], $app['captcha.provider'], $app['url_generator'], $app['logic.reward'], $app['flashbag']);

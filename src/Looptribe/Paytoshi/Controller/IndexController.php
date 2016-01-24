@@ -3,6 +3,7 @@
 namespace Looptribe\Paytoshi\Controller;
 
 use Looptribe\Paytoshi\Captcha\CaptchaProviderInterface;
+use Looptribe\Paytoshi\Logic\RewardProviderInterface;
 use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Templating\TemplatingEngineInterface;
 use Looptribe\Paytoshi\Templating\ThemeProviderInterface;
@@ -23,18 +24,20 @@ class IndexController
     /** @var FlashBagInterface */
     private $flashBag;
 
-    /**
-     * @var CaptchaProviderInterface
-     */
+    /** @var CaptchaProviderInterface */
     private $captchaProvider;
 
-    public function __construct(TemplatingEngineInterface $templating, ThemeProviderInterface $themeProvider, SettingsRepository $settingsRepository, FlashBagInterface $flashBag, CaptchaProviderInterface $captchaProvider)
+    /** @var RewardProviderInterface */
+    private $rewardProvider;
+
+    public function __construct(TemplatingEngineInterface $templating, ThemeProviderInterface $themeProvider, SettingsRepository $settingsRepository, FlashBagInterface $flashBag, CaptchaProviderInterface $captchaProvider, RewardProviderInterface $rewardProvider)
     {
         $this->templating = $templating;
         $this->themeProvider = $themeProvider;
         $this->settingsRepository = $settingsRepository;
         $this->flashBag = $flashBag;
         $this->captchaProvider = $captchaProvider;
+        $this->rewardProvider = $rewardProvider;
     }
 
     public function action(Request $request)
@@ -54,9 +57,9 @@ class IndexController
             'name' => $this->settingsRepository->get('name'),
             'description' => $this->settingsRepository->get('description'),
             'referral_percentage' => $this->settingsRepository->get('referral_percentage'),
-            'rewards' => array(),//$this->rewardService->getNormalized(),
-            'rewards_average' => 0,//$this->rewardService->getAverage(),
-            'rewards_max' => 0,//$this->rewardService->getMax(),
+            'rewards' => $this->rewardProvider->getNormalized(),
+            'rewards_average' => $this->rewardProvider->getAverage(),
+            'rewards_max' => $this->rewardProvider->getMax(),
             'waiting_interval' => $this->settingsRepository->get('waiting_interval'),
             'captcha' => array(
                 'provider' => $this->settingsRepository->get('captcha_provider'),
