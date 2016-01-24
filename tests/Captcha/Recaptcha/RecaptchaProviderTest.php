@@ -2,10 +2,7 @@
 
 namespace Looptribe\Paytoshi\Tests\Captcha\Recaptcha;
 
-use Buzz\Message\Response;
-use Looptribe\Paytoshi\Captcha\Funcaptcha\FuncaptchaProvider;
 use Looptribe\Paytoshi\Captcha\Recaptcha\RecaptchaProvider;
-use Symfony\Component\Security\Acl\Exception\Exception;
 
 class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -67,7 +64,7 @@ class RecaptchaProviderTest extends \PHPUnit_Framework_TestCase
                 $headers,
                 $data
             )
-            ->willThrowException(new Exception('message'));
+            ->willThrowException(new \Exception('message'));
 
         $sut = new RecaptchaProvider($this->buzz, $pubkey, $privkey);
 

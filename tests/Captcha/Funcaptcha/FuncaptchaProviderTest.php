@@ -2,9 +2,7 @@
 
 namespace Looptribe\Paytoshi\Tests\Captcha\Funcaptcha;
 
-use Buzz\Message\Response;
 use Looptribe\Paytoshi\Captcha\Funcaptcha\FuncaptchaProvider;
-use Symfony\Component\Security\Acl\Exception\Exception;
 
 class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,7 +47,7 @@ class FuncaptchaProviderTest extends \PHPUnit_Framework_TestCase
                 $headers,
                 $data
             )
-            ->willThrowException(new Exception('message'));
+            ->willThrowException(new \Exception('message'));
 
         $sut = new FuncaptchaProvider($this->buzz, $pubkey, $privkey);
 
