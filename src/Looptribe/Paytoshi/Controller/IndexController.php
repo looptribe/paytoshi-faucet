@@ -2,6 +2,7 @@
 
 namespace Looptribe\Paytoshi\Controller;
 
+use Looptribe\Paytoshi\Captcha\CaptchaProviderInterface;
 use Looptribe\Paytoshi\Model\SettingsRepository;
 use Looptribe\Paytoshi\Templating\TemplatingEngineInterface;
 use Looptribe\Paytoshi\Templating\ThemeProviderInterface;
@@ -22,12 +23,18 @@ class IndexController
     /** @var FlashBagInterface */
     private $flashBag;
 
-    public function __construct(TemplatingEngineInterface $templating, ThemeProviderInterface $themeProvider, SettingsRepository $settingsRepository, FlashBagInterface $flashBag)
+    /**
+     * @var CaptchaProviderInterface
+     */
+    private $captchaProvider;
+
+    public function __construct(TemplatingEngineInterface $templating, ThemeProviderInterface $themeProvider, SettingsRepository $settingsRepository, FlashBagInterface $flashBag, CaptchaProviderInterface $captchaProvider)
     {
         $this->templating = $templating;
         $this->themeProvider = $themeProvider;
         $this->settingsRepository = $settingsRepository;
         $this->flashBag = $flashBag;
+        $this->captchaProvider = $captchaProvider;
     }
 
     public function action(Request $request)
@@ -54,7 +61,7 @@ class IndexController
             'captcha' => array(
                 'provider' => $this->settingsRepository->get('captcha_provider'),
                 'public_key' => $this->settingsRepository->get(
-                    $this->settingsRepository->get('captcha_provider') . '_public_key'
+                    $this->captchaProvider->getPublicKeyName()
                 ),
             ),
             'content' => array(

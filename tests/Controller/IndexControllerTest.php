@@ -20,6 +20,7 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
         $flashbag = $this->getMock('Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface');
+        $captchaProvider = $this->getMock('Looptribe\Paytoshi\Captcha\CaptchaProviderInterface');
 
         $request->method('get')
             ->willReturn('');
@@ -37,7 +38,7 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
             ->method('render')
             ->willReturn(new Response());
 
-        $sut = new IndexController($templating, $themeProvider, $settingsRepository, $flashbag);
+        $sut = new IndexController($templating, $themeProvider, $settingsRepository, $flashbag, $captchaProvider);
         $response = $sut->action($request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
