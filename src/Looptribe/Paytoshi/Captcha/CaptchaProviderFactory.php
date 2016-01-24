@@ -29,7 +29,7 @@ class CaptchaProviderFactory
             case 'recaptcha':
                 return new RecaptchaProvider($this->browser, $this->settingsRepository->get('recaptcha_public_key'), $this->settingsRepository->get('recaptcha_private_key'));
             case 'solve_media':
-                return new SolveMediaProvider($this->browser, $this->settingsRepository->get('solve_media_challenge_key'), $this->settingsRepository->get('solve_media_verification_key'), $this->settingsRepository->get('solve_media_verification_key'));
+                return new SolveMediaProvider($this->browser, $this->settingsRepository->get('solve_media_challenge_key'), $this->settingsRepository->get('solve_media_verification_key'), $this->settingsRepository->get('solve_media_authentication_key'));
             default:
                 throw new \RuntimeException('Invalid captcha provider ' . $service);
         }
