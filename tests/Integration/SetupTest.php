@@ -35,11 +35,7 @@ class SetupTest extends WebTestCase
         $this->app['setup.diagnostics'] = $setupDiagnostics;
 
         $client = $this->createClient();
-        $client->request('GET', '/');
-
-        $this->assertTrue($client->getResponse()->isRedirect());
-
-        $crawler = $client->followRedirect();
+        $crawler = $client->request('GET', '/');
 
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Paytoshi Faucet setup")')->count());
     }

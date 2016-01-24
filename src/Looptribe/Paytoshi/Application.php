@@ -26,6 +26,7 @@ use Silex\Provider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -219,7 +220,8 @@ class Application extends \Silex\Application
 
         $requireSetup = function (Request $request, Application $app) {
             if ($app['setup.diagnostics']->requiresSetup()) {
-                return new RedirectResponse($app['url_generator']->generate('setup'));
+                //return new RedirectResponse('index.php/' . $app['url_generator']->generate('setup', array(), UrlGenerator::RELATIVE_PATH));
+                return $app['controller.setup']->startAction();
             }
         };
 
