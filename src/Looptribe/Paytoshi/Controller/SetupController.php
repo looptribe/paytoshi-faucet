@@ -56,6 +56,7 @@ class SetupController
 
         return $this->templating->render('admin/setup.html.twig', array(
             'isConfigWritable' => $isConfigWritable,
+            'checker' => $requirementsChecker,
             'config' => array(
                 'database' => $this->dbConfig,
             ),

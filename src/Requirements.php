@@ -542,6 +542,17 @@ class PaytoshiRequirements extends RequirementCollection
         $this->addPhpIniRecommendation('register_globals', false, true);
 
         $this->addPhpIniRecommendation('session.auto_start', false);
+
+        ob_start();
+        phpinfo(INFO_MODULES);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        $hasModRewrite = strpos($contents, 'mod_rewrite') !== false;
+        $this->addRecommendation(
+            $hasModRewrite,
+            'mod_rewrite should be listed by phpinfo()',
+            'Install and enable the <strong>mod_rewrite</strong> module in Apache'
+        );
     }
 
     /**
