@@ -3,7 +3,7 @@
         {% for idx, message in messages %}
             <div class="alert alert-{{ type }}" role="alert">
                 <button type="button" class="close" data-dismiss="alert">×</button>
-                <strong>{{ message|raw|trim }}</strong>
+                <strong>{{ message|trim|raw }}</strong>
             </div>
         {% endfor %}
     {% endfor %}
