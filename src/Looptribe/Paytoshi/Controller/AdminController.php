@@ -31,13 +31,17 @@ class AdminController
     /** @var RewardMapper */
     private $rewardMapper;
 
+    /** @var string */
+    private $version;
+
     public function __construct(
         TemplatingEngineInterface $templating,
         UrlGeneratorInterface $urlGenerator,
         SettingsRepository $settingsRepository,
         ThemeProviderInterface $themeProvider,
         PaytoshiApiInterface $paytoshi,
-        RewardMapper $rewardMapper
+        RewardMapper $rewardMapper,
+        $version
     ) {
         $this->templating = $templating;
         $this->settingsRepository = $settingsRepository;
@@ -45,6 +49,7 @@ class AdminController
         $this->themeProvider = $themeProvider;
         $this->paytoshi = $paytoshi;
         $this->rewardMapper = $rewardMapper;
+        $this->version = $version;
     }
 
     public function action()
@@ -68,7 +73,8 @@ class AdminController
     private function getView()
     {
         return array(
-            'version' => $this->settingsRepository->get('version'),
+            'version' => $this->version,
+            'db_version' => $this->settingsRepository->get('version'),
             'api_key' => $this->settingsRepository->get('api_key'),
             'name' => $this->settingsRepository->get('name'),
             'description' => $this->settingsRepository->get('description'),
