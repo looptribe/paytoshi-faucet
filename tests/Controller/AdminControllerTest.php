@@ -42,7 +42,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->sut = new AdminController($this->templating, $this->urlGenerator, $this->settingsRepository, $this->themeProvider, $this->paytoshi, $this->rewardMapper);
+        $this->sut = new AdminController($this->templating, $this->urlGenerator, $this->settingsRepository, $this->themeProvider, $this->paytoshi, $this->rewardMapper, '2.0.0');
     }
 
     public function testAction1()
@@ -63,6 +63,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                 'admin/admin.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('version'),
+                    $this->arrayHasKey('db_version'),
                     $this->arrayHasKey('api_key'),
                     $this->arrayHasKey('name'),
                     $this->arrayHasKey('description'),
@@ -127,6 +128,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                 'admin/admin.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('version'),
+                    $this->arrayHasKey('db_version'),
                     $this->arrayHasKey('api_key'),
                     $this->arrayHasKey('name'),
                     $this->arrayHasKey('description'),
@@ -194,6 +196,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                 'admin/admin.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('version'),
+                    $this->arrayHasKey('db_version'),
                     $this->arrayHasKey('api_key'),
                     $this->arrayHasKey('name'),
                     $this->arrayHasKey('description'),
@@ -262,6 +265,7 @@ class AdminControllerTest extends \PHPUnit_Framework_TestCase
                 'admin/admin.html.twig',
                 $this->logicalAnd(
                     $this->arrayHasKey('version'),
+                    $this->arrayHasKey('db_version'),
                     $this->arrayHasKey('api_key'),
                     $this->arrayHasKey('name'),
                     $this->arrayHasKey('description'),
