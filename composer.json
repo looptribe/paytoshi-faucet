@@ -36,6 +36,7 @@
         }
     },
     "scripts": {
-        "test": "php vendor/bin/phpunit --colors=always --coverage-html=coverage --coverage-text"
+        "test": "php vendor/bin/phpunit --colors=always --coverage-html=coverage --coverage-text",
+        "build": "php bin/build.php"
     }
 }

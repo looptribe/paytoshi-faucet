@@ -1,5 +1,4 @@
 /vendor
-/nbproject
-/cache
+/dist
 .idea
 /coverage
