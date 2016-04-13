@@ -64,7 +64,7 @@ class Application extends \Silex\Application
         $app['configPath'] = $app['rootPath'] . '/config/config.yml';
 
         $composerJson = json_decode(@file_get_contents($app['rootPath'] . '/composer.json'), true);
-        $app['version'] = $composerJson['version'] ? $composerJson['version'] : 'unknown';
+        $app['version'] = isset($composerJson['version']) ? $composerJson['version'] : '';
 
         $app['apiUrl'] = 'http://paytoshi.org/api/v1/';
 
