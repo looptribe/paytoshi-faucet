@@ -23,10 +23,8 @@ use Looptribe\Paytoshi\Templating\LocalThemeProvider;
 use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
 use Looptribe\Paytoshi\Twig\PaytoshiTwigExtension;
 use Silex\Provider;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -49,7 +47,6 @@ class Application extends \Silex\Application
         '198.41.128.0/17',
         '199.27.128.0/21'
     );
-
 
     public function __construct()
     {
