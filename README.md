@@ -1,8 +1,8 @@
 Paytoshi Faucet
 ========================================================
 
-[![Build Status](https://img.shields.io/travis/looptribe/paytoshi-faucet/silex.svg)](https://travis-ci.org/looptribe/paytoshi-faucet)
-[![Coverage Status](https://img.shields.io/coveralls/looptribe/paytoshi-faucet/silex.svg)](https://coveralls.io/github/looptribe/paytoshi-faucet)
+[![Build Status](https://img.shields.io/travis/looptribe/paytoshi-faucet.svg)](https://travis-ci.org/looptribe/paytoshi-faucet)
+[![Coverage Status](https://img.shields.io/coveralls/looptribe/paytoshi-faucet.svg)](https://coveralls.io/github/looptribe/paytoshi-faucet)
 
 Faucet Script for [Paytoshi](https://paytoshi.org): the Bitcoin micropayment wallet. It integrates the [Paytoshi API library](https://github.com/looptribe/paytoshi-library-php) with the faucet frontend and the admin area.
 
@@ -21,23 +21,15 @@ Based on [Silex](http://silex.sensiolabs.org/) and [Twig](https://github.com/fab
 
 ## Requirements
 * Apache >= 2.2 (with mod_rewrite)
-* PHP >= 5.3.9
+* PHP >= 5.3.3 (but NOT PHP 5.3.16)
 * MySQL >= 5 (with PDO support)
 * php5-mcrypt extension
+* `date.timezone` entry in php.ini must be set
 
 ## Installation
 * Download the faucet zip
 * Extract the files in your webserver public area
-* Edit ./config/config.yml with the database configuration parameters. For example:
-``` yaml
-# Standard Configuration
-database:
-    host: localhost
-    username: root
-    password: root
-    name: paytoshi_faucet
-```
-* Visit your faucet. A wizard will create the admin password and populate the database. 
+* Visit your faucet. A wizard will ask for database connection information, create the admin password and populate the database.
 * Customize your faucet in your admin area.
 
 ## Contributing
