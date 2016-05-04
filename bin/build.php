@@ -30,7 +30,7 @@ if (!file_exists($outPath) && mkdir($outPath, 0755, true) === false) {
 echo "Writing out file: $out" . PHP_EOL;
 
 chdir($root);
-exec(sprintf('zip -r %s . -x .git\* .idea\* coverage\* tests\* phpunit.xml.dist bin\* dist\*',
+exec(sprintf('zip -r %s . -x .git\* .idea\* coverage\* tests\* phpunit.xml.dist bin\* dist\* .travis.yml',
     escapeshellarg($out)));
 
 echo 'Done.' . PHP_EOL;
