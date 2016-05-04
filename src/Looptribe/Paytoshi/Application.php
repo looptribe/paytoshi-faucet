@@ -24,9 +24,12 @@ use Looptribe\Paytoshi\Templating\TwigTemplatingEngine;
 use Looptribe\Paytoshi\Twig\PaytoshiTwigExtension;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\Debug\ExceptionHandler;
 
 class Application extends \Silex\Application
 {
@@ -50,6 +53,11 @@ class Application extends \Silex\Application
 
     public function __construct()
     {
+        ErrorHandler::register();
+        $handler = ExceptionHandler::register(false);
+        $handler->setHandler(function (\Exception $e) {
+            echo $e->getMessage();
+        });
         parent::__construct();
         $this->init();
     }
