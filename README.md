@@ -10,6 +10,8 @@ Create a Paytoshi account, get an apikey and start using your Bitcoin faucet web
 
 Based on [Silex](http://silex.sensiolabs.org/) and [Twig](https://github.com/fabpot/Twig).
 
+[Changelog](CHANGELOG.md)
+
 ## Features
 * Ready-to-use script
 * Captcha support (ReCaptcha v2, SolveMedia, FunCaptcha)
