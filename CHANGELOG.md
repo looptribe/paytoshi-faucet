@@ -1,4 +1,4 @@
-# Paytoshi Faucet script changelog
+# Paytoshi Faucet changelog
 
 ## master (not yet released)
 * Improved diagnostics: now checks for POST of HTML data
