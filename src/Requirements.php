@@ -533,25 +533,6 @@ class PaytoshiRequirements extends RequirementCollection
             );
         }
 
-        ob_start();
-        phpinfo(INFO_MODULES);
-        $contents = ob_get_contents();
-        ob_end_clean();
-
-        $hasApache = strpos($contents, 'Apache') !== false;
-        $this->addRequirement(
-            $hasApache,
-            'Apache should be used as web server',
-            'Install and configure the <strong>Apache</strong> web server.'
-        );
-
-        $hasModRewrite = strpos($contents, 'mod_rewrite') !== false;
-        $this->addRequirement(
-            $hasModRewrite,
-            'mod_rewrite should be listed by phpinfo()',
-            'Install and enable the <strong>mod_rewrite</strong> module in Apache'
-        );
-
         /* optional recommendations follow */
 
         $this->addPhpIniRecommendation('short_open_tag', false);
