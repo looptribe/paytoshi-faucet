@@ -1,0 +1,118 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block content %}
+<div class="row ng-cloak" ng-app="paytoshi.setup" ng-controller="RequirementsController">
+    <div class="col-xs-12">
+        <div class="page-header">
+            <h1>Paytoshi Faucet setup - requirements</h1>
+        </div>
+
+        {% if checker.hasFailedRequirements %}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <strong>The faucet script cannot be installed because the following requirements are not satisfied.</strong>
+            </div>
+        {% endif %}
+
+        <ul class="list-unstyled">
+            {% for requirement in checker.requirements %}
+                <li{% if not requirement.isFulfilled %} class="text-danger"{% endif %}>
+                    {% if requirement.isFulfilled %}
+                        <i class="glyphicon glyphicon-ok text-success"></i>
+                    {% else %}
+                        <i class="glyphicon glyphicon-remove"></i>
+                    {% endif %}
+                    {{ requirement.testMessage }}
+                    {% if not requirement.isFulfilled %}
+                        <p>{{ requirement.helpHtml|raw }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            <li ng-repeat="requirement in requirements" ng-class="{'text-danger': requirement.status === false}">
+                <i class="glyphicon glyphicon-ok text-success" ng-if="requirement.status === true"></i>
+                <i class="glyphicon glyphicon-remove" ng-if="requirement.status === false"></i>
+                <i class="glyphicon glyphicon-question-sign" ng-if="requirement.status === undefined"></i>
+                <span ng-bind="requirement.title"></span>
+                <p ng-bind-html="requirement.message" ng-if="requirement.status === false"></p>
+            </li>
+        </ul>
+
+        <div class="alert alert-info" role="alert" ng-if="!isCompleted">
+            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+            <strong>Checking other server requirements, please wait...</strong>
+        </div>
+
+        <div ng-if="isSuccess">
+            <a href="{{ path('setup') }}" class="btn btn-primary">Continue</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
+
+    <script>
+        (function () {
+            'use strict';
+            angular.module('paytoshi.setup', ['ngSanitize'])
+                    .service('paytoshiSetupApi', ['$http', function ($http) {
+                        return {
+                            checkRewrite: function () {
+                                return $http.get({{ path('setup_check_rewrite')|json_encode|raw }});
+                            }
+                        }
+                    }])
+                    .controller('RequirementsController', ['$scope', 'paytoshiSetupApi', function ($scope, paytoshiSetupApi) {
+                        $scope.requirements = {
+                            'rewrite': {
+                                title: 'URL rewriting must be enabled on your server',
+                                message: 'Install and enable the <strong>mod_rewrite</strong> module in Apache.'
+                            }
+                        };
+                        $scope.isCompleted = false;
+                        $scope.isSuccess = false;
+
+                        function updateStatus () {
+                            $scope.isCompleted = true;
+                            $scope.isSuccess = true;
+                            angular.forEach($scope.requirements, function (r) {
+                                if (r.status === undefined) {
+                                    $scope.isCompleted = false;
+                                }
+                                if (r.status !== true) {
+                                    $scope.isSuccess = false;
+                                }
+                            });
+
+                            if ($scope.isSuccess) {
+                                window.location = {{ path('setup')|json_encode|raw }};
+                            }
+                        }
+
+                        $scope.check = function () {
+                            paytoshiSetupApi.checkRewrite()
+                                    .then(function (response) {
+                                        $scope.requirements.rewrite.status = !!response.data.result;
+                                    }, function () {
+                                    });
+                        };
+
+                        $scope.check();
+
+                        $scope.$watch('requirements', updateStatus, true);
+                    }]);
+        })();
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
+{% endblock %}

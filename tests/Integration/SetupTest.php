@@ -37,10 +37,10 @@ class SetupTest extends WebTestCase
         $client = $this->createClient();
         $crawler = $client->request('GET', '/');
 
-        $this->assertGreaterThan(0, $crawler->filter('html:contains("Paytoshi Faucet setup")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("Paytoshi Faucet setup - requirements")')->count());
     }
 
-    public function testStartRewriteCheckOk()
+    public function testCheckRewriteCheckOk()
     {
         $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
             ->disableOriginalConstructor()
@@ -54,17 +54,17 @@ class SetupTest extends WebTestCase
         $this->app['setup.diagnostics'] = $setupDiagnostics;
 
         $client = $this->createClient();
-        $client->request('GET', '/setup/?rewrite_check=1');
+        $client->request('GET', '/setup/rewrite.json');
 
         $this->assertTrue($client->getResponse()->isSuccessful());
         $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Reponse should be application/json');
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertTrue($response['rewrite'], 'Response should contains a "rewrite" field with a true value');
+        $this->assertTrue($response['result'], 'Response should contains a "result" field with a true value');
     }
 
-    public function testStartRewriteCheckFail()
+    public function testCheckRewriteCheckFail()
     {
         $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
             ->disableOriginalConstructor()
@@ -78,14 +78,39 @@ class SetupTest extends WebTestCase
         $this->app['setup.diagnostics'] = $setupDiagnostics;
 
         $client = $this->createClient();
-        $client->request('GET', '/setup/?rewrite_check=1');
+        $client->request('GET', '/setup/rewrite.json');
 
         $this->assertEquals(400, $client->getResponse()->getStatusCode());
         $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Reponse should be application/json');
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertFalse($response['rewrite'], 'Response should contains a "rewrite" field with a false value');
+        $this->assertFalse($response['result'], 'Response should contains a "result" field with a false value');
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSetup()
+    {
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(true);
+        $requirementsChecker = $this->getMockBuilder('Looptribe\Paytoshi\Setup\RequirementsChecker')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $setupDiagnostics->expects($this->any())
+            ->method('checkRequirements')
+            ->willReturn($requirementsChecker);
+        $this->app['setup.diagnostics'] = $setupDiagnostics;
+
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/setup/');
+
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("Paytoshi Faucet setup")')->count());
     }
 
     public function testStartDeniedAlreadyCompleted()

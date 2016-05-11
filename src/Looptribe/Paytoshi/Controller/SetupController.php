@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class SetupController
 {
@@ -42,14 +41,23 @@ class SetupController
         $this->dbConfig = $dbConfig;
     }
 
-    public function startAction(Request $request)
+    public function startAction()
     {
-        if ($request->query->get('rewrite_check')) {
-            $result = $this->diagnostics->checkRewrite($request->getUri());
-            return new JsonResponse(array('rewrite' => $result), $result ? 200 : 400);
-        }
+        $requirementsChecker = $this->diagnostics->checkRequirements();
 
-        $isConfigWritable = $this->diagnostics->isConfigWritable();
+        return $this->templating->render('admin/setup_requirements.html.twig', array(
+            'checker' => $requirementsChecker,
+        ));
+    }
+
+    public function checkRewriteAction(Request $request)
+    {
+        $result = $this->diagnostics->checkRewrite($request->getUri());
+        return new JsonResponse(array('result' => $result), $result ? 200 : 400);
+    }
+
+    public function setupAction()
+    {
         $requirementsChecker = $this->diagnostics->checkRequirements();
 
         if ($requirementsChecker->hasFailedRequirements())
@@ -58,6 +66,8 @@ class SetupController
                 'checker' => $requirementsChecker,
             ));
         }
+
+        $isConfigWritable = $this->diagnostics->isConfigWritable();
 
         return $this->templating->render('admin/setup.html.twig', array(
             'isConfigWritable' => $isConfigWritable,

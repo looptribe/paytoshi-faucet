@@ -23,10 +23,11 @@ class SetupControllerProvider implements ControllerProviderInterface
         /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', 'controller.setup:startAction')->bind('setup');
+        $controllers->get('/', 'controller.setup:setupAction')->bind('setup');
         $controllers->post('/', 'controller.setup:saveAction')->bind('setup_save');
         $controllers->get('/complete', 'controller.setup:completeAction')->bind('setup_complete');
         $controllers->post('/check.json', 'controller.setup:checkAction')->bind('setup_check');
+        $controllers->get('/rewrite.json', 'controller.setup:checkRewriteAction')->bind('setup_check_rewrite');
 
         $controllers->before($this->before);
 

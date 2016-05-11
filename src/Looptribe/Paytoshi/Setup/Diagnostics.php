@@ -51,14 +51,21 @@ class Diagnostics
         $connection->getSchemaManager()->listTables();
     }
 
+    /**
+     * @return RequirementsChecker
+     */
     public function checkRequirements()
     {
         return new RequirementsChecker();
     }
 
+    /**
+     * @param string $uri
+     * @return bool
+     */
     public function checkRewrite($uri)
     {
-        $result = preg_match('/^((?!\.php).)*\/setup\/?\?rewrite_check=1/', $uri);
+        $result = preg_match('/^((?!\.php).)*\/setup\/rewrite\.json/', $uri);
         return !!$result;
     }
 }

@@ -139,7 +139,7 @@ class DiagnosticsTest extends \PHPUnit_Framework_TestCase
 
         $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
 
-        $result = $sut->checkRewrite('http://localhost/path/to/faucet/setup/?rewrite_check=1');
+        $result = $sut->checkRewrite('http://localhost/path/to/faucet/setup/rewrite.json');
         $this->assertTrue($result);
     }
 
@@ -152,7 +152,7 @@ class DiagnosticsTest extends \PHPUnit_Framework_TestCase
 
         $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
 
-        $result = $sut->checkRewrite('http://localhost/path/to/faucet/index.php/setup/?rewrite_check=1');
+        $result = $sut->checkRewrite('http://localhost/path/to/faucet/index.php/setup/rewrite.json');
         $this->assertFalse($result);
     }
 
@@ -165,7 +165,7 @@ class DiagnosticsTest extends \PHPUnit_Framework_TestCase
 
         $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
 
-        $result = $sut->checkRewrite('http://localhost/path/to/faucet/setup?rewrite_check=1');
+        $result = $sut->checkRewrite('/setup/rewrite.json');
         $this->assertTrue($result);
     }
 }
