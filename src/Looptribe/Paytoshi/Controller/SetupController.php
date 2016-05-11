@@ -56,6 +56,12 @@ class SetupController
         return new JsonResponse(array('result' => $result), $result ? 200 : 400);
     }
 
+    public function checkPostTagsAction(Request $request)
+    {
+        $data = $request->request->get('data');
+        return new JsonResponse(array('result' => $data));
+    }
+
     public function setupAction()
     {
         $requirementsChecker = $this->diagnostics->checkRequirements();

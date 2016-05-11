@@ -28,6 +28,7 @@ class SetupControllerProvider implements ControllerProviderInterface
         $controllers->get('/complete', 'controller.setup:completeAction')->bind('setup_complete');
         $controllers->post('/check.json', 'controller.setup:checkAction')->bind('setup_check');
         $controllers->get('/rewrite.json', 'controller.setup:checkRewriteAction')->bind('setup_check_rewrite');
+        $controllers->post('/tags.json', 'controller.setup:checkPostTagsAction')->bind('setup_check_post_tags');
 
         $controllers->before($this->before);
 

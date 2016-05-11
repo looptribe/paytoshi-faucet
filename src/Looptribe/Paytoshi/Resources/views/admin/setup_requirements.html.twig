@@ -62,6 +62,9 @@
                         return {
                             checkRewrite: function () {
                                 return $http.get({{ path('setup_check_rewrite')|json_encode|raw }});
+                            },
+                            checkPostTags: function (html) {
+                                return $http.post({{ path('setup_check_post_tags')|json_encode|raw }}, {data: html});
                             }
                         }
                     }])
@@ -74,6 +77,19 @@
                                     paytoshiSetupApi.checkRewrite()
                                             .then(function (response) {
                                                 r.status = !!response.data.result;
+                                            }, function () {
+                                                r.status = false;
+                                            });
+                                }
+                            },
+                            {
+                                title: 'Your web server can handle HTML post data',
+                                message: 'Disable the security rules that prevents HTML POST.',
+                                callback: function (r) {
+                                    var html = 'Test HTML<br><iframe src="https://paytoshi.org"></iframe><a href="http://www.example.org">link</a>';
+                                    paytoshiSetupApi.checkPostTags(html)
+                                            .then(function (response) {
+                                                r.status = response.data.result === html;
                                             }, function () {
                                                 r.status = false;
                                             });

@@ -88,6 +88,28 @@ class SetupTest extends WebTestCase
         $this->assertFalse($response['result'], 'Response should contains a "result" field with a false value');
     }
 
+    public function testCheckPostTags()
+    {
+        $html = 'Test HTML<br><iframe src="https://paytoshi.org"></iframe><a href="http://www.example.org">link</a>';
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(true);
+        $this->app['setup.diagnostics'] = $setupDiagnostics;
+
+        $client = $this->createClient();
+        $client->request('POST', '/setup/tags.json', array('data' => $html));
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+        $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Reponse should be application/json');
+
+        $response = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertEquals($html, $response['result'], 'Response should contains a "result" field with the correct HTML value');
+    }
+
     /**
      * @runInSeparateProcess
      */
