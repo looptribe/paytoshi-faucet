@@ -66,12 +66,20 @@
                         }
                     }])
                     .controller('RequirementsController', ['$scope', 'paytoshiSetupApi', function ($scope, paytoshiSetupApi) {
-                        $scope.requirements = {
-                            'rewrite': {
+                        $scope.requirements = [
+                            {
                                 title: 'URL rewriting must be enabled on your server',
-                                message: 'Install and enable the <strong>mod_rewrite</strong> module in Apache.'
+                                message: 'Install and enable the <strong>mod_rewrite</strong> module in Apache.',
+                                callback: function (r) {
+                                    paytoshiSetupApi.checkRewrite()
+                                            .then(function (response) {
+                                                r.status = !!response.data.result;
+                                            }, function () {
+                                                r.status = false;
+                                            });
+                                }
                             }
-                        };
+                        ];
                         $scope.isCompleted = false;
                         $scope.isSuccess = false;
 
@@ -88,16 +96,14 @@
                             });
 
                             if ($scope.isSuccess) {
-                                window.location = {{ path('setup')|json_encode|raw }};
+                                //window.location = {{ path('setup')|json_encode|raw }};
                             }
                         }
 
                         $scope.check = function () {
-                            paytoshiSetupApi.checkRewrite()
-                                    .then(function (response) {
-                                        $scope.requirements.rewrite.status = !!response.data.result;
-                                    }, function () {
-                                    });
+                            angular.forEach($scope.requirements, function (r) {
+                                r.callback(r);
+                            });
                         };
 
                         $scope.check();
