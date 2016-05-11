@@ -129,4 +129,43 @@ class DiagnosticsTest extends \PHPUnit_Framework_TestCase
 
         $sut->checkDatabase(array());
     }
+
+    public function testCheckRewrite1()
+    {
+        $connectionFactory = $this->getMock('Looptribe\Paytoshi\Model\ConnectionFactory');
+        $repository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
+
+        $result = $sut->checkRewrite('http://localhost/path/to/faucet/setup/?rewrite_check=1');
+        $this->assertTrue($result);
+    }
+
+    public function testCheckRewrite2()
+    {
+        $connectionFactory = $this->getMock('Looptribe\Paytoshi\Model\ConnectionFactory');
+        $repository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
+
+        $result = $sut->checkRewrite('http://localhost/path/to/faucet/index.php/setup/?rewrite_check=1');
+        $this->assertFalse($result);
+    }
+
+    public function testCheckRewrite3()
+    {
+        $connectionFactory = $this->getMock('Looptribe\Paytoshi\Model\ConnectionFactory');
+        $repository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $sut = new Diagnostics($repository, $connectionFactory, '/path/to/config.yml');
+
+        $result = $sut->checkRewrite('http://localhost/path/to/faucet/setup?rewrite_check=1');
+        $this->assertTrue($result);
+    }
 }

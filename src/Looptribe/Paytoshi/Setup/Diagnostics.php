@@ -55,4 +55,10 @@ class Diagnostics
     {
         return new RequirementsChecker();
     }
+
+    public function checkRewrite($uri)
+    {
+        $result = preg_match('/^((?!\.php).)*\/setup\/?\?rewrite_check=1/', $uri);
+        return !!$result;
+    }
 }
