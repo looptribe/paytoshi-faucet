@@ -40,6 +40,54 @@ class SetupTest extends WebTestCase
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Paytoshi Faucet setup")')->count());
     }
 
+    public function testStartRewriteCheckOk()
+    {
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(true);
+        $setupDiagnostics->expects($this->any())
+            ->method('checkRewrite')
+            ->willReturn(true);
+        $this->app['setup.diagnostics'] = $setupDiagnostics;
+
+        $client = $this->createClient();
+        $client->request('GET', '/setup/?rewrite_check=1');
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+        $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Reponse should be application/json');
+
+        $response = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertTrue($response['rewrite'], 'Response should contains a "rewrite" field with a true value');
+    }
+
+    public function testStartRewriteCheckFail()
+    {
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(true);
+        $setupDiagnostics->expects($this->any())
+            ->method('checkRewrite')
+            ->willReturn(false);
+        $this->app['setup.diagnostics'] = $setupDiagnostics;
+
+        $client = $this->createClient();
+        $client->request('GET', '/setup/?rewrite_check=1');
+
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+        $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Reponse should be application/json');
+
+        $response = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertFalse($response['rewrite'], 'Response should contains a "rewrite" field with a false value');
+    }
+
     public function testStartDeniedAlreadyCompleted()
     {
         $settingsRepository = $this->getMockBuilder('Looptribe\Paytoshi\Model\SettingsRepository')

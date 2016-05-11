@@ -229,7 +229,7 @@ class Application extends \Silex\Application
         $requireSetup = function (Request $request, Application $app) {
             if ($app['setup.diagnostics']->requiresSetup()) {
                 //return new RedirectResponse('index.php/' . $app['url_generator']->generate('setup', array(), UrlGenerator::RELATIVE_PATH));
-                return $app['controller.setup']->startAction();
+                return $app['controller.setup']->startAction($request);
             }
         };
 

@@ -42,8 +42,13 @@ class SetupController
         $this->dbConfig = $dbConfig;
     }
 
-    public function startAction()
+    public function startAction(Request $request)
     {
+        if ($request->query->get('rewrite_check')) {
+            $result = $this->diagnostics->checkRewrite($request->getUri());
+            return new JsonResponse(array('rewrite' => $result), $result ? 200 : 400);
+        }
+
         $isConfigWritable = $this->diagnostics->isConfigWritable();
         $requirementsChecker = $this->diagnostics->checkRequirements();
 
