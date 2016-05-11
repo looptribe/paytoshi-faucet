@@ -29,7 +29,7 @@ Based on [Silex](http://silex.sensiolabs.org/) and [Twig](https://github.com/fab
 * `date.timezone` entry in php.ini must be set
 
 ## Installation
-* Download the faucet zip
+* Download the [faucet zip](https://paytoshi.org/faucet-script)
 * Extract the files in your webserver public area
 * Visit your faucet. A wizard will ask for database connection information, create the admin password and populate the database.
 * Customize your faucet in your admin area.
