@@ -1,6 +1,8 @@
 # Paytoshi Faucet changelog
 
 ## master (not yet released)
+
+## 2.0.2
 * Improved diagnostics: now checks for POST of HTML data
 
 ## 2.0.1
