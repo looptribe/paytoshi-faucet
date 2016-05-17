@@ -9,8 +9,7 @@ services:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: paytoshi_faucet
     php-apache:
-        build: ./php-apache
-        image: looptribe/php-apache
+        image: looptribe/php-apache:5.3
         ports:
             - "80:80"
         links:
