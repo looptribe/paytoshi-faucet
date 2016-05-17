@@ -24,7 +24,7 @@
               <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
             <![endif]-->
 
-            <link href="/themes/wide/css/style.css" rel="stylesheet">
+            <link href="{{ asset('/themes/wide/css/style.css') }}" rel="stylesheet">
             <style type="text/css">
                 {{ theme.css|raw }}
             </style>
@@ -36,11 +36,11 @@
             <nav class="navbar navbar-inverse" role="navigation">
                 <div class="container">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="{{ urlFor('index') }}">{{ name|default('Paytoshi Faucet') }}</a>
+                        <a class="navbar-brand" href="{{ path('homepage') }}">{{ name|default('Paytoshi Faucet') }}</a>
                     </div>
                     <ul class="nav navbar-nav">
-                        <li><a href="{{ urlFor('index') }}">Faucet</a></li>
-                        <li><a href="{{ urlFor('faq') }}">F.A.Q.</a></li>
+                        <li><a href="{{ path('homepage') }}">Faucet</a></li>
+                        <li><a href="{{ path('faq') }}">F.A.Q.</a></li>
                         <li><a href="https://paytoshi.org/" target="_blank">Paytoshi.org</a></li>
                     </ul>
                 </div>
@@ -64,7 +64,7 @@
                     {% block footer %}
                         <footer role="footer">
                             <div class="text-center">
-                                <p>Powered by <a href="https://paytoshi.org">Paytoshi</a> | <a href="{{ urlFor('admin') }}">Admin</a> | <a href="{{ urlFor('faq') }}">FAQ</a></p>
+                                <p>Powered by <a href="https://paytoshi.org">Paytoshi</a> | <a href="{{ path('admin') }}">Admin</a> | <a href="{{ path('faq') }}">FAQ</a></p>
                             </div>
                         </footer>
                     {% endblock %}

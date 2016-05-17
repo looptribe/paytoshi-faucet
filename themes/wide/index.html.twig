@@ -25,14 +25,14 @@
 
             <hr>
 
-            <form action="{{ urlFor('reward') }}" novalidate="novalidate" method="POST" class="form">
+            <form action="{{ path('reward') }}" novalidate="novalidate" method="POST" class="form">
                 <div class="form-group">
                     <div class="lead">
                         Enter your Bitcoin address
                     </div>
                     <input class="form-control input-lg" type="text" name="address" 
                            value="{% if address is defined %}{{ address }}{% endif %}" 
-                           placeholder="Bitcoin address">
+                           placeholder="Enter your Bitcoin address">
                 </div>
 
                 <div class="custom-content">
@@ -41,7 +41,7 @@
 
                 <div class="form-group captcha">
                     <center>
-                        {% include "default/" ~ captcha.name ~ ".html.twig" with { server: captcha.server, public_key: captcha.public_key } %}
+                        {% include "default/" ~ captcha.provider ~ ".html.twig" with { public_key: captcha.public_key } %}
                     </center>
                 </div>
 
@@ -52,7 +52,7 @@
                 <h3>What is a Bitcoin Faucet?</h3>
                 <p>
                     A faucet is a FREE Bitcoin site paying out up to {{ rewards_max }} satoshi every hour. Each time you visit this page and complete the captcha you will receive a payout amount randomly selected from the available amounts shown above. You will receive your payment directly to your <a href="https://paytoshi.org">Paytoshi wallet.</a><br/>
-                    <a href="{{ urlFor('faq') }}">Read more</a>
+                    <a href="{{ path('faq') }}">Read more</a>
                 </p>
 
                 <button class="form-control input-lg btn-info get-reward">Get a reward!</button>
@@ -65,7 +65,7 @@
             </form>
 
             <div class="well well-sm referral-box">Earn {{ referral_percentage }}% referral bonus! 
-                Share your referral URL:<br>{{ base_url ~ '/?r=' ~ address|default('Bitcoin Address') }}</div>
+                Share your referral URL:<br>{{ url('homepage') ~ '?r=' ~ address|default('Bitcoin Address') }}</div>
 
         </div>
     </div>
