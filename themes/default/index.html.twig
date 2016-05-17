@@ -17,13 +17,14 @@
             <div class="col-md-6 col-sm-12">
                 <div class="faucet">
                     {% include "default/alerts.html.twig" %}
-                    <h3 class="text-center">Rewards:</h3>
+                    <h3 class="text-center">Claim your reward</h3>
 
                     <ul class="reward-list text-center">
                         {% for reward in rewards %}
                             <li class="reward">{{ reward.amount }} satoshi ({{ reward.probability }}%)</li>
                         {% endfor %}
                     </ul>
+                    <div class="rewards_average text-center">(Average: {{ rewards_average }} satoshi)</div>
                     <h4 class="text-center">Get a reward every {{ waiting_interval / 60 }} mins!</h4>
                     <hr>
 
