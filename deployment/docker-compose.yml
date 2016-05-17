@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+    db:
+        image: mysql
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: paytoshi_faucet
+    php-apache:
+        build: ./php-apache
+        image: looptribe/php-apache
+        ports:
+            - "80:80"
+        links:
+            - db
+        volumes:
+            - ..:/var/www
