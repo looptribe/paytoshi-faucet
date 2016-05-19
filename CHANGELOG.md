@@ -1,6 +1,8 @@
 # Paytoshi Faucet changelog
 
 ## master (not yet released)
+* Restored `wide` theme
+* Fixed CSS includes in `default` theme
 
 ## 2.0.2
 * Improved diagnostics: now checks for POST of HTML data
