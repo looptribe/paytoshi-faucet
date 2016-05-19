@@ -34,6 +34,8 @@ class IndexTest extends WebTestCase
                         return 'default';
                     case 'captcha_provider':
                         return 'funcaptcha';
+                    case 'content_left_box':
+                        return '<h2>LEFT_BOX</h2>';
                 }
             });
         $this->app['repository.settings'] = $mock;
@@ -42,6 +44,7 @@ class IndexTest extends WebTestCase
         $crawler = $client->request('GET', '/');
 
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertCount(1, $crawler->filter('h2:contains("LEFT_BOX")'), 'The left_box content should be included in the page');
     }
 
     /**

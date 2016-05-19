@@ -68,13 +68,13 @@ class IndexController
                 ),
             ),
             'content' => array(
-                'header_box' => $this->settingsRepository->get('header_box'),
-                'left_box' => $this->settingsRepository->get('left_box'),
-                'right_box' => $this->settingsRepository->get('right_box'),
-                'center1_box' => $this->settingsRepository->get('center1_box'),
-                'center2_box' => $this->settingsRepository->get('center2_box'),
-                'center3_box' => $this->settingsRepository->get('center3_box'),
-                'footer_box' => $this->settingsRepository->get('footer_box')
+                'header_box' => $this->settingsRepository->get('content_header_box'),
+                'left_box' => $this->settingsRepository->get('content_left_box'),
+                'right_box' => $this->settingsRepository->get('content_right_box'),
+                'center1_box' => $this->settingsRepository->get('content_center1_box'),
+                'center2_box' => $this->settingsRepository->get('content_center2_box'),
+                'center3_box' => $this->settingsRepository->get('content_center3_box'),
+                'footer_box' => $this->settingsRepository->get('content_footer_box')
             ),
             'theme' => array(
                 'name' => $this->themeProvider->getCurrent(),
