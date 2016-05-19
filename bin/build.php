@@ -2,6 +2,13 @@
 
 echo 'Paytoshi Faucet Script Builder' . PHP_EOL;
 
+$diff = array();
+exec('git status --porcelain', $diff);
+if (!empty($diff)) {
+    error_log('There are uncommited changes, please stash them before executing the build script.');
+    exit(1);
+}
+
 $root = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..') . DIRECTORY_SEPARATOR;
 $outPath = $root . 'dist' . DIRECTORY_SEPARATOR;
 
