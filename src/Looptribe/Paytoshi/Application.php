@@ -75,7 +75,6 @@ class Application extends \Silex\Application
         $app['version'] = isset($composerJson['version']) ? $composerJson['version'] : '';
 
         $app['apiUrl'] = 'http://paytoshi.org/api/v1/';
-        $app['apiUrl'] = 'http://localhost/looptribe_sato_frontend/web/app_dev.php/api/v1/';
 
         $app->register(new Provider\ServiceControllerServiceProvider());
         $app['themes.default'] = 'default';
