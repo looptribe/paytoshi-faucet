@@ -78,7 +78,7 @@ class IndexController
             ),
             'theme' => array(
                 'name' => $this->themeProvider->getCurrent(),
-                'css' => $this->settingsRepository->get('css')
+                'css' => $this->settingsRepository->get('custom_css')
             )
         );
     }
