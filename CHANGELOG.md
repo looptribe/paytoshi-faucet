@@ -1,6 +1,8 @@
 # Paytoshi Faucet changelog
 
 ## master (not yet released)
+
+## 2.0.3
 * Restored `wide` theme
 * Fixed CSS includes in `default` theme
 * Custom HTML/CSS content is now included in frontend pages, #20
