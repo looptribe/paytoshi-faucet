@@ -4,6 +4,7 @@
 * Restored `wide` theme
 * Fixed CSS includes in `default` theme
 * Custom HTML/CSS content is now included in frontend pages, #20
+* Fixed admin code textarea duplicated when opening multiple tabs, #21
 
 ## 2.0.2
 * Improved diagnostics: now checks for POST of HTML data

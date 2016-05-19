@@ -375,7 +375,7 @@
     <script>
         // Hook up ACE editor to all textareas with data-editor attribute
         $(function () {
-            $('a[href="#template"]').on('shown.bs.tab', function (e) {
+            $('a[href="#template"]').on('shown.bs.tab', function () {
                 $('textarea[data-editor]').each(function () {
                     var textarea = $(this);
 
@@ -403,6 +403,7 @@
                     textarea.closest('form').submit(function () {
                         textarea.val(editor.getSession().getValue());
                     });
+                    textarea.removeAttr('data-editor');
                 });
             });
 
