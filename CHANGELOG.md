@@ -3,6 +3,7 @@
 ## master (not yet released)
 * Restored `wide` theme
 * Fixed CSS includes in `default` theme
+* Custom HTML/CSS content is now included in frontend pages, #20
 
 ## 2.0.2
 * Improved diagnostics: now checks for POST of HTML data
