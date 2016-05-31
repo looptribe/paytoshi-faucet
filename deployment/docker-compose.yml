@@ -3,11 +3,19 @@ version: '2'
 services:
     db:
         image: mysql
-        ports:
-            - "3306:3306"
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: paytoshi_faucet
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            PMA_HOST: db
+            PMA_USER: root
+            PMA_PASSWORD: root
+        links:
+            - db
+        ports:
+            - "8080:80"
     php-apache:
         image: looptribe/php-apache:5.3
         ports:
@@ -15,4 +23,4 @@ services:
         links:
             - db
         volumes:
-            - ..:/var/www
+            - ..:/home/app/app
