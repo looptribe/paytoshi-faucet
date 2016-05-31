@@ -68,7 +68,7 @@ class SetupController
 
         if ($requirementsChecker->hasFailedRequirements())
         {
-            return $this->templating->render('admin/setup_requirements_fail.html.twig', array(
+            return $this->templating->render('admin/setup_requirements.html.twig', array(
                 'checker' => $requirementsChecker,
             ));
         }
