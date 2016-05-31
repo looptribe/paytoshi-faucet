@@ -57,7 +57,7 @@ class SetupTest extends WebTestCase
         $client->request('GET', '/setup/rewrite.json');
 
         $this->assertTrue($client->getResponse()->isSuccessful());
-        $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Reponse should be application/json');
+        $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Response should be application/json');
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
@@ -81,7 +81,7 @@ class SetupTest extends WebTestCase
         $client->request('GET', '/setup/rewrite.json');
 
         $this->assertEquals(400, $client->getResponse()->getStatusCode());
-        $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Reponse should be application/json');
+        $this->assertTrue($client->getResponse()->headers->contains('Content-Type', 'application/json'), 'Response should be application/json');
 
         $response = json_decode($client->getResponse()->getContent(), true);
 
@@ -133,6 +133,33 @@ class SetupTest extends WebTestCase
         $crawler = $client->request('GET', '/setup/');
 
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Paytoshi Faucet setup")')->count());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSetupFail()
+    {
+        $setupDiagnostics = $this->getMockBuilder('Looptribe\Paytoshi\Setup\Diagnostics')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $setupDiagnostics->expects($this->any())
+            ->method('requiresSetup')
+            ->willReturn(true);
+        $requirementsChecker = $this->getMockBuilder('Looptribe\Paytoshi\Setup\RequirementsChecker')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $requirementsChecker->method('hasFailedRequirements')
+            ->willReturn(true);
+        $setupDiagnostics->expects($this->any())
+            ->method('checkRequirements')
+            ->willReturn($requirementsChecker);
+        $this->app['setup.diagnostics'] = $setupDiagnostics;
+
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/setup/');
+
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("Paytoshi Faucet setup - requirements")')->count());
     }
 
     public function testStartDeniedAlreadyCompleted()
